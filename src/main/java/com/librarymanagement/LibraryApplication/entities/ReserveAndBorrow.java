@@ -36,7 +36,7 @@ public class ReserveAndBorrow {
     @JoinColumn(name = "BOOK_ID")
     private Book book;
 
-    @OneToOne(mappedBy = "reserveAndBorrow" , cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "reserveAndBorrow", cascade = CascadeType.ALL)
     private Fine fine;
 
 }

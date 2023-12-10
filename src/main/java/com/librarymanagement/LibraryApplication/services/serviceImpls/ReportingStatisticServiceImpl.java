@@ -55,7 +55,7 @@ public class ReportingStatisticServiceImpl implements ReportingStatisticService 
                             if (clientResponse.statusCode().equals(HttpStatus.OK)) {
                                 return clientResponse.bodyToMono(DefaultResponse.class);
                             } else if (clientResponse.statusCode().is4xxClientError() ||
-                            clientResponse.statusCode().is5xxServerError()) {
+                                    clientResponse.statusCode().is5xxServerError()) {
                                 return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
                                         "Reporting module error: 4xx or 5xx"));
                             } else {

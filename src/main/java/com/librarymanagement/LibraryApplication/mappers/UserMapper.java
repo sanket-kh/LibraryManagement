@@ -4,9 +4,10 @@ package com.librarymanagement.LibraryApplication.mappers;
 import com.librarymanagement.LibraryApplication.entities.User;
 import com.librarymanagement.LibraryApplication.models.dtos.userdtos.UserDto;
 import com.librarymanagement.LibraryApplication.models.requests.UserRegisterRequest;
-
+import lombok.RequiredArgsConstructor;
+@RequiredArgsConstructor
 public class UserMapper {
-    public static UserDto mapUserToBaseUserDto(User user){
+    public static UserDto mapUserToBaseUserDto(User user) {
         UserDto baseUserDto = new UserDto();
         baseUserDto.setAddress(user.getAddress());
         baseUserDto.setEmail(user.getEmail());
@@ -18,13 +19,13 @@ public class UserMapper {
         return baseUserDto;
     }
 
-    public static User mapToUser(UserRegisterRequest userRegisterRequest) {
+    public static User mapToUser(UserRegisterRequest userRegisterRequest, String encodedPassword) {
 
         User user = new User();
 
         user.setAddress(userRegisterRequest.getAddress());
         user.setEmail(userRegisterRequest.getEmail());
-        user.setPassword(userRegisterRequest.getPassword());
+        user.setPassword(encodedPassword);
         user.setPhone(userRegisterRequest.getPhone());
         user.setFirstName(userRegisterRequest.getFirstName());
         user.setLastName(userRegisterRequest.getLastName());

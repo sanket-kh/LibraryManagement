@@ -1,6 +1,6 @@
 package com.librarymanagement.LibraryApplication.repositories;
 
-import com.librarymanagement.LibraryApplication.Daos.BookDao;
+import com.librarymanagement.LibraryApplication.daos.BookDao;
 import com.librarymanagement.LibraryApplication.entities.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

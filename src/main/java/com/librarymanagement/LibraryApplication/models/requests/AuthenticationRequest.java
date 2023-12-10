@@ -7,10 +7,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class BorrowRequest {
-    @NotBlank(message = "username is blank")
+public class AuthenticationRequest {
+    @NotBlank(message = "username is empty")
     private String username;
-    @NotNull(message = "isbn is null")
-    private Long isbn;
 
+    @NotBlank(message = "password is empty")
+    private String password;
 }

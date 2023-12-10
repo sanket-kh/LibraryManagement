@@ -1,4 +1,4 @@
-package com.librarymanagement.LibraryApplication.Daos;
+package com.librarymanagement.LibraryApplication.daos;
 
 
 import com.librarymanagement.LibraryApplication.entities.Book;

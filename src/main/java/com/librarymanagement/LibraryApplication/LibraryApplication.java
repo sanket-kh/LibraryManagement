@@ -5,11 +5,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan({"com.library.fine.*"})
+@ComponentScan(value = {"com.library.fine.*", "com.librarymanagement.LibraryApplication.*"})
 public class LibraryApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(LibraryApplication.class, args);
+
     }
 
 }

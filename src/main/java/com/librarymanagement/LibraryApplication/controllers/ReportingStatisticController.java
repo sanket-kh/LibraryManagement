@@ -7,36 +7,40 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Log4j2
 @RestController
 @AllArgsConstructor
+@RestControllerAdvice
 @RequestMapping("/api/v1/report")
 public class ReportingStatisticController {
     private ReportingStatisticService reportingStatisticService;
 
     @GetMapping("/all-books")
-    public ResponseEntity<Object> getListOfAllBooks(){
-    return reportingStatisticService.getListOfAllBooks();
+    public ResponseEntity<Object> getListOfAllBooks() {
+        return reportingStatisticService.getListOfAllBooks();
     }
+
     @GetMapping("/available-books")
-    public ResponseEntity<Object> getListOfAllAvailableBooks(){
+    public ResponseEntity<Object> getListOfAllAvailableBooks() {
         return reportingStatisticService.getListOfAllAvailableBooks();
     }
+
     @GetMapping("/reserved-books")
-    public ResponseEntity<Object> getListOfAllReservedBooks(){
+    public ResponseEntity<Object> getListOfAllReservedBooks() {
         return reportingStatisticService.getListOfAllReservedBooks();
     }
+
     @GetMapping("/book-count/available")
-    public ResponseEntity<Object> getCountOfAvailableBooks(){
+    public ResponseEntity<Object> getCountOfAvailableBooks() {
         return reportingStatisticService.getCountOfAvailableBooks();
     }
+
     @GetMapping("/book-count/total")
-    public ResponseEntity<Object> getCountOfTotalBooks(){
+    public ResponseEntity<Object> getCountOfTotalBooks() {
         return reportingStatisticService.getCountOfTotalBooks();
     }
-
-
 
 
 }

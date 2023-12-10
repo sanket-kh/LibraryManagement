@@ -20,18 +20,14 @@ public class WebClientRequestBuilder {
                     conn.addHandlerLast(new ReadTimeoutHandler(5000, TimeUnit.MILLISECONDS))
                             .addHandlerLast(new WriteTimeoutHandler(5000, TimeUnit.MILLISECONDS)));
 
-public static WebClient buildGetWebClientRequest(Object object){
-     return WebClient.builder()
-            .baseUrl(UriConstants.REPORTING_STATISTIC_BASE_URL)
-            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .clientConnector(new ReactorClientHttpConnector(httpClient))
-            .build();
+    public static WebClient buildGetWebClientRequest(Object object) {
+        return WebClient.builder()
+                .baseUrl(UriConstants.REPORTING_STATISTIC_BASE_URL)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .build();
 
-}
-
-
-
-
+    }
 
 
 }

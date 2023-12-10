@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,16 +21,19 @@ import java.util.ArrayList;
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
-private UserRepo userRepo;
+    private final PasswordEncoder passwordEncoder;
+    private UserRepo userRepo;
+
     @Override
     public ResponseEntity<Object> registerUser(UserRegisterRequest userRegisterRequest) {
         try {
             User user = userRepo.findUserByUsername(userRegisterRequest.getUsername());
-            if(user != null){
+            if (user != null) {
                 return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.ALREADY_EXISTS,
-                        "Username should be unique"), HttpStatus.OK );
+                        "Username should be unique"), HttpStatus.OK);
             }
-            user = UserMapper.mapToUser(userRegisterRequest);
+            String encodedPassword = passwordEncoder.encode(userRegisterRequest.getPassword());
+            user = UserMapper.mapToUser(userRegisterRequest, encodedPassword);
             user.setStatus(Boolean.TRUE);
             user.setReserveAndBorrowList(new ArrayList<>());
             userRepo.save(user);
@@ -46,7 +50,7 @@ private UserRepo userRepo;
     public ResponseEntity<Object> retrieveUser(String username) {
         try {
             User user = userRepo.findUserByUsername(username);
-            if(user==null){
+            if (user == null) {
                 return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
                         "User doesnt exist"), HttpStatus.OK);
             }

@@ -1,4 +1,4 @@
-package com.librarymanagement.LibraryApplication.Daos;
+package com.librarymanagement.LibraryApplication.daos;
 
 import com.librarymanagement.LibraryApplication.entities.Book;
 import com.librarymanagement.LibraryApplication.models.requests.BookSearchFilterRequest;
@@ -17,19 +17,19 @@ public class BookDaoImpl implements BookDao {
 
 
         String BOOK_SEARCH_FILTER_QUERY = "SELECT B " +
-                                          "FROM Book B " +
-                                          "WHERE 1=1 ";
+                "FROM Book B " +
+                "WHERE 1=1 ";
         if (bookSearchFilterRequest.getIsbn() != null && bookSearchFilterRequest.getIsbn() != 0) {
             BOOK_SEARCH_FILTER_QUERY = BOOK_SEARCH_FILTER_QUERY +
-                                       "AND B.isbn = :isbn ";
+                    "AND B.isbn = :isbn ";
         }
         if (bookSearchFilterRequest.getTitle() != null && !bookSearchFilterRequest.getTitle().isEmpty()) {
             BOOK_SEARCH_FILTER_QUERY = BOOK_SEARCH_FILTER_QUERY +
-                                       " AND B.title like :title ";
+                    " AND B.title like :title ";
         }
         if (bookSearchFilterRequest.getAuthor() != null && !bookSearchFilterRequest.getAuthor().isEmpty()) {
             BOOK_SEARCH_FILTER_QUERY = BOOK_SEARCH_FILTER_QUERY +
-                                       " AND B.author like :author ";
+                    " AND B.author like :author ";
         }
 
 

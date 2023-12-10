@@ -14,12 +14,13 @@ import org.springframework.web.bind.annotation.*;
 @Log4j2
 @RestController
 @AllArgsConstructor
+@RestControllerAdvice
 @RequestMapping("/api/v1")
 public class ReserveAndBorrowController {
-private ReserveAndBorrowService reserveAndBorrowService;
+    private ReserveAndBorrowService reserveAndBorrowService;
 
     @PostMapping("/borrow")
-    public ResponseEntity<Object> burrowBook(@RequestBody BorrowRequest borrowRequest){
+    public ResponseEntity<Object> burrowBook(@RequestBody BorrowRequest borrowRequest) {
         try {
             return reserveAndBorrowService.burrowBook(borrowRequest);
         } catch (Exception e) {
@@ -28,8 +29,9 @@ private ReserveAndBorrowService reserveAndBorrowService;
                     "Server Error"), HttpStatus.OK);
         }
     }
+
     @PostMapping("/return")
-    public ResponseEntity<Object> returnBook(@RequestBody BorrowRequest returnRequest){
+    public ResponseEntity<Object> returnBook(@RequestBody BorrowRequest returnRequest) {
         try {
             return reserveAndBorrowService.returnBook(returnRequest);
         } catch (Exception e) {
@@ -40,7 +42,7 @@ private ReserveAndBorrowService reserveAndBorrowService;
     }
 
     @GetMapping("/user/borrowed-books")
-    public ResponseEntity<Object> getBorrowedBooksByUser(@RequestParam String username){
+    public ResponseEntity<Object> getBorrowedBooksByUser(@RequestParam String username) {
         try {
             return reserveAndBorrowService.viewBurrowedBooksByUser(username);
         } catch (Exception e) {
@@ -51,7 +53,7 @@ private ReserveAndBorrowService reserveAndBorrowService;
     }
 
     @PostMapping("/reserve")
-    public ResponseEntity<Object> reserveBook(@RequestBody ReserveRequest reserveRequest){
+    public ResponseEntity<Object> reserveBook(@RequestBody ReserveRequest reserveRequest) {
         try {
             return reserveAndBorrowService.reserveUnavailableBook(reserveRequest);
         } catch (Exception e) {
@@ -61,8 +63,8 @@ private ReserveAndBorrowService reserveAndBorrowService;
         }
     }
 
-    @PostMapping("/cancel-reserve")
-    public ResponseEntity<Object> cancelReservationBook(@RequestBody ReserveRequest cancelReservationRequest){
+    @PostMapping("/user/cancel-reserve")
+    public ResponseEntity<Object> cancelReservationBook(@RequestBody ReserveRequest cancelReservationRequest) {
         try {
             return reserveAndBorrowService.cancelReservationOfBook(cancelReservationRequest);
         } catch (Exception e) {
@@ -73,7 +75,7 @@ private ReserveAndBorrowService reserveAndBorrowService;
     }
 
     @GetMapping("/user/reserved-books")
-    public ResponseEntity<Object> getReservedBooksByUser(@RequestParam String username){
+    public ResponseEntity<Object> getReservedBooksByUser(@RequestParam String username) {
         try {
             return reserveAndBorrowService.viewReservedBooksByUser(username);
         } catch (Exception e) {

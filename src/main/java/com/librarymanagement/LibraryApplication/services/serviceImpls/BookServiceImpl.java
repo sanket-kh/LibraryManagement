@@ -164,14 +164,14 @@ public class BookServiceImpl implements BookService {
 
         try {
             Book book = bookRepo.getBookByIsbn(isbn);
-            if(book == null){
+            if (book == null) {
                 return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
-                        "Book with isbn: "+ isbn+" doesn't exist"), HttpStatus.OK);
+                        "Book with isbn: " + isbn + " doesn't exist"), HttpStatus.OK);
             }
             book.setIsAvailable(Boolean.FALSE);
             bookRepo.save(book);
             return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
-                     "Book availability updated to unavailable"), HttpStatus.OK);
+                    "Book availability updated to unavailable"), HttpStatus.OK);
         } catch (Exception e) {
             log.error("BookService :: setBookStatusUnavailable", e);
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
@@ -184,14 +184,14 @@ public class BookServiceImpl implements BookService {
 
         try {
             Book book = bookRepo.getBookByIsbn(isbn);
-            if(book == null){
+            if (book == null) {
                 return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
-                        "Book with isbn: "+ isbn+" doesn't exist"), HttpStatus.OK);
+                        "Book with isbn: " + isbn + " doesn't exist"), HttpStatus.OK);
             }
             book.setIsAvailable(Boolean.TRUE);
             bookRepo.save(book);
             return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
-                    "Book with isbn: "+ isbn+" availability updated to available"), HttpStatus.OK);
+                    "Book with isbn: " + isbn + " availability updated to available"), HttpStatus.OK);
         } catch (Exception e) {
             log.error("BookService :: setBookStatusAvailable", e);
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,

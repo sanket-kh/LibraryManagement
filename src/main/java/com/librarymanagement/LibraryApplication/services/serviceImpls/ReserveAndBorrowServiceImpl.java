@@ -3,7 +3,6 @@ package com.librarymanagement.LibraryApplication.services.serviceImpls;
 import com.library.fine.Dtos.FineCalculationRequest;
 import com.library.fine.Dtos.FineDto;
 import com.library.fine.responses.LibraryResponse;
-import com.librarymanagement.LibraryApplication.LibraryApplication;
 import com.librarymanagement.LibraryApplication.entities.Book;
 import com.librarymanagement.LibraryApplication.entities.Fine;
 import com.librarymanagement.LibraryApplication.entities.ReserveAndBorrow;
@@ -31,8 +30,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-
-import static java.time.temporal.ChronoUnit.DAYS;
 
 @Log4j2
 @Service
@@ -114,7 +111,7 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
 
             FineDto fineDto = (FineDto) libraryResponse.getResponseBody();
 
-            if(fineDto!=null){
+            if (fineDto != null) {
                 Fine fine = FineMapper.mapToFine(fineDto);
                 existingTransaction.setFine(fine);
                 fine.setReserveAndBorrow(existingTransaction);
@@ -122,7 +119,7 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
 
             reserveAndBurrowRepo.save(existingTransaction);
 
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK, "Book returned. "+libraryResponse.getMessage()), HttpStatus.OK);
+            return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK, "Book returned. " + libraryResponse.getMessage()), HttpStatus.OK);
         } catch (Exception e) {
             log.error("ReserveAndBorrowServiceImpl :: returnBook ", e);
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Unable to return book"), HttpStatus.OK);
