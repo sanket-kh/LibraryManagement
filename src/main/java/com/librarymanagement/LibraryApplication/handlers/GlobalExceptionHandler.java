@@ -3,7 +3,6 @@ package com.librarymanagement.LibraryApplication.exceptions;
 import com.librarymanagement.LibraryApplication.utils.ResponseConstants;
 import com.librarymanagement.LibraryApplication.utils.ResponseUtility;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
