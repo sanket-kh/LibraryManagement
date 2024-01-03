@@ -10,5 +10,4 @@ public interface BookRepo extends JpaRepository<Book, Long>, BookDao {
 
     Book getBookByIsbn(Long isbn);
 
-    Book getBookById(Long id);
 }

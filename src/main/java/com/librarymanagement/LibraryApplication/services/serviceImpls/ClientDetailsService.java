@@ -1,13 +1,18 @@
-package com.librarymanagement.LibraryApplication.entities;
+package com.librarymanagement.LibraryApplication.services.serviceImpls;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
 import java.util.Collection;
-
+@Component("ClientDetailsService")
+@RequiredArgsConstructor
 public class ClientDetailsService implements UserDetailsService {
+    private final PasswordEncoder passwordEncoder;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return new UserDetails() {
@@ -18,12 +23,12 @@ public class ClientDetailsService implements UserDetailsService {
 
             @Override
             public String getPassword() {
-                return null;
+                return passwordEncoder.encode("ACCESS_PASSWORD");
             }
 
             @Override
             public String getUsername() {
-                return username;
+                return "LibraryApplication";
             }
 
             @Override

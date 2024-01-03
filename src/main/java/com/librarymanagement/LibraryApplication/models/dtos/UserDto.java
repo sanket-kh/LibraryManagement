@@ -1,4 +1,4 @@
-package com.librarymanagement.LibraryApplication.models.dtos.userdtos;
+package com.librarymanagement.LibraryApplication.models.dtos;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +18,6 @@ public class UserDto {
 
     private String address;
 
-    private Boolean status;
+//    private Boolean status;
 
 }

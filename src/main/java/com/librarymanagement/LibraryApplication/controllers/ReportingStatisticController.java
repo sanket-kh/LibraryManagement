@@ -1,7 +1,7 @@
 package com.librarymanagement.LibraryApplication.controllers;
 
 import com.librarymanagement.LibraryApplication.services.ReportingStatisticService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Log4j2
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RestControllerAdvice
 @RequestMapping("/api/v1/report")
 public class ReportingStatisticController {
-    private ReportingStatisticService reportingStatisticService;
+    private final ReportingStatisticService reportingStatisticService;
 
     @GetMapping("/all-books")
     public ResponseEntity<Object> getListOfAllBooks() {

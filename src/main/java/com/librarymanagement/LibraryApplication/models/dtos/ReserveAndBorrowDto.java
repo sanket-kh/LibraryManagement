@@ -1,8 +1,6 @@
-package com.librarymanagement.LibraryApplication.models.dtos.reserveandburrowdtos;
+package com.librarymanagement.LibraryApplication.models.dtos;
 
 import com.library.fine.Dtos.FineDto;
-import com.librarymanagement.LibraryApplication.models.dtos.bookdtos.BookDto;
-import com.librarymanagement.LibraryApplication.models.dtos.userdtos.UserDto;
 import lombok.Getter;
 import lombok.Setter;
 

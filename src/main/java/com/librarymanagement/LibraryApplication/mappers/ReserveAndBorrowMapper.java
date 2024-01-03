@@ -2,7 +2,7 @@ package com.librarymanagement.LibraryApplication.mappers;
 
 
 import com.librarymanagement.LibraryApplication.entities.ReserveAndBorrow;
-import com.librarymanagement.LibraryApplication.models.dtos.reserveandburrowdtos.ReserveAndBorrowDto;
+import com.librarymanagement.LibraryApplication.models.dtos.ReserveAndBorrowDto;
 
 public class ReserveAndBorrowMapper {
     public static ReserveAndBorrowDto mapToReserveAndBorrowDto(ReserveAndBorrow reserveAndBorrow) {

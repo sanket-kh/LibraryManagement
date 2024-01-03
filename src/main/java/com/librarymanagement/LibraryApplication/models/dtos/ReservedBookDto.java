@@ -1,4 +1,4 @@
-package com.librarymanagement.LibraryApplication.models.dtos.bookdtos;
+package com.librarymanagement.LibraryApplication.models.dtos;
 
 public interface ReservedBookDto {
     Long getIsbn();

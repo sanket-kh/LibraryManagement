@@ -1,27 +1,26 @@
 package com.librarymanagement.LibraryApplication.controllers;
 
 
-import com.librarymanagement.LibraryApplication.enums.Role;
 import com.librarymanagement.LibraryApplication.models.requests.BookSearchFilterRequest;
 import com.librarymanagement.LibraryApplication.models.requests.ExistingBookRequest;
 import com.librarymanagement.LibraryApplication.models.requests.SaveBookRequest;
 import com.librarymanagement.LibraryApplication.services.BookService;
 import com.librarymanagement.LibraryApplication.utils.ResponseConstants;
 import com.librarymanagement.LibraryApplication.utils.ResponseUtility;
-import lombok.AllArgsConstructor;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Log4j2
 @RestController
 @RestControllerAdvice
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping(value = "api/v1/books")
 public class BookController {
-    private BookService bookService;
+    private final BookService bookService;
 
     @PostMapping(value = "/save")
     public ResponseEntity<Object> saveBook(@RequestBody SaveBookRequest saveBookRequest) {
@@ -55,9 +54,9 @@ public class BookController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<Object> updateBookById(@RequestParam Long id, @RequestBody SaveBookRequest saveBookRequest) {
+    public ResponseEntity<Object> updateBookById(@RequestBody SaveBookRequest saveBookRequest) {
         try {
-            return bookService.updateBookById(id, saveBookRequest);
+            return bookService.updateBookByIsbn(saveBookRequest);
         } catch (Exception e) {
             log.error("BookController :: updateBookById", e);
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.OK);
@@ -74,8 +73,8 @@ public class BookController {
         }
     }
 
-    @GetMapping("/user/search")
-    public ResponseEntity<Object> searchBook(@RequestBody BookSearchFilterRequest bookSearchFilterRequest) {
+    @PostMapping("/user/search")
+    public ResponseEntity<Object> searchBook(@Valid @RequestBody BookSearchFilterRequest bookSearchFilterRequest) {
         try {
             if ((bookSearchFilterRequest.getTitle() == null || bookSearchFilterRequest.getTitle().isBlank()) && bookSearchFilterRequest.getIsbn() == null && (bookSearchFilterRequest.getAuthor() == null || bookSearchFilterRequest.getAuthor().isBlank())) {
                 return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.BAD_REQUEST, "Invalid search parameters"), HttpStatus.OK);

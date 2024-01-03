@@ -1,4 +1,4 @@
-package com.librarymanagement.LibraryApplication.models.dtos.bookdtos;
+package com.librarymanagement.LibraryApplication.models.dtos;
 
 import lombok.Getter;
 import lombok.Setter;

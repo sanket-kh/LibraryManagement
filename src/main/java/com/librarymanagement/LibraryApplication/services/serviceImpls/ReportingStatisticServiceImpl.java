@@ -6,6 +6,7 @@ import com.librarymanagement.LibraryApplication.utils.ResponseConstants;
 import com.librarymanagement.LibraryApplication.utils.ResponseUtility;
 import com.librarymanagement.LibraryApplication.utils.UriConstants;
 import com.librarymanagement.LibraryApplication.utils.WebClientRequestBuilder;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,16 +16,17 @@ import reactor.core.publisher.Mono;
 
 @Log4j2
 @Service
+@RequiredArgsConstructor
 public class ReportingStatisticServiceImpl implements ReportingStatisticService {
+    private final WebClientRequestBuilder webClientRequestBuilder;
 
     @Override
     public ResponseEntity<Object> getListOfAllBooks() {
-        WebClient webClient =
-                WebClientRequestBuilder.buildGetWebClientRequest(null);
+        WebClient webClient =webClientRequestBuilder.buildGetWebClientRequest(null);
 
 
         Mono<DefaultResponse> response = webClient.get()
-                .uri(UriConstants.GET_ALL_BOOKS)
+                .uri(UriConstants.GET_ALL_BOOKS).header("Authorization")
                 .exchangeToMono(clientResponse -> {
                             if (clientResponse.statusCode().equals(HttpStatus.OK)) {
                                 return clientResponse.bodyToMono(DefaultResponse.class);
@@ -46,7 +48,7 @@ public class ReportingStatisticServiceImpl implements ReportingStatisticService 
     @Override
     public ResponseEntity<Object> getListOfAllAvailableBooks() {
         WebClient webClient =
-                WebClientRequestBuilder.buildGetWebClientRequest(null);
+                webClientRequestBuilder.buildGetWebClientRequest(null);
 
 
         Mono<DefaultResponse> response = webClient.get()
@@ -72,8 +74,7 @@ public class ReportingStatisticServiceImpl implements ReportingStatisticService 
     @Override
     public ResponseEntity<Object> getListOfAllReservedBooks() {
         WebClient webClient =
-                WebClientRequestBuilder.buildGetWebClientRequest(null);
-
+                webClientRequestBuilder.buildGetWebClientRequest(null);
 
         Mono<DefaultResponse> response = webClient.get()
                 .uri(UriConstants.GET_ALL_RESERVED_BOOKS)
@@ -99,7 +100,7 @@ public class ReportingStatisticServiceImpl implements ReportingStatisticService 
     @Override
     public ResponseEntity<Object> getCountOfTotalBooks() {
         WebClient webClient =
-                WebClientRequestBuilder.buildGetWebClientRequest(null);
+                webClientRequestBuilder.buildGetWebClientRequest(null);
 
 
         Mono<DefaultResponse> response = webClient.get()
@@ -125,7 +126,7 @@ public class ReportingStatisticServiceImpl implements ReportingStatisticService 
     @Override
     public ResponseEntity<Object> getCountOfAvailableBooks() {
         WebClient webClient =
-                WebClientRequestBuilder.buildGetWebClientRequest(null);
+                webClientRequestBuilder.buildGetWebClientRequest(null);
 
 
         Mono<DefaultResponse> response = webClient.get()

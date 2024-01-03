@@ -12,7 +12,7 @@ public interface BookService {
 
     ResponseEntity<Object> getAllBooks(Integer pageNumber);
 
-    ResponseEntity<Object> updateBookById(Long isbn, SaveBookRequest saveBookRequest);
+    ResponseEntity<Object> updateBookByIsbn(SaveBookRequest saveBookRequest);
 
     ResponseEntity<Object> addExistingBookByIsbn(ExistingBookRequest existingBookRequest);
 

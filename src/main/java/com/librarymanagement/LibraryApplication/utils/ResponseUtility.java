@@ -56,6 +56,22 @@ public class ResponseUtility {
         defaultResponse.setResponseCode(statusCode);
         return defaultResponse;
     }
+    public static DefaultResponse authenticationFailureWithMessage(String statusCode,
+                                                                          String message){
+        DefaultResponse authenticationResponse = new DefaultResponse();
+        authenticationResponse.setMessage(message);
+        authenticationResponse.setResponseCode(statusCode);
+        authenticationResponse.setSuccess(Boolean.FALSE);
+        return authenticationResponse;
+    }
+    public static DefaultResponse authenticationSuccessWithMessage(String statusCode,
+                                                                          String message){
+        DefaultResponse authenticationResponse = new DefaultResponse();
+        authenticationResponse.setMessage(message);
+        authenticationResponse.setSuccess(Boolean.TRUE);
+        authenticationResponse.setResponseCode(statusCode);
+        return authenticationResponse;
+    }
 
 
 

@@ -4,7 +4,7 @@ package com.librarymanagement.LibraryApplication.mappers;
 import com.library.fine.Dtos.FineCalculationRequest;
 import com.library.fine.Dtos.FineDto;
 import com.librarymanagement.LibraryApplication.entities.Fine;
-import com.librarymanagement.LibraryApplication.models.dtos.reserveandburrowdtos.ReserveAndBorrowDto;
+import com.librarymanagement.LibraryApplication.models.dtos.ReserveAndBorrowDto;
 import com.librarymanagement.LibraryApplication.utils.Constants;
 
 public class FineMapper {

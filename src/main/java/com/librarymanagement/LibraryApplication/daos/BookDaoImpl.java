@@ -1,3 +1,5 @@
+
+
 package com.librarymanagement.LibraryApplication.daos;
 
 import com.librarymanagement.LibraryApplication.entities.Book;
@@ -16,6 +18,27 @@ public class BookDaoImpl implements BookDao {
     public List<Book> bookSearchFilter(BookSearchFilterRequest bookSearchFilterRequest) {
 
 
+        String BOOK_SEARCH_FILTER_QUERY = getQueryString(bookSearchFilterRequest);
+
+
+        System.out.println(" Query : " + BOOK_SEARCH_FILTER_QUERY);
+        Query searchQuery = this.entityManager.createQuery(BOOK_SEARCH_FILTER_QUERY);
+
+        if (bookSearchFilterRequest.getIsbn() != null && bookSearchFilterRequest.getIsbn() != 0) {
+            searchQuery.setParameter("isbn", bookSearchFilterRequest.getIsbn());
+        }
+        if (bookSearchFilterRequest.getTitle() != null && !bookSearchFilterRequest.getTitle().isEmpty()) {
+            searchQuery.setParameter("title", "%" + bookSearchFilterRequest.getTitle().trim() + "%");
+        }
+        if (bookSearchFilterRequest.getAuthor() != null && !bookSearchFilterRequest.getAuthor().isEmpty()) {
+            searchQuery.setParameter("author", "%" + bookSearchFilterRequest.getAuthor().trim() + "%");
+        }
+        var bookList = searchQuery.getResultList();
+        return bookList;
+
+    }
+
+    private static String getQueryString(BookSearchFilterRequest bookSearchFilterRequest) {
         String BOOK_SEARCH_FILTER_QUERY = "SELECT B " +
                 "FROM Book B " +
                 "WHERE 1=1 ";
@@ -31,22 +54,6 @@ public class BookDaoImpl implements BookDao {
             BOOK_SEARCH_FILTER_QUERY = BOOK_SEARCH_FILTER_QUERY +
                     " AND B.author like :author ";
         }
-
-
-        System.out.println(" Query : " + BOOK_SEARCH_FILTER_QUERY);
-        Query searchQuery = this.entityManager.createQuery(BOOK_SEARCH_FILTER_QUERY);
-
-        if (bookSearchFilterRequest.getIsbn() != null && bookSearchFilterRequest.getIsbn() != 0) {
-            searchQuery.setParameter("isbn", bookSearchFilterRequest.getIsbn());
-        }
-        if (bookSearchFilterRequest.getTitle() != null && !bookSearchFilterRequest.getTitle().isEmpty()) {
-            searchQuery.setParameter("title", "%" + bookSearchFilterRequest.getTitle().trim() + "%");
-        }
-        if (bookSearchFilterRequest.getAuthor() != null && !bookSearchFilterRequest.getAuthor().isEmpty()) {
-            searchQuery.setParameter("author", "%" + bookSearchFilterRequest.getAuthor().trim() + "%");
-        }
-
-        return (List<Book>) searchQuery.getResultList();
-
+        return BOOK_SEARCH_FILTER_QUERY;
     }
 }

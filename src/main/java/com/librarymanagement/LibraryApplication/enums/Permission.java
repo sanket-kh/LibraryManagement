@@ -3,6 +3,7 @@ package com.librarymanagement.LibraryApplication.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public enum Permission {
     USER_READ("user:read"),
@@ -10,6 +11,5 @@ public enum Permission {
     LIBRARIAN_READ("librarian:read"),
     LIBRARIAN_WRITE("librarian:write");
 
-    @Getter
     private final String permission;
 }

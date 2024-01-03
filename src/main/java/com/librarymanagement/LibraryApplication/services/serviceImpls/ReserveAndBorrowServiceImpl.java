@@ -9,8 +9,8 @@ import com.librarymanagement.LibraryApplication.entities.ReserveAndBorrow;
 import com.librarymanagement.LibraryApplication.entities.User;
 import com.librarymanagement.LibraryApplication.mappers.FineMapper;
 import com.librarymanagement.LibraryApplication.mappers.ReserveAndBorrowMapper;
-import com.librarymanagement.LibraryApplication.models.dtos.bookdtos.BorrowedBookDto;
-import com.librarymanagement.LibraryApplication.models.dtos.bookdtos.ReservedBookDto;
+import com.librarymanagement.LibraryApplication.models.dtos.BorrowedBookDto;
+import com.librarymanagement.LibraryApplication.models.dtos.ReservedBookDto;
 import com.librarymanagement.LibraryApplication.models.requests.BorrowRequest;
 import com.librarymanagement.LibraryApplication.models.requests.ReserveRequest;
 import com.librarymanagement.LibraryApplication.repositories.BookRepo;
@@ -22,7 +22,7 @@ import com.librarymanagement.LibraryApplication.utils.Constants;
 import com.librarymanagement.LibraryApplication.utils.ResponseConstants;
 import com.librarymanagement.LibraryApplication.utils.ResponseUtility;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,13 +33,13 @@ import java.util.List;
 
 @Log4j2
 @Service
-@AllArgsConstructor
-@Transactional
+@RequiredArgsConstructor
+@Transactional(rollbackOn = Exception.class)
 public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
-    private BookRepo bookRepo;
-    private UserRepo userRepo;
-    private ReserveAndBurrowRepo reserveAndBurrowRepo;
-    private FineService fineService;
+    private final BookRepo bookRepo;
+    private final UserRepo userRepo;
+    private final ReserveAndBurrowRepo reserveAndBurrowRepo;
+    private final FineService fineService;
 
     @Override
     public ResponseEntity<Object> burrowBook(BorrowRequest borrowRequest) {
@@ -51,20 +51,19 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
             if (!user.getStatus()) {
                 return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.DISABLED_USER, "User is disabled"), HttpStatus.OK);
             }
-
             Book book = bookRepo.getBookByIsbn(borrowRequest.getIsbn());
             if (book == null) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "The book doesnt exist in the library"), HttpStatus.OK);
+                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "The book doesnt exist in the library"), HttpStatus.NO_CONTENT);
             }
             if (!book.getIsAvailable() || book.getCopies() == 0) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "The book is unavailable"), HttpStatus.OK);
+                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "The book is unavailable"), HttpStatus.NO_CONTENT);
             }
             ReserveAndBorrow existingTransaction = reserveAndBurrowRepo.findExistingTransactionByBookAndUser(book, user);
             if (existingTransaction != null) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.FORBIDDEN, "User cannot issue same book more than once"), HttpStatus.OK);
+                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.FORBIDDEN, "User cannot issue same book more than once"), HttpStatus.CONFLICT);
             }
             if (reserveAndBurrowRepo.findBorrowedBooksByUsername(user.getUsername()).size() >= Constants.BORROW_LIMIT_PER_USER) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.FORBIDDEN, "User has maximum number of books burrowed"), HttpStatus.OK);
+                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.FORBIDDEN, "User has maximum number of books burrowed"), HttpStatus.FORBIDDEN);
             }
             ReserveAndBorrow reserveAndBorrow = new ReserveAndBorrow();
             reserveAndBorrow.setBook(book);

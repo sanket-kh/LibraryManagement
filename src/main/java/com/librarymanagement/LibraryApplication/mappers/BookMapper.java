@@ -2,8 +2,8 @@ package com.librarymanagement.LibraryApplication.mappers;
 
 
 import com.librarymanagement.LibraryApplication.entities.Book;
-import com.librarymanagement.LibraryApplication.models.dtos.bookdtos.BookDto;
-import com.librarymanagement.LibraryApplication.models.dtos.bookdtos.UserBookDto;
+import com.librarymanagement.LibraryApplication.models.dtos.BookDto;
+import com.librarymanagement.LibraryApplication.models.dtos.UserBookDto;
 import com.librarymanagement.LibraryApplication.models.requests.SaveBookRequest;
 
 import java.util.ArrayList;

@@ -5,13 +5,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -47,12 +44,24 @@ public class User implements UserDetails {
     @Column(name = "STATUS")
     private Boolean status;
 
+    @Column(name = "IS_NOT_LOCKED")
+    private Boolean isNotLocked;
+
+    @Column(name = "PASSWORD_ATTEMPT_COUNT")
+    private Integer passwordAttemptCount;
+
+    @Column(name = "REMARK")
+    private String remark;
+
     @Column(name = "ROLE")
     @Enumerated(EnumType.STRING)
     private Role role;
 
     @OneToMany(mappedBy = "user")
     private List<ReserveAndBorrow> reserveAndBorrowList;
+
+    @OneToMany(mappedBy = "librarian")
+    private List<LibrarianAccount>  accountList;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -66,7 +75,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return this.isNotLocked;
     }
 
     @Override
@@ -76,6 +85,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.status;
     }
 }

@@ -7,4 +7,5 @@ import org.springframework.http.ResponseEntity;
 public interface AuthenticationService {
     ResponseEntity<Object> register(UserRegisterRequest userRegisterRequest);
     ResponseEntity<Object> authenticate(AuthenticationRequest authenticationRequest);
+
 }

@@ -5,7 +5,7 @@ import com.librarymanagement.LibraryApplication.models.requests.ReserveRequest;
 import com.librarymanagement.LibraryApplication.services.ReserveAndBorrowService;
 import com.librarymanagement.LibraryApplication.utils.ResponseConstants;
 import com.librarymanagement.LibraryApplication.utils.ResponseUtility;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.*;
 
 @Log4j2
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RestControllerAdvice
 @RequestMapping("/api/v1")
 public class ReserveAndBorrowController {
-    private ReserveAndBorrowService reserveAndBorrowService;
+    private final ReserveAndBorrowService reserveAndBorrowService;
 
     @PostMapping("/borrow")
     public ResponseEntity<Object> burrowBook(@RequestBody BorrowRequest borrowRequest) {
