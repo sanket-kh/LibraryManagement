@@ -11,6 +11,7 @@ import com.librarymanagement.LibraryApplication.mappers.FineMapper;
 import com.librarymanagement.LibraryApplication.mappers.ReserveAndBorrowMapper;
 import com.librarymanagement.LibraryApplication.models.dtos.BorrowedBookDto;
 import com.librarymanagement.LibraryApplication.models.dtos.ReservedBookDto;
+import com.librarymanagement.LibraryApplication.models.dtos.UserBookTransaction;
 import com.librarymanagement.LibraryApplication.models.requests.BorrowRequest;
 import com.librarymanagement.LibraryApplication.models.requests.ReserveRequest;
 import com.librarymanagement.LibraryApplication.repositories.BookRepo;
@@ -24,11 +25,15 @@ import com.librarymanagement.LibraryApplication.utils.ResponseUtility;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Log4j2
@@ -191,6 +196,12 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
             if (borrowedBookList.isEmpty()) {
                 return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "User has not borrowed any book"), HttpStatus.OK);
             }
+            borrowedBookList.forEach(borrowedBookDto -> {
+                long overdue =
+                        ChronoUnit.DAYS.between(borrowedBookDto.getIssuedDate().plusDays(Constants.MAX_BORROW_DURATION_PER_BOOK),
+                                LocalDate.now());
+                borrowedBookDto.setOverdue((int) overdue);
+            });
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessageAndBody(ResponseConstants.OK, "List of books retrieved", borrowedBookList), HttpStatus.OK);
         } catch (Exception e) {
             log.error("ReserveAndBorrowServiceImpl :: viewBurrowedBooksByUser ", e);
@@ -216,5 +227,24 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
             log.error("ReserveAndBorrowServiceImpl :: viewReservedBooksByUser ", e);
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Unable to view books borrowed by user"), HttpStatus.OK);
         }
+    }
+
+    @Override
+    public ResponseEntity<Object> getUserTransaction(String username, Integer pageSize,
+                                                     Integer pageNo) {
+        User user = this.userRepo.findUserByUsername(username);
+        if(user==null){
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "Invalid User"), HttpStatus.UNAUTHORIZED);
+        }
+        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        Page<UserBookTransaction> page =
+                reserveAndBurrowRepo.getAllUserTransaction(pageable);
+        List<UserBookTransaction> userBookTransactions = page.getContent();
+        if(userBookTransactions.isEmpty()){
+            return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.NOT_FOUND, "No " +
+                                                                                       "transaction done yet"), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.NOT_FOUND, "User transactions fetched", userBookTransactions), HttpStatus.OK);
+
     }
 }

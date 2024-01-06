@@ -21,6 +21,7 @@ public class Constants {
             "/api/v1/return",
             "/api/v1/user/borrowed-books",
             "/api/v1/user/cancel-reserve",
+            "/api/v1/user/transactions",
     "/api/v1/user/change-password"};
     
 }

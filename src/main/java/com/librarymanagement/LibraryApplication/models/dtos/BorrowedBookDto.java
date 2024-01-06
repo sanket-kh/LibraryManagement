@@ -16,5 +16,13 @@ public class BorrowedBookDto {
     private String author;
     private String title;
     private LocalDate issuedDate;
+    private Integer overdue;
 
+    public BorrowedBookDto(Long isbn, String author, String title, LocalDate issuedDate) {
+        this.isbn = isbn;
+        this.author = author;
+        this.title = title;
+        this.issuedDate = issuedDate;
+    }
 }
+

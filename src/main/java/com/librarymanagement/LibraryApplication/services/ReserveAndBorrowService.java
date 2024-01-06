@@ -17,4 +17,5 @@ public interface ReserveAndBorrowService {
 
     ResponseEntity<Object> viewReservedBooksByUser(String username);
 
+    ResponseEntity<Object> getUserTransaction(String username, Integer pageSize, Integer pageNo);
 }

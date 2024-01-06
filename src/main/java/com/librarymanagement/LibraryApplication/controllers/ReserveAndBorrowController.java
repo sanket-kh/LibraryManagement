@@ -84,4 +84,16 @@ public class ReserveAndBorrowController {
                     "Server Error"), HttpStatus.OK);
         }
     }
+    @GetMapping("/user/transactions")
+    public ResponseEntity<Object> getTransactionByUsername(@RequestParam String username ,
+                                                           @RequestParam(defaultValue = "5") Integer pageSize,
+                                                           @RequestParam(defaultValue = "0") Integer pageNo){
+        try {
+            return reserveAndBorrowService.getUserTransaction(username, pageSize, pageNo);
+        }catch (Exception e){
+            log.error("ReserveAndBorrowController :: getTransactionByUsername");
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error"), HttpStatus.OK);
+        }
+    }
 }

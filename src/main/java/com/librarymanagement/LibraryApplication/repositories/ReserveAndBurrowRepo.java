@@ -5,15 +5,20 @@ import com.librarymanagement.LibraryApplication.entities.ReserveAndBorrow;
 import com.librarymanagement.LibraryApplication.entities.User;
 import com.librarymanagement.LibraryApplication.models.dtos.BorrowedBookDto;
 import com.librarymanagement.LibraryApplication.models.dtos.ReservedBookDto;
+import com.librarymanagement.LibraryApplication.models.dtos.UserBookTransaction;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface ReserveAndBurrowRepo extends JpaRepository<ReserveAndBorrow, Long> {
+public interface ReserveAndBurrowRepo extends JpaRepository<ReserveAndBorrow, Long> ,
+        PagingAndSortingRepository<ReserveAndBorrow, Long> {
 
     List<ReserveAndBorrow> findReserveAndBurrowByBookAndUser(Book book, User user);
 
@@ -35,7 +40,8 @@ public interface ReserveAndBurrowRepo extends JpaRepository<ReserveAndBorrow, Lo
     ReserveAndBorrow findReservedTransactionByUserAndBook(User user, Book book);
 
     @Query(value = "SELECT new com.librarymanagement.LibraryApplication.models.dtos" +
-            ".BorrowedBookDto(B.isbn, B.title, B.author, R.issueDate) " +
+            ".BorrowedBookDto(B.isbn,B.author,B.title, R.issueDate" +
+                   ") " +
             "FROM ReserveAndBorrow R " +
             "INNER JOIN Book B ON R.book = B " +
             "INNER  JOIN User U ON R.user = U " +
@@ -58,4 +64,12 @@ public interface ReserveAndBurrowRepo extends JpaRepository<ReserveAndBorrow, Lo
     AND DATEDIFF(:currentDate, R.ISSUED_DATE)>5
 """ , nativeQuery = true)
     List<ReserveAndBorrow> reserveAndBorrowListOfDelayedReturn(LocalDate currentDate);
+
+    @Query(value = """
+            SELECT new com.librarymanagement.LibraryApplication.models.dtos.UserBookTransaction(B.isbn,B.title,B.author,R.issueDate,R.returnDate)
+            FROM ReserveAndBorrow R
+            INNER JOIN Book B ON R.book = B
+            WHERE R.isIssued= FALSE
+            """)
+    Page<UserBookTransaction> getAllUserTransaction(Pageable pageable);
 }
