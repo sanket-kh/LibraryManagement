@@ -47,6 +47,7 @@ public class ExceptionHandlingFilter extends OncePerRequestFilter {
         }
         catch (Exception ex){
             log.error(ex);
+            ex.printStackTrace();
             ErrorResponseUtil.setFatalErrorResponse(responseWrapper,"Exception in the filter chain has " +
                     "occurred");
         }

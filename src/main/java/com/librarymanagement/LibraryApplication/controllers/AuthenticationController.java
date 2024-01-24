@@ -25,7 +25,7 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<Object> register(@Valid @RequestBody UserRegisterRequest userRegisterRequest) {
         try {
-            return authenticationService.register(userRegisterRequest);
+            return authenticationService.registerUser(userRegisterRequest);
         } catch (Exception e) {
             log.error("AuthenticationController :: register");
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Registration failed"), HttpStatus.OK);

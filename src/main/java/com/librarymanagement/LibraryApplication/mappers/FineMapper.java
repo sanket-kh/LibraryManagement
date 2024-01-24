@@ -4,8 +4,11 @@ package com.librarymanagement.LibraryApplication.mappers;
 import com.library.fine.Dtos.FineCalculationRequest;
 import com.library.fine.Dtos.FineDto;
 import com.librarymanagement.LibraryApplication.entities.Fine;
+import com.librarymanagement.LibraryApplication.models.dtos.FinesDto;
 import com.librarymanagement.LibraryApplication.models.dtos.ReserveAndBorrowDto;
 import com.librarymanagement.LibraryApplication.utils.Constants;
+
+import java.util.List;
 
 public class FineMapper {
 
@@ -35,5 +38,20 @@ public class FineMapper {
         fineCalculationRequest.setIssueDate(reserveAndBorrow.getIssueDate());
         fineCalculationRequest.setFine(null);
         return fineCalculationRequest;
+    }
+    public static FinesDto mapToFinesDto(Fine fine){
+      FinesDto finesDto = new FinesDto();
+      finesDto.setIsbn(fine.getReserveAndBorrow().getBook().getIsbn());
+      finesDto.setTitle(fine.getReserveAndBorrow().getBook().getTitle());
+      finesDto.setUsername(fine.getReserveAndBorrow().getUser().getUsername());
+      finesDto.setFirstName(fine.getReserveAndBorrow().getUser().getFirstName());
+      finesDto.setLastName(fine.getReserveAndBorrow().getUser().getLastName());
+      finesDto.setAmount(fine.getAmount());
+      finesDto.setIsPaid(fine.getIsPaid());
+      finesDto.setOverDue(fine.getOverDue());
+        return finesDto;
+    }
+    public static List<FinesDto> mapToFinesDto(List<Fine> fines){
+        return fines.stream().map(FineMapper::mapToFinesDto).toList();
     }
 }

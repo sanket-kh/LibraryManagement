@@ -1,6 +1,8 @@
 package com.librarymanagement.LibraryApplication.configs;
 
 import com.librarymanagement.LibraryApplication.repositories.UserRepo;
+import com.librarymanagement.LibraryApplication.services.UserService;
+import com.librarymanagement.LibraryApplication.services.serviceImpls.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,14 +22,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class Config {
     private final UserRepo userRepo;
     @Bean
-    public UserDetailsService userDetailsService(){
-        return userRepo::findUserByUsername;
+    public UserDetailsService setUserDetailService(){
+        return new UserServiceImpl(new BCryptPasswordEncoder(),userRepo);
     }
+
 
     @Bean
     public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(userDetailsService());
+        authenticationProvider.setUserDetailsService(setUserDetailService());
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
     }

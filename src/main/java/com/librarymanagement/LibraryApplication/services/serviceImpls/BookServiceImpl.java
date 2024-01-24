@@ -77,7 +77,27 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public ResponseEntity<Object> getAllBooks(Integer pageNumber) {
+    public ResponseEntity<Object> getAllBooksUser(Integer pageNumber) {
+        try {
+            Pageable pageable = PageRequest.of(pageNumber, Constants.PAGE_SIZE, Sort.by("title"));
+            Page<Book> bookPage = bookRepo.getAvailableBooks(pageable);
+            List<Book> bookList = bookPage.getContent();
+            if (bookList.isEmpty()) {
+                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
+                        "No books in the library"), HttpStatus.NO_CONTENT);
+            }
+
+            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
+                    "Books found", BookMapper.mapBookListToUserBookDtoList(bookList)), HttpStatus.OK);
+
+        } catch (Exception e) {
+            log.error("BookService :: getAllBooks", e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+                    "Unable to fetch books"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @Override
+    public ResponseEntity<Object> getAllBooksLibrarian(Integer pageNumber) {
         try {
             Pageable pageable = PageRequest.of(pageNumber, Constants.PAGE_SIZE, Sort.by("title"));
             Page<Book> bookPage = bookRepo.findAll(pageable);
@@ -103,7 +123,7 @@ public class BookServiceImpl implements BookService {
             Book book = bookRepo.getBookByIsbn(saveBookRequest.getIsbn());
             if (book == null) {
                 return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
-                        "Book doesnt exist with isbn:" +saveBookRequest.getIsbn() ), HttpStatus.NO_CONTENT);
+                        "Book doesnt exist with isbn:" +saveBookRequest.getIsbn() ), HttpStatus.NOT_FOUND);
             }
             book.setTitle(saveBookRequest.getTitle());
             book.setCopies(saveBookRequest.getCopies());
@@ -127,7 +147,7 @@ public class BookServiceImpl implements BookService {
             if (book == null) {
                 return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
                         "Book with isbn:" + existingBookRequest.getIsbn() + " doesnt exist"),
-                        HttpStatus.NO_CONTENT);
+                        HttpStatus.NOT_FOUND);
             }
             book.setCopies(book.getCopies() + existingBookRequest.getCopies());
             bookRepo.save(book);
@@ -140,8 +160,30 @@ public class BookServiceImpl implements BookService {
         }
     }
 
+
+
     @Override
-    public ResponseEntity<Object> searchBook(BookSearchFilterRequest bookSearchFilterRequest) {
+    public ResponseEntity<Object> searchBookUser(BookSearchFilterRequest bookSearchFilterRequest) {
+        try {
+            List<Book> bookList = bookRepo.bookSearchFilter(bookSearchFilterRequest);
+            System.out.println(bookList.size());
+            if (bookList.isEmpty()) {
+                return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
+                        "Book(s) not found, try again"), HttpStatus.NO_CONTENT);
+
+            }
+            List<UserBookDto> bookDtoList = BookMapper.mapBookListToUserBookDtoList(bookList);
+            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
+                    "Book(s) found", bookDtoList), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("BookService :: searchBook", e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+                    "Unable to search book"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+    @Override
+    public ResponseEntity<Object> searchBookLibrarian(BookSearchFilterRequest bookSearchFilterRequest) {
         try {
             List<Book> bookList = bookRepo.bookSearchFilter(bookSearchFilterRequest);
             System.out.println(bookList.size());

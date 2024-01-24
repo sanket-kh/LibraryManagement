@@ -2,7 +2,8 @@ package com.librarymanagement.LibraryApplication.utils;
 
 public class Constants {
     public static final Integer FINE_PER_DAY = 1;
-    public static final Integer PAGE_SIZE=5;
+    public static final Integer PAGE_SIZE=10;
+    public static final String DEFAULT_PAGE_SIZE="10";
     public static final Integer MAX_BORROW_DURATION_PER_BOOK = 90;
     public static final Integer BORROW_LIMIT_PER_USER = 2;
     public static final Integer MAX_RESERVE_LIMIT_PER_USER = 2;
@@ -22,6 +23,7 @@ public class Constants {
             "/api/v1/user/borrowed-books",
             "/api/v1/user/cancel-reserve",
             "/api/v1/user/transactions",
+            "/api/v1/fine/user/**",
     "/api/v1/user/change-password"};
     
 }

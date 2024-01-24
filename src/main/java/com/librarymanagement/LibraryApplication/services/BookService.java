@@ -10,13 +10,15 @@ public interface BookService {
 
     ResponseEntity<Object> getBookByIsbn(Long isbn);
 
-    ResponseEntity<Object> getAllBooks(Integer pageNumber);
+    ResponseEntity<Object> getAllBooksUser(Integer pageNumber);
+    ResponseEntity<Object> getAllBooksLibrarian(Integer pageNumber);
 
     ResponseEntity<Object> updateBookByIsbn(SaveBookRequest saveBookRequest);
 
     ResponseEntity<Object> addExistingBookByIsbn(ExistingBookRequest existingBookRequest);
 
-    ResponseEntity<Object> searchBook(BookSearchFilterRequest bookSearchFilterRequest);
+    ResponseEntity<Object> searchBookUser(BookSearchFilterRequest bookSearchFilterRequest);
+    ResponseEntity<Object> searchBookLibrarian(BookSearchFilterRequest bookSearchFilterRequest);
 
     ResponseEntity<Object> setBookStatusUnavailable(Long isbn);
 

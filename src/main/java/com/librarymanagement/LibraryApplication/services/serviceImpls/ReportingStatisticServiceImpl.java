@@ -104,7 +104,7 @@ public class ReportingStatisticServiceImpl implements ReportingStatisticService 
 
 
         Mono<DefaultResponse> response = webClient.get()
-                .uri(UriConstants.GET_TOTAL_BOOKS_COUNT)
+                .uri(UriConstants.GET_COUNT_OF_TOTAL_BOOKS)
                 .exchangeToMono(clientResponse -> {
                             if (clientResponse.statusCode().equals(HttpStatus.OK)) {
                                 return clientResponse.bodyToMono(DefaultResponse.class);
@@ -130,12 +130,194 @@ public class ReportingStatisticServiceImpl implements ReportingStatisticService 
 
 
         Mono<DefaultResponse> response = webClient.get()
-                .uri(UriConstants.GET_AVAILABLE_BOOK_COUNT)
+                .uri(UriConstants.GET_COUNT_OF_AVAILABLE_BOOKS)
                 .exchangeToMono(clientResponse -> {
                             if (clientResponse.statusCode().equals(HttpStatus.OK)) {
                                 return clientResponse.bodyToMono(DefaultResponse.class);
                             } else if (clientResponse.statusCode().is4xxClientError() ||
                                     clientResponse.statusCode().is5xxServerError()) {
+                                return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                                        "Reporting module error: 4xx or 5xx"));
+                            } else {
+                                return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                                        "Reporting module error"));
+                            }
+                        }
+                );
+
+        DefaultResponse defaultResponse = response.block();
+        return new ResponseEntity<>(defaultResponse, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> getBookCount() {
+        WebClient webClient =
+                webClientRequestBuilder.buildGetWebClientRequest(null);
+
+
+        Mono<DefaultResponse> response = webClient.get()
+                .uri(UriConstants.GET_UNIQUE_BOOK_COUNT)
+                .exchangeToMono(clientResponse -> {
+                            if (clientResponse.statusCode().equals(HttpStatus.OK)) {
+                                return clientResponse.bodyToMono(DefaultResponse.class);
+                            } else if (clientResponse.statusCode().is4xxClientError() ||
+                                       clientResponse.statusCode().is5xxServerError()) {
+                                return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                                        "Reporting module error: 4xx or 5xx"));
+                            } else {
+                                return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                                        "Reporting module error"));
+                            }
+                        }
+                );
+
+        DefaultResponse defaultResponse = response.block();
+        return new ResponseEntity<>(defaultResponse, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> getCountOfTotalBorrowedBooks() {
+        WebClient webClient =
+                webClientRequestBuilder.buildGetWebClientRequest(null);
+
+
+        Mono<DefaultResponse> response = webClient.get()
+                .uri(UriConstants.GET_COUNT_BORROWED_BOOKS)
+                .exchangeToMono(clientResponse -> {
+                            if (clientResponse.statusCode().equals(HttpStatus.OK)) {
+                                return clientResponse.bodyToMono(DefaultResponse.class);
+                            } else if (clientResponse.statusCode().is4xxClientError() ||
+                                       clientResponse.statusCode().is5xxServerError()) {
+                                return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                                        "Reporting module error: 4xx or 5xx"));
+                            } else {
+                                return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                                        "Reporting module error"));
+                            }
+                        }
+                );
+
+        DefaultResponse defaultResponse = response.block();
+        return new ResponseEntity<>(defaultResponse, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> getCountOfUniqueBorrowedBooks() {
+        WebClient webClient =
+                webClientRequestBuilder.buildGetWebClientRequest(null);
+
+
+        Mono<DefaultResponse> response = webClient.get()
+                .uri(UriConstants.GET_COUNT_BORROWED_BOOKS_UNIQUE)
+                .exchangeToMono(clientResponse -> {
+                            if (clientResponse.statusCode().equals(HttpStatus.OK)) {
+                                return clientResponse.bodyToMono(DefaultResponse.class);
+                            } else if (clientResponse.statusCode().is4xxClientError() ||
+                                       clientResponse.statusCode().is5xxServerError()) {
+                                return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                                        "Reporting module error: 4xx or 5xx"));
+                            } else {
+                                return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                                        "Reporting module error"));
+                            }
+                        }
+                );
+
+        DefaultResponse defaultResponse = response.block();
+        return new ResponseEntity<>(defaultResponse, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> getCountOfUser() {
+        WebClient webClient =
+                webClientRequestBuilder.buildGetWebClientRequest(null);
+
+
+        Mono<DefaultResponse> response = webClient.get()
+                .uri(UriConstants.GET_COUNT_USERS)
+                .exchangeToMono(clientResponse -> {
+                            if (clientResponse.statusCode().equals(HttpStatus.OK)) {
+                                return clientResponse.bodyToMono(DefaultResponse.class);
+                            } else if (clientResponse.statusCode().is4xxClientError() ||
+                                       clientResponse.statusCode().is5xxServerError()) {
+                                return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                                        "Reporting module error: 4xx or 5xx"));
+                            } else {
+                                return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                                        "Reporting module error"));
+                            }
+                        }
+                );
+
+        DefaultResponse defaultResponse = response.block();
+        return new ResponseEntity<>(defaultResponse, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> getCountOfActiveUser() {
+        WebClient webClient =
+                webClientRequestBuilder.buildGetWebClientRequest(null);
+
+
+        Mono<DefaultResponse> response = webClient.get()
+                .uri(UriConstants.GET_COUNT_ACTIVE_USERS)
+                .exchangeToMono(clientResponse -> {
+                            if (clientResponse.statusCode().equals(HttpStatus.OK)) {
+                                return clientResponse.bodyToMono(DefaultResponse.class);
+                            } else if (clientResponse.statusCode().is4xxClientError() ||
+                                       clientResponse.statusCode().is5xxServerError()) {
+                                return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                                        "Reporting module error: 4xx or 5xx"));
+                            } else {
+                                return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                                        "Reporting module error"));
+                            }
+                        }
+                );
+
+        DefaultResponse defaultResponse = response.block();
+        return new ResponseEntity<>(defaultResponse, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> getCountOfLockedUser() {
+        WebClient webClient =
+                webClientRequestBuilder.buildGetWebClientRequest(null);
+
+
+        Mono<DefaultResponse> response = webClient.get()
+                .uri(UriConstants.GET_COUNT_LOCKED_USERS)
+                .exchangeToMono(clientResponse -> {
+                            if (clientResponse.statusCode().equals(HttpStatus.OK)) {
+                                return clientResponse.bodyToMono(DefaultResponse.class);
+                            } else if (clientResponse.statusCode().is4xxClientError() ||
+                                       clientResponse.statusCode().is5xxServerError()) {
+                                return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                                        "Reporting module error: 4xx or 5xx"));
+                            } else {
+                                return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                                        "Reporting module error"));
+                            }
+                        }
+                );
+
+        DefaultResponse defaultResponse = response.block();
+        return new ResponseEntity<>(defaultResponse, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> getCountOfDisabledUser() {
+        WebClient webClient =
+                webClientRequestBuilder.buildGetWebClientRequest(null);
+
+
+        Mono<DefaultResponse> response = webClient.get()
+                .uri(UriConstants.GET_COUNT_DISABLED_USERS)
+                .exchangeToMono(clientResponse -> {
+                            if (clientResponse.statusCode().equals(HttpStatus.OK)) {
+                                return clientResponse.bodyToMono(DefaultResponse.class);
+                            } else if (clientResponse.statusCode().is4xxClientError() ||
+                                       clientResponse.statusCode().is5xxServerError()) {
                                 return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
                                         "Reporting module error: 4xx or 5xx"));
                             } else {

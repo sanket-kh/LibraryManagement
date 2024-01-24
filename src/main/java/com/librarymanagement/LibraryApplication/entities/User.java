@@ -26,10 +26,10 @@ public class User implements UserDetails {
     @Column(name = "LAST_NAME")
     private String lastName;
 
-    @Column(name = "USERNAME")
+    @Column(name = "USERNAME", unique = true)
     private String username;
 
-    @Column(name = "EMAIL")
+    @Column(name = "EMAIL", unique = true)
     private String email;
 
     @Column(name = "PASSWORD")

@@ -1,11 +1,10 @@
 package com.librarymanagement.LibraryApplication.repositories;
 
+import com.librarymanagement.LibraryApplication.daos.ReserveAndBorrowDao;
 import com.librarymanagement.LibraryApplication.entities.Book;
 import com.librarymanagement.LibraryApplication.entities.ReserveAndBorrow;
 import com.librarymanagement.LibraryApplication.entities.User;
-import com.librarymanagement.LibraryApplication.models.dtos.BorrowedBookDto;
-import com.librarymanagement.LibraryApplication.models.dtos.ReservedBookDto;
-import com.librarymanagement.LibraryApplication.models.dtos.UserBookTransaction;
+import com.librarymanagement.LibraryApplication.models.dtos.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,7 +17,7 @@ import java.util.List;
 
 @Repository
 public interface ReserveAndBurrowRepo extends JpaRepository<ReserveAndBorrow, Long> ,
-        PagingAndSortingRepository<ReserveAndBorrow, Long> {
+        PagingAndSortingRepository<ReserveAndBorrow, Long>, ReserveAndBorrowDao {
 
     List<ReserveAndBorrow> findReserveAndBurrowByBookAndUser(Book book, User user);
 
@@ -69,7 +68,27 @@ public interface ReserveAndBurrowRepo extends JpaRepository<ReserveAndBorrow, Lo
             SELECT new com.librarymanagement.LibraryApplication.models.dtos.UserBookTransaction(B.isbn,B.title,B.author,R.issueDate,R.returnDate)
             FROM ReserveAndBorrow R
             INNER JOIN Book B ON R.book = B
+            INNER JOIN User U ON R.user = U
             WHERE R.isIssued= FALSE
+            AND U.username = :username
             """)
-    Page<UserBookTransaction> getAllUserTransaction(Pageable pageable);
+    Page<UserBookTransaction> getAllActiveUserTransaction(Pageable pageable,String username);
+
+    @Query(value = """
+            SELECT new com.librarymanagement.LibraryApplication.models.dtos.BookTransactionsDto(B.isbn,B.title,B.author,U.username,R.issueDate,R.returnDate)
+            FROM ReserveAndBorrow R
+            INNER JOIN Book B ON R.book = B
+            INNER JOIN User U ON R.user= U
+            """)
+    Page<BookTransactionsDto> getAllTransaction(Pageable pageable);
+
+    @Query(value = """
+                SELECT new com.librarymanagement.LibraryApplication.models.dtos.FinesDto(U.username, U.firstName, U.lastName, B.isbn , B.title, F.overDue, F.amount,F.isPaid)
+            FROM ReserveAndBorrow R
+            INNER JOIN Book B ON R.book = B
+            INNER JOIN User U ON R.user = U
+            INNER JOIN Fine F ON R.fine= F
+                """)
+    Page<FinesDto> getAllFinesTransaction(Pageable pageable);
+
 }

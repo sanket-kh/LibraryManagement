@@ -5,7 +5,8 @@ import com.librarymanagement.LibraryApplication.models.requests.UserRegisterRequ
 import org.springframework.http.ResponseEntity;
 
 public interface AuthenticationService {
-    ResponseEntity<Object> register(UserRegisterRequest userRegisterRequest);
+    ResponseEntity<Object> registerUser(UserRegisterRequest userRegisterRequest);
+    ResponseEntity<Object> registerLibrarian(UserRegisterRequest userRegisterRequest);
     ResponseEntity<Object> authenticate(AuthenticationRequest authenticationRequest);
 
 }

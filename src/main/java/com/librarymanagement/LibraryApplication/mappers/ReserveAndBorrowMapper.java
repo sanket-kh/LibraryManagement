@@ -2,7 +2,10 @@ package com.librarymanagement.LibraryApplication.mappers;
 
 
 import com.librarymanagement.LibraryApplication.entities.ReserveAndBorrow;
+import com.librarymanagement.LibraryApplication.models.dtos.BookTransactionsDto;
 import com.librarymanagement.LibraryApplication.models.dtos.ReserveAndBorrowDto;
+
+import java.util.List;
 
 public class ReserveAndBorrowMapper {
     public static ReserveAndBorrowDto mapToReserveAndBorrowDto(ReserveAndBorrow reserveAndBorrow) {
@@ -14,5 +17,25 @@ public class ReserveAndBorrowMapper {
         reserveAndBorrowDto.setIssueDate(reserveAndBorrow.getIssueDate());
         reserveAndBorrowDto.setReturnDate(reserveAndBorrow.getReturnDate());
         return reserveAndBorrowDto;
+    }
+
+    public static BookTransactionsDto mapToBookTransactionDto(ReserveAndBorrow reserveAndBorrow) {
+        BookTransactionsDto bookTransactionsDto = new BookTransactionsDto();
+        bookTransactionsDto.setIsbn(reserveAndBorrow.getBook().getIsbn());
+        bookTransactionsDto.setAuthor(reserveAndBorrow.getBook().getAuthor());
+        bookTransactionsDto.setTitle(reserveAndBorrow.getBook().getTitle());
+        bookTransactionsDto.setUsername(reserveAndBorrow.getUser().getUsername());
+        bookTransactionsDto.setIssuedDate(reserveAndBorrow.getIssueDate());
+        if (reserveAndBorrow.getReturnDate() == null) {
+            return bookTransactionsDto;
+        }
+        bookTransactionsDto.setReturnDate(reserveAndBorrow.getReturnDate());
+        return bookTransactionsDto;
+
+    }
+
+    public static List<BookTransactionsDto> mapToBookTransactionDto(List<ReserveAndBorrow> reserveAndBorrows) {
+        return reserveAndBorrows.stream().map(ReserveAndBorrowMapper::mapToBookTransactionDto).toList();
+
     }
 }

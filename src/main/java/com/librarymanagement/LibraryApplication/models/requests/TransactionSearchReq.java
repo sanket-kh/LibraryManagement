@@ -1,14 +1,15 @@
 package com.librarymanagement.LibraryApplication.models.requests;
 
-import jakarta.validation.constraints.NotBlank;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 @Getter
 @Setter
-public class PaymentRequest {
-    @NotBlank(message = "username is empty")
+public class TransactionSearchReq {
     private String username;
     private Long isbn;
-    private Integer amount;
+    @JsonFormat(pattern ="yyyy-M-d")
+    private LocalDate date;
 }

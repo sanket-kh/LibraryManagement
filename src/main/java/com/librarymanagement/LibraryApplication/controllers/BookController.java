@@ -44,9 +44,18 @@ public class BookController {
     }
 
     @GetMapping("/user/get-all")
-    public ResponseEntity<Object> getAllBooks(@RequestParam(defaultValue = "0") Integer page) {
+    public ResponseEntity<Object> getAllBooksUser(@RequestParam(defaultValue = "0") Integer page) {
         try {
-            return bookService.getAllBooks(page);
+            return bookService.getAllBooksUser(page);
+        } catch (Exception e) {
+            log.error("BookController :: getAllBooks", e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.OK);
+        }
+    }
+    @GetMapping("/admin/get-all")
+    public ResponseEntity<Object> getAllBooksLibrarian(@RequestParam(defaultValue = "0") Integer page) {
+        try {
+            return bookService.getAllBooksLibrarian(page);
         } catch (Exception e) {
             log.error("BookController :: getAllBooks", e);
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.OK);
@@ -74,12 +83,24 @@ public class BookController {
     }
 
     @PostMapping("/user/search")
-    public ResponseEntity<Object> searchBook(@Valid @RequestBody BookSearchFilterRequest bookSearchFilterRequest) {
+    public ResponseEntity<Object> searchBookUser(@Valid @RequestBody BookSearchFilterRequest bookSearchFilterRequest) {
         try {
             if ((bookSearchFilterRequest.getTitle() == null || bookSearchFilterRequest.getTitle().isBlank()) && bookSearchFilterRequest.getIsbn() == null && (bookSearchFilterRequest.getAuthor() == null || bookSearchFilterRequest.getAuthor().isBlank())) {
                 return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.BAD_REQUEST, "Invalid search parameters"), HttpStatus.OK);
             }
-            return bookService.searchBook(bookSearchFilterRequest);
+            return bookService.searchBookUser(bookSearchFilterRequest);
+        } catch (Exception e) {
+            log.error("BookController :: searchBook", e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.OK);
+        }
+    }
+    @PostMapping("/admin/search")
+    public ResponseEntity<Object> searchBookLibrarian(@Valid @RequestBody BookSearchFilterRequest bookSearchFilterRequest) {
+        try {
+            if ((bookSearchFilterRequest.getTitle() == null || bookSearchFilterRequest.getTitle().isBlank()) && bookSearchFilterRequest.getIsbn() == null && (bookSearchFilterRequest.getAuthor() == null || bookSearchFilterRequest.getAuthor().isBlank())) {
+                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.BAD_REQUEST, "Invalid search parameters"), HttpStatus.OK);
+            }
+            return bookService.searchBookLibrarian(bookSearchFilterRequest);
         } catch (Exception e) {
             log.error("BookController :: searchBook", e);
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.OK);

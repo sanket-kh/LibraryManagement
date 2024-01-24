@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserFineDto {
+public class UserFineDto{
     private String username;
     private String firstName;
     private String lastName;

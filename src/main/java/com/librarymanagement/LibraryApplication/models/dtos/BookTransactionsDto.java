@@ -10,21 +10,15 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class BorrowedBookDto {
+@NoArgsConstructor
+public class BookTransactionsDto {
     private Long isbn;
-    private String author;
     private String title;
+    private String author;
+    private String username;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate issuedDate;
-    private Integer overdue;
-
-    public BorrowedBookDto(Long isbn, String author, String title, LocalDate issuedDate) {
-        this.isbn = isbn;
-        this.author = author;
-        this.title = title;
-        this.issuedDate = issuedDate;
-    }
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate returnDate;
 }
-

@@ -9,11 +9,13 @@ import com.librarymanagement.LibraryApplication.entities.ReserveAndBorrow;
 import com.librarymanagement.LibraryApplication.entities.User;
 import com.librarymanagement.LibraryApplication.mappers.FineMapper;
 import com.librarymanagement.LibraryApplication.mappers.ReserveAndBorrowMapper;
+import com.librarymanagement.LibraryApplication.models.dtos.BookTransactionsDto;
 import com.librarymanagement.LibraryApplication.models.dtos.BorrowedBookDto;
 import com.librarymanagement.LibraryApplication.models.dtos.ReservedBookDto;
 import com.librarymanagement.LibraryApplication.models.dtos.UserBookTransaction;
 import com.librarymanagement.LibraryApplication.models.requests.BorrowRequest;
 import com.librarymanagement.LibraryApplication.models.requests.ReserveRequest;
+import com.librarymanagement.LibraryApplication.models.requests.TransactionSearchReq;
 import com.librarymanagement.LibraryApplication.repositories.BookRepo;
 import com.librarymanagement.LibraryApplication.repositories.ReserveAndBurrowRepo;
 import com.librarymanagement.LibraryApplication.repositories.UserRepo;
@@ -28,6 +30,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -222,7 +225,7 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
                 return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "User has not reserved any book"), HttpStatus.OK);
             }
             return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "List of books " +
-                    "retrieved", reservedBookDtoList), HttpStatus.OK);
+                                                                                                                "retrieved", reservedBookDtoList), HttpStatus.OK);
         } catch (Exception e) {
             log.error("ReserveAndBorrowServiceImpl :: viewReservedBooksByUser ", e);
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Unable to view books borrowed by user"), HttpStatus.OK);
@@ -233,18 +236,45 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
     public ResponseEntity<Object> getUserTransaction(String username, Integer pageSize,
                                                      Integer pageNo) {
         User user = this.userRepo.findUserByUsername(username);
-        if(user==null){
+        if (user == null) {
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "Invalid User"), HttpStatus.UNAUTHORIZED);
         }
-        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("returnDate").descending());
         Page<UserBookTransaction> page =
-                reserveAndBurrowRepo.getAllUserTransaction(pageable);
+                reserveAndBurrowRepo.getAllActiveUserTransaction(pageable, username);
         List<UserBookTransaction> userBookTransactions = page.getContent();
-        if(userBookTransactions.isEmpty()){
+        if (userBookTransactions.isEmpty()) {
             return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.NOT_FOUND, "No " +
-                                                                                       "transaction done yet"), HttpStatus.OK);
+                                                                                                                "transaction done yet"), HttpStatus.OK);
         }
-        return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.NOT_FOUND, "User transactions fetched", userBookTransactions), HttpStatus.OK);
+        return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "User transactions fetched", userBookTransactions), HttpStatus.OK);
+
+    }
+
+    @Override
+    public ResponseEntity<Object> getAllTransactions(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("returnDate"));
+        Page<BookTransactionsDto> allTransactions = reserveAndBurrowRepo.getAllTransaction(pageable);
+        if (allTransactions.isEmpty()) {
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "No " +
+                                                                                                                "transaction done yet"), HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "Transactions fetched", allTransactions.getContent()), HttpStatus.OK);
+
+    }
+
+    @Override
+    public ResponseEntity<Object> searchTransactions(TransactionSearchReq transactionSearchReq) {
+        List<ReserveAndBorrow> reserveAndBorrowList =
+                reserveAndBurrowRepo.searchFilter(transactionSearchReq);
+        if (reserveAndBorrowList.isEmpty()) {
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "No transactions found"), HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
+                "transactions found",
+                ReserveAndBorrowMapper.mapToBookTransactionDto(reserveAndBorrowList)),
+                HttpStatus.OK);
 
     }
 }

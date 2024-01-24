@@ -5,6 +5,7 @@ import com.librarymanagement.LibraryApplication.entities.Book;
 import com.librarymanagement.LibraryApplication.models.dtos.BookDto;
 import com.librarymanagement.LibraryApplication.models.dtos.UserBookDto;
 import com.librarymanagement.LibraryApplication.models.requests.SaveBookRequest;
+import com.librarymanagement.LibraryApplication.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ public class BookMapper {
         bookDto.setIsbn(book.getIsbn());
         bookDto.setTitle(book.getTitle());
         bookDto.setAuthor(book.getAuthor());
+        bookDto.setIsAvailable(book.getIsAvailable());
         return bookDto;
     }
 
@@ -48,9 +50,9 @@ public class BookMapper {
     public static Book mapSaveBookRequestToBook(SaveBookRequest saveBookRequest) {
         Book book = new Book();
         book.setIsbn(saveBookRequest.getIsbn());
-        book.setTitle(saveBookRequest.getTitle());
+        book.setTitle(Utils.convertToTitleCaseIteratingChars(saveBookRequest.getTitle()));
         book.setCopies(saveBookRequest.getCopies());
-        book.setAuthor(saveBookRequest.getAuthor());
+        book.setAuthor(Utils.convertToTitleCaseIteratingChars(saveBookRequest.getAuthor()));
         book.setIsAvailable(Boolean.TRUE);
         return book;
     }
@@ -72,5 +74,14 @@ public class BookMapper {
         }
         return bookDtoList;
     }
+    public static List<UserBookDto> mapBookListToUserBookDtoList(List<Book> bookList) {
+        List<UserBookDto> bookDtoList = new ArrayList<>();
+        for (Book book : bookList) {
+            UserBookDto userBookDto = BookMapper.mapBookToUserBookDto(book);
+            bookDtoList.add(userBookDto);
+        }
+        return bookDtoList;
+    }
+
 
 }

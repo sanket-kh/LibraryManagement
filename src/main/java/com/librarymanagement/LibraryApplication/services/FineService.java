@@ -11,4 +11,10 @@ public interface FineService {
 
     ResponseEntity<Object> payFine(PaymentRequest paymentRequest);
     ResponseEntity<Object> getUserFinesList();
+
+    ResponseEntity<Object> getAllFinesList(Integer pageSize, Integer pageNo);
+
+    ResponseEntity<Object> getAllUnpaidFines(Integer pageSize, Integer pageNo);
+
+    ResponseEntity<Object> getFinesOwedByUser(String username);
 }
