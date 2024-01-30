@@ -12,13 +12,6 @@ import java.util.List;
 
 public class FineMapper {
 
-    public static FineDto mapToFineDto(Fine fine) {
-        FineDto fineDto = new FineDto();
-        fineDto.setAmount(fine.getAmount());
-        fineDto.setOverDue(fine.getOverDue());
-        fineDto.setIsPaid(fine.getIsPaid());
-        return fineDto;
-    }
 
     public static Fine mapToFine(FineDto fineDto) {
         Fine fine = new Fine();

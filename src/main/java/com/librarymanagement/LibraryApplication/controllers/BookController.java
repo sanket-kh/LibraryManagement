@@ -28,7 +28,7 @@ public class BookController {
             return bookService.saveBook(saveBookRequest);
         } catch (Exception e) {
             log.error("BookController :: saveBook", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.OK);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }
@@ -39,7 +39,7 @@ public class BookController {
             return bookService.getBookByIsbn(isbn);
         } catch (Exception e) {
             log.error("BookController :: getBookByIsbn", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.OK);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -49,7 +49,7 @@ public class BookController {
             return bookService.getAllBooksUser(page);
         } catch (Exception e) {
             log.error("BookController :: getAllBooks", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.OK);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @GetMapping("/admin/get-all")
@@ -58,7 +58,7 @@ public class BookController {
             return bookService.getAllBooksLibrarian(page);
         } catch (Exception e) {
             log.error("BookController :: getAllBooks", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.OK);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -68,7 +68,7 @@ public class BookController {
             return bookService.updateBookByIsbn(saveBookRequest);
         } catch (Exception e) {
             log.error("BookController :: updateBookById", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.OK);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -78,7 +78,7 @@ public class BookController {
             return bookService.addExistingBookByIsbn(existingBookRequest);
         } catch (Exception e) {
             log.error("BookController :: addExistingBookByIsbn", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.OK);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -86,24 +86,24 @@ public class BookController {
     public ResponseEntity<Object> searchBookUser(@Valid @RequestBody BookSearchFilterRequest bookSearchFilterRequest) {
         try {
             if ((bookSearchFilterRequest.getTitle() == null || bookSearchFilterRequest.getTitle().isBlank()) && bookSearchFilterRequest.getIsbn() == null && (bookSearchFilterRequest.getAuthor() == null || bookSearchFilterRequest.getAuthor().isBlank())) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.BAD_REQUEST, "Invalid search parameters"), HttpStatus.OK);
+                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.BAD_REQUEST, "Invalid search parameters"), HttpStatus.INTERNAL_SERVER_ERROR);
             }
             return bookService.searchBookUser(bookSearchFilterRequest);
         } catch (Exception e) {
             log.error("BookController :: searchBook", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.OK);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @PostMapping("/admin/search")
     public ResponseEntity<Object> searchBookLibrarian(@Valid @RequestBody BookSearchFilterRequest bookSearchFilterRequest) {
         try {
             if ((bookSearchFilterRequest.getTitle() == null || bookSearchFilterRequest.getTitle().isBlank()) && bookSearchFilterRequest.getIsbn() == null && (bookSearchFilterRequest.getAuthor() == null || bookSearchFilterRequest.getAuthor().isBlank())) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.BAD_REQUEST, "Invalid search parameters"), HttpStatus.OK);
+                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.BAD_REQUEST, "Invalid search parameters"), HttpStatus.INTERNAL_SERVER_ERROR);
             }
             return bookService.searchBookLibrarian(bookSearchFilterRequest);
         } catch (Exception e) {
             log.error("BookController :: searchBook", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.OK);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -113,7 +113,7 @@ public class BookController {
             return bookService.setBookStatusUnavailable(isbn);
         } catch (Exception e) {
             log.error("BookController :: setBookUnavailable", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.OK);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -123,7 +123,7 @@ public class BookController {
             return bookService.setBookStatusAvailable(isbn);
         } catch (Exception e) {
             log.error("BookController :: setBookAvailable", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.OK);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

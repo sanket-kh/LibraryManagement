@@ -7,7 +7,6 @@ import com.librarymanagement.LibraryApplication.services.ReserveAndBorrowService
 import com.librarymanagement.LibraryApplication.utils.Constants;
 import com.librarymanagement.LibraryApplication.utils.ResponseConstants;
 import com.librarymanagement.LibraryApplication.utils.ResponseUtility;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -29,7 +28,7 @@ public class ReserveAndBorrowController {
         } catch (Exception e) {
             log.error("ReserveAndBorrowController :: burrowBook", e);
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error"), HttpStatus.OK);
+                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -40,7 +39,7 @@ public class ReserveAndBorrowController {
         } catch (Exception e) {
             log.error("ReserveAndBorrowController :: returnBook", e);
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error"), HttpStatus.OK);
+                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -51,7 +50,7 @@ public class ReserveAndBorrowController {
         } catch (Exception e) {
             log.error("ReserveAndBorrowController :: getBorrowedBooksByUser", e);
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error"), HttpStatus.OK);
+                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -62,7 +61,7 @@ public class ReserveAndBorrowController {
         } catch (Exception e) {
             log.error("ReserveAndBorrowController :: reserveBook", e);
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error"), HttpStatus.OK);
+                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -73,7 +72,7 @@ public class ReserveAndBorrowController {
         } catch (Exception e) {
             log.error("ReserveAndBorrowController :: cancelReservationBook", e);
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error"), HttpStatus.OK);
+                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -84,7 +83,7 @@ public class ReserveAndBorrowController {
         } catch (Exception e) {
             log.error("ReserveAndBorrowController :: getReservedBooksByUser", e);
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error"), HttpStatus.OK);
+                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -97,19 +96,33 @@ public class ReserveAndBorrowController {
         } catch (Exception e) {
             log.error("ReserveAndBorrowController :: getTransactionByUsername");
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error"), HttpStatus.OK);
+                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/transactions/get-all")
     public ResponseEntity<Object> getAllTransactions(@RequestParam(defaultValue = Constants.DEFAULT_PAGE_SIZE) Integer pageSize,
                                                      @RequestParam(defaultValue = "0") Integer pageNo) {
-        return reserveAndBorrowService.getAllTransactions(pageNo,pageSize);
+        try {
+            return reserveAndBorrowService.getAllTransactions(pageNo, pageSize);
+        } catch (Exception e) {
+            log.error("ReserveAndBorrowController :: getAllTransactions");
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
 
     }
 
     @PostMapping("/transaction/search")
-    public ResponseEntity<Object> searchTransactions(@RequestBody TransactionSearchReq transactionSearchReq){
-        return reserveAndBorrowService.searchTransactions(transactionSearchReq);
+    public ResponseEntity<Object> searchTransactions(@RequestBody TransactionSearchReq transactionSearchReq) {
+        try {
+            return reserveAndBorrowService.searchTransactions(transactionSearchReq);
+        } catch (Exception e) {
+            log.error("ReserveAndBorrowController :: searchTransactions");
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
     }
 }

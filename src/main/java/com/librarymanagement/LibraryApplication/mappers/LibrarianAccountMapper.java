@@ -17,14 +17,7 @@ public class LibrarianAccountMapper {
         librarianAccount.setRecordedDate(LocalDate.now());
         return librarianAccount;
     }
-    public static LibrarianAccount mapToModifyLibrarianAccount(LibrarianAccountRequest request){
-        LibrarianAccount librarianAccount = new LibrarianAccount();
-        librarianAccount.setActive('A');
-        librarianAccount.setAccountNumber(request.getAccountNumber());
-        librarianAccount.setAccountName(request.getAccountName());
-        librarianAccount.setModifiedDate(LocalDate.now());
-        return librarianAccount;
-    }
+
     public static LibrarianAccountDto mapToLibrarianAccountDto(LibrarianAccount librarianAccount){
         LibrarianAccountDto librarianAccountDto = new LibrarianAccountDto();
         librarianAccountDto.setAccountTypeName(librarianAccount.getAccountType().getAccountTypeName());

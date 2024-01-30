@@ -235,46 +235,64 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
     @Override
     public ResponseEntity<Object> getUserTransaction(String username, Integer pageSize,
                                                      Integer pageNo) {
-        User user = this.userRepo.findUserByUsername(username);
-        if (user == null) {
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "Invalid User"), HttpStatus.UNAUTHORIZED);
+        try {
+            User user = this.userRepo.findUserByUsername(username);
+            if (user == null) {
+                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "Invalid User"), HttpStatus.UNAUTHORIZED);
+            }
+            Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("returnDate").descending());
+            Page<UserBookTransaction> page =
+                    reserveAndBurrowRepo.getAllActiveUserTransaction(pageable, username);
+            List<UserBookTransaction> userBookTransactions = page.getContent();
+            if (userBookTransactions.isEmpty()) {
+                return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.NOT_FOUND, "No " +
+                                                                                                                    "transaction done yet"), HttpStatus.OK);
+            }
+            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "User transactions fetched", userBookTransactions), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("ReserveAndBorrowServiceImpl :: getUserTransaction",e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+
         }
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("returnDate").descending());
-        Page<UserBookTransaction> page =
-                reserveAndBurrowRepo.getAllActiveUserTransaction(pageable, username);
-        List<UserBookTransaction> userBookTransactions = page.getContent();
-        if (userBookTransactions.isEmpty()) {
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.NOT_FOUND, "No " +
-                                                                                                                "transaction done yet"), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "User transactions fetched", userBookTransactions), HttpStatus.OK);
 
     }
 
     @Override
     public ResponseEntity<Object> getAllTransactions(Integer pageNo, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("returnDate"));
-        Page<BookTransactionsDto> allTransactions = reserveAndBurrowRepo.getAllTransaction(pageable);
-        if (allTransactions.isEmpty()) {
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "No " +
-                                                                                                                "transaction done yet"), HttpStatus.NOT_FOUND);
+        try {
+            Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("returnDate"));
+            Page<BookTransactionsDto> allTransactions = reserveAndBurrowRepo.getAllTransaction(pageable);
+            if (allTransactions.isEmpty()) {
+                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "No " +
+                                                                                                                    "transaction done yet"), HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "Transactions fetched", allTransactions.getContent()), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("ReserveAndBorrowServiceImpl :: getAllTransactions",e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+
         }
-        return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "Transactions fetched", allTransactions.getContent()), HttpStatus.OK);
 
     }
 
     @Override
     public ResponseEntity<Object> searchTransactions(TransactionSearchReq transactionSearchReq) {
-        List<ReserveAndBorrow> reserveAndBorrowList =
-                reserveAndBurrowRepo.searchFilter(transactionSearchReq);
-        if (reserveAndBorrowList.isEmpty()) {
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "No transactions found"), HttpStatus.NOT_FOUND);
-        }
+        try {
+            List<ReserveAndBorrow> reserveAndBorrowList =
+                    reserveAndBurrowRepo.searchFilter(transactionSearchReq);
+            if (reserveAndBorrowList.isEmpty()) {
+                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "No transactions found"), HttpStatus.NOT_FOUND);
+            }
 
-        return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
-                "transactions found",
-                ReserveAndBorrowMapper.mapToBookTransactionDto(reserveAndBorrowList)),
-                HttpStatus.OK);
+            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
+                    "transactions found",
+                    ReserveAndBorrowMapper.mapToBookTransactionDto(reserveAndBorrowList)),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("ReserveAndBorrowServiceImpl :: searchTransactions",e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
 
     }
 }

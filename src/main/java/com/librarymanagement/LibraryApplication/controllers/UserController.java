@@ -30,7 +30,7 @@ public class UserController {
         } catch (Exception e) {
             log.error("UserController :: registerUser", e);
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error"), HttpStatus.OK);
+                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -41,14 +41,20 @@ public class UserController {
         } catch (Exception e) {
             log.error("UserController :: updateUserDetails", e);
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error"), HttpStatus.OK);
+                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
 
     @GetMapping("/exists")
     public ResponseEntity<Object> usernameExists(@RequestParam String username) {
-        return userService.userNameExists(username);
+        try {
+            return userService.userNameExists(username);
+        } catch (Exception e) {
+            log.error("UserController :: usernameExists", e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/user/details")
@@ -58,48 +64,96 @@ public class UserController {
         } catch (Exception e) {
             log.error("UserController :: retrieveUser", e);
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error"), HttpStatus.OK);
+                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/search")
     public ResponseEntity<Object> searchUserByUsername(@RequestParam String username) {
-        return userService.searchUserByUsername(username);
+        try {
+            return userService.searchUserByUsername(username);
+        } catch (Exception e) {
+            log.error("UserController :: searchUserByUsername", e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/get-all")
     public ResponseEntity<Object> getAllUsers() {
-        return userService.getAll();
+        try {
+            return userService.getAll();
+        } catch (Exception e) {
+            log.error("UserController :: getAllUsers", e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/unlock")
     public ResponseEntity<Object> unlockUser(@RequestParam String username) {
-        return userService.unlockUserAccount(username);
+        try {
+            return userService.unlockUserAccount(username);
+        } catch (Exception e) {
+            log.error("UserController :: getAllUsers", e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/lock")
     public ResponseEntity<Object> lockUser(@RequestBody LockUserRequest lockUserRequest) {
-        return userService.lockUserAccount(lockUserRequest);
+        try {
+            return userService.lockUserAccount(lockUserRequest);
+        } catch (Exception e) {
+            log.error("UserController :: getAllUsers", e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/user/change-password")
     public ResponseEntity<Object> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
-        return userService.changePassword(changePasswordRequest);
+        try {
+            return userService.changePassword(changePasswordRequest);
+        } catch (Exception e) {
+            log.error("UserController :: changePassword", e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/locked")
     public ResponseEntity<Object> getAllLockedUsers() {
-        return userService.getLockedUsers();
+        try {
+            return userService.getLockedUsers();
+        } catch (Exception e) {
+            log.error("UserController :: getAllLockedUsers", e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/details")
     public ResponseEntity<Object> getUserDetailsByUsername(@RequestParam String username) {
-        return userService.getUserDetailByUsername(username);
+        try {
+            return userService.getUserDetailByUsername(username);
+        } catch (Exception e) {
+            log.error("UserController :: getUserDetailsByUsername", e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/setup-admin")
     public ResponseEntity<Object> setUpAdmin(@RequestBody UserRegisterRequest userRegisterRequest){
-        return authenticationService.registerLibrarian(userRegisterRequest);
+        try {
+            return authenticationService.registerLibrarian(userRegisterRequest);
+        } catch (Exception e) {
+            log.error("UserController :: setUpAdmin", e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

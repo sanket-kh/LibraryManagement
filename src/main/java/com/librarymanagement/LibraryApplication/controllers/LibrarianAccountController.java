@@ -35,7 +35,7 @@ public class LibrarianAccountController {
         try {
             return librarianAccountService.getDetails();
         } catch (Exception e) {
-            log.error("LibrarianAccountController::getAccountDetails", e);
+            log.error("LibrarianAccountController :: getAccountDetails", e);
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -45,7 +45,7 @@ public class LibrarianAccountController {
         try {
             return librarianAccountService.modifyDetails(librarianAccountRequest);
         } catch (Exception e) {
-            log.error("LibrarianAccountController::modifyAccountDetails", e);
+            log.error("LibrarianAccountController :: modifyAccountDetails", e);
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -54,14 +54,20 @@ public class LibrarianAccountController {
         try {
             return librarianAccountService.makeAccDetailsInactive();
         } catch (Exception e) {
-            log.error("LibrarianAccountController::clearAccountDetails", e);
+            log.error("LibrarianAccountController :: clearAccountDetails", e);
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/fine-account/get")
     public ResponseEntity<Object> getFineClearAccountByAccountType(@RequestParam String accountType){
+        try {
             return librarianAccountService.getClearFineAccountByAccountType(accountType);
+        } catch (Exception e) {
+            log.error("LibrarianAccountController :: getFineClearAccountByAccountType", e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
     }
 
 }

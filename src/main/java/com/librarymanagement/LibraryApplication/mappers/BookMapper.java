@@ -22,14 +22,6 @@ public class BookMapper {
         return bookDto;
     }
 
-    public static Book mapBaseBookDtoToBook(BookDto bookDto) {
-        Book book = new Book();
-        book.setCopies(bookDto.getCopies());
-        book.setIsbn(bookDto.getIsbn());
-        book.setTitle(bookDto.getTitle());
-        book.setAuthor(bookDto.getAuthor());
-        return book;
-    }
 
     public static UserBookDto mapBookToUserBookDto(Book book) {
         UserBookDto userBookDto = new UserBookDto();
@@ -37,14 +29,6 @@ public class BookMapper {
         userBookDto.setTitle(book.getTitle());
         userBookDto.setAuthor(book.getAuthor());
         return userBookDto;
-    }
-
-    public static Book mapUserBookDtoToBook(UserBookDto userBookDto) {
-        Book book = new Book();
-        book.setIsbn(userBookDto.getIsbn());
-        book.setTitle(userBookDto.getTitle());
-        book.setAuthor(userBookDto.getAuthor());
-        return book;
     }
 
     public static Book mapSaveBookRequestToBook(SaveBookRequest saveBookRequest) {

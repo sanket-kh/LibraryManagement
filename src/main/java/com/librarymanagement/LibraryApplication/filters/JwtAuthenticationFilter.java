@@ -36,7 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             ServletException,NoAuthenticationHeaderException {
 
            if(request.getHeader("Authorization")==null){
-               throw new NoAuthenticationHeaderException("No auth header");
+               throw new NoAuthenticationHeaderException("No authentication header");
             }
             final String authHeader = request.getHeader("Authorization");
             final String jwtToken;

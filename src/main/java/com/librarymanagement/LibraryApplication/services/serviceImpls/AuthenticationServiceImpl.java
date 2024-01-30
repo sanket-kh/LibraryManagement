@@ -43,18 +43,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public ResponseEntity<Object> registerUser(UserRegisterRequest userRegisterRequest) {
-        User user = userRepo.findUserByUsername(userRegisterRequest.getUsername());
-        if (user != null) {
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.ALREADY_EXISTS,
-                    "Username already taken"), HttpStatus.CONFLICT);
+        try {
+            User user = userRepo.findUserByUsername(userRegisterRequest.getUsername());
+            if (user != null) {
+                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.ALREADY_EXISTS,
+                        "Username already taken"), HttpStatus.CONFLICT);
+            }
+            String encodedPassword = passwordEncoder.encode(userRegisterRequest.getPassword());
+            user = UserMapper.mapToUser(userRegisterRequest, encodedPassword);
+            user.setRole(Role.USER);
+            userRepo.save(user);
+            return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
+                    "User registered successfully"), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("AuthenticationService :: registerUser",e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some exception occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+
         }
-        String encodedPassword = passwordEncoder.encode(userRegisterRequest.getPassword());
-        user = UserMapper.mapToUser(userRegisterRequest, encodedPassword);
-        user.setRole(Role.USER);
-        userRepo.save(user);
-//        var jwtToken = jwtService.generateToken(user);
-        return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
-                "User registered successfully"), HttpStatus.OK);
     }
     @Override
     public ResponseEntity<Object> registerLibrarian(UserRegisterRequest userRegisterRequest) {
@@ -67,7 +72,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user = UserMapper.mapToUser(userRegisterRequest, encodedPassword);
         user.setRole(Role.LIBRARIAN);
         userRepo.save(user);
-//        var jwtToken = jwtService.generateToken(user);
         return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
                 "Admin registered successfully"), HttpStatus.OK);
     }
@@ -98,14 +102,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             log.error(" AuthenticationService :: authenticate", e);
             return new ResponseEntity<>(ResponseUtility.authenticationFailureWithMessage(ResponseConstants.LOCKED_USER, "User account is locked"), HttpStatus.UNAUTHORIZED);
         }
-        var user = userRepo.findUserByUsername(authenticationRequest.getUsername());
-        AuthResponse authResponse = new AuthResponse();
+        try {
+            var user = userRepo.findUserByUsername(authenticationRequest.getUsername());
+            AuthResponse authResponse = new AuthResponse();
 
-        Integer updateCount = userRepo.refreshLoginAttempts(user.getUsername());
-        var jwtToken = jwtService.generateToken(user);
-        authResponse.setRole(user.getRole().name());
-        authResponse.setAccessToken(jwtToken);
-        return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
-                "User authenticated successfully", authResponse), HttpStatus.OK);
+            Integer updateCount = userRepo.refreshLoginAttempts(user.getUsername());
+            var jwtToken = jwtService.generateToken(user);
+            authResponse.setRole(user.getRole().name());
+            authResponse.setAccessToken(jwtToken);
+            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
+                    "User authenticated successfully", authResponse), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("AuthenticationService :: authenticate",e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some exception occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
     }
 }

@@ -37,7 +37,6 @@ public class BookServiceImpl implements BookService {
     public ResponseEntity<Object> saveBook(SaveBookRequest saveBookRequest) {
 
         try {
-
             Book existingBook = bookRepo.getBookByIsbn(saveBookRequest.getIsbn());
             if (existingBook != null) {
                 return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.ALREADY_EXISTS,
@@ -84,7 +83,7 @@ public class BookServiceImpl implements BookService {
             List<Book> bookList = bookPage.getContent();
             if (bookList.isEmpty()) {
                 return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
-                        "No books in the library"), HttpStatus.NO_CONTENT);
+                        "No books in the library"), HttpStatus.NOT_FOUND);
             }
 
             return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
@@ -104,7 +103,7 @@ public class BookServiceImpl implements BookService {
             List<Book> bookList = bookPage.getContent();
             if (bookList.isEmpty()) {
                 return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
-                        "No books in the library"), HttpStatus.NO_CONTENT);
+                        "No books in the library"), HttpStatus.NOT_FOUND);
             }
 
             return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
@@ -169,7 +168,7 @@ public class BookServiceImpl implements BookService {
             System.out.println(bookList.size());
             if (bookList.isEmpty()) {
                 return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
-                        "Book(s) not found, try again"), HttpStatus.NO_CONTENT);
+                        "Book(s) not found, try again"), HttpStatus.NOT_FOUND);
 
             }
             List<UserBookDto> bookDtoList = BookMapper.mapBookListToUserBookDtoList(bookList);
@@ -189,7 +188,7 @@ public class BookServiceImpl implements BookService {
             System.out.println(bookList.size());
             if (bookList.isEmpty()) {
                 return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
-                        "Book(s) not found, try again"), HttpStatus.NO_CONTENT);
+                        "Book(s) not found, try again"), HttpStatus.NOT_FOUND);
 
             }
             List<BookDto> bookDtoList = BookMapper.mapBookListToBaseBookDtoList(bookList);
@@ -210,7 +209,7 @@ public class BookServiceImpl implements BookService {
             Book book = bookRepo.getBookByIsbn(isbn);
             if (book == null) {
                 return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
-                        "Book with isbn: " + isbn + " doesn't exist"), HttpStatus.NO_CONTENT);
+                        "Book with isbn: " + isbn + " doesn't exist"), HttpStatus.NOT_FOUND);
             }
             book.setIsAvailable(Boolean.FALSE);
             bookRepo.save(book);
@@ -230,7 +229,7 @@ public class BookServiceImpl implements BookService {
             Book book = bookRepo.getBookByIsbn(isbn);
             if (book == null) {
                 return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
-                        "Book with isbn: " + isbn + " doesn't exist"), HttpStatus.NO_CONTENT);
+                        "Book with isbn: " + isbn + " doesn't exist"), HttpStatus.NOT_FOUND);
             }
             book.setIsAvailable(Boolean.TRUE);
             bookRepo.save(book);

@@ -45,67 +45,104 @@ public class FineServiceImpl implements FineService {
 
     @Override
     public LibraryResponse calculateFine(FineCalculationRequest fineCalculationRequest) {
-        return fineService.setFine(fineCalculationRequest);
+        try {
+            return fineService.setFine(fineCalculationRequest);
+        } catch (Exception e) {
+            log.error("FineService :: FineServiceImpl",e);
+            LibraryResponse libraryResponse = new LibraryResponse();
+            libraryResponse.setMessage("Some error occurred");
+            libraryResponse.setSuccess(false);
+            libraryResponse.setResponseCode("LM-500");
+            return libraryResponse;
+        }
     }
 
     @Override
     public ResponseEntity<Object> payFine(PaymentRequest paymentRequest) {
-        Integer owedAmount = fineRepo.getFineOwedByUserOnBook(paymentRequest.getUsername(),
-                paymentRequest.getIsbn());
-        FinePaymentRequest finePaymentRequest = new FinePaymentRequest();
-        finePaymentRequest.setAmount(owedAmount);
-        finePaymentRequest.setIsPaid(Boolean.FALSE);
-        finePaymentRequest.setPaidAmount(paymentRequest.getAmount());
-        finePaymentRequest.setOverDue(owedAmount / Constants.FINE_PER_DAY);
-        LibraryResponse libraryResponse = fineService.payFine(finePaymentRequest);
-        if (libraryResponse.getResponseBody() == null) {
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INSUFFICIENT_FUND, libraryResponse.getMessage()), HttpStatus.CONFLICT);
+        try {
+            Integer owedAmount = fineRepo.getFineOwedByUserOnBook(paymentRequest.getUsername(),
+                    paymentRequest.getIsbn());
+            FinePaymentRequest finePaymentRequest = new FinePaymentRequest();
+            finePaymentRequest.setAmount(owedAmount);
+            finePaymentRequest.setIsPaid(Boolean.FALSE);
+            finePaymentRequest.setPaidAmount(paymentRequest.getAmount());
+            finePaymentRequest.setOverDue(owedAmount / Constants.FINE_PER_DAY);
+            LibraryResponse libraryResponse = fineService.payFine(finePaymentRequest);
+            if (libraryResponse.getResponseBody() == null) {
+                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INSUFFICIENT_FUND, libraryResponse.getMessage()), HttpStatus.CONFLICT);
+            }
+            fineRepo.clearFinesForUsernameOnBook(paymentRequest.getUsername(), paymentRequest.getIsbn());
+            return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK, libraryResponse.getMessage()), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("FineServiceImpl :: payFine",e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        fineRepo.clearFinesForUsernameOnBook(paymentRequest.getUsername(), paymentRequest.getIsbn());
-        return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK, libraryResponse.getMessage()), HttpStatus.OK);
 
     }
 
     @Override
     public ResponseEntity<Object> getUserFinesList() {
-        SecurityContext context = SecurityContextHolder.getContext();
-        Authentication authentication = context.getAuthentication();
-        String username = authentication.getName();
-        User user = userRepo.findUserByUsername(username);
-        List<Fine> fines = fineRepo.getAllUnpaidFinesByUser(user);
-        if (fines.isEmpty()) {
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT, "No fines owed by user"), HttpStatus.NOT_FOUND);
+        try {
+            SecurityContext context = SecurityContextHolder.getContext();
+            Authentication authentication = context.getAuthentication();
+            String username = authentication.getName();
+            User user = userRepo.findUserByUsername(username);
+            List<Fine> fines = fineRepo.getAllUnpaidFinesByUser(user);
+            if (fines.isEmpty()) {
+                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT, "No fines owed by user"), HttpStatus.NOT_FOUND);
+
+            }
+            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "Fines owed by user retrieved", FineMapper.mapToFinesDto(fines)), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("FineServiceImpl :: getUserFinesList",e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
-        return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "Fines owed by user retrieved", FineMapper.mapToFinesDto(fines)), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<Object> getAllFinesList(Integer pageSize, Integer pageNo) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("id"));
-        Page<Fine> fines = fineRepo.findAll(pageable);
-        PageResponse pageResponse = PageMapper.mapFinePageToPageResponse(fines);
-        return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "Fines page received", pageResponse), HttpStatus.OK);
+        try {
+            Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("id"));
+            Page<Fine> fines = fineRepo.findAll(pageable);
+            PageResponse pageResponse = PageMapper.mapFinePageToPageResponse(fines);
+            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "Fines page received", pageResponse), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("FineServiceImpl :: getAllFinesList",e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
     }
 
     @Override
     public ResponseEntity<Object> getAllUnpaidFines(Integer pageSize, Integer pageNo) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("id").descending());
-        Page<Fine> fines = fineRepo.getAllUnpaidFinesTransaction(pageable);
-        PageResponse pageResponse = PageMapper.mapFinePageToPageResponse(fines);
-        return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "Fines page received", pageResponse), HttpStatus.OK);
+        try {
+            Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("id").descending());
+            Page<Fine> fines = fineRepo.getAllUnpaidFinesTransaction(pageable);
+            PageResponse pageResponse = PageMapper.mapFinePageToPageResponse(fines);
+            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "Fines page received", pageResponse), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("FineServiceImpl :: getAllUnpaidFines",e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
     }
 
     @Override
     public ResponseEntity<Object> getFinesOwedByUser(String username) {
-        User user = userRepo.findUserByUsername(username);
-        List<Fine> fines = fineRepo.getAllUnpaidFinesByUser(user);
-        if (fines.isEmpty()) {
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT, "No fines owed by user"), HttpStatus.NOT_FOUND);
+        try {
+            User user = userRepo.findUserByUsername(username);
+            List<Fine> fines = fineRepo.getAllUnpaidFinesByUser(user);
+            if (fines.isEmpty()) {
+                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT, "No fines owed by user"), HttpStatus.NOT_FOUND);
+
+            }
+            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "Fines owed by user retrieved", FineMapper.mapToFinesDto(fines)), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("FineServiceImpl :: getFinesOwedByUser",e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
-        return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "Fines owed by user retrieved", FineMapper.mapToFinesDto(fines)), HttpStatus.OK);
 
     }
 }

@@ -163,70 +163,104 @@ public class UserServiceImpl implements UserService , UserDetailsService {
     @Override
     public ResponseEntity<Object> changePassword(ChangePasswordRequest changePasswordRequest) {
 
-        if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getReEnterNewPassword())) {
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_ALLOWED, "New password and Re-entered passwords don't match"), HttpStatus.BAD_REQUEST);
-        }
-        User user = userRepo.findUserByUsername(changePasswordRequest.getUsername());
-        String currentPassword = user.getPassword();
-        String newPassword = passwordEncoder.encode(changePasswordRequest.getNewPassword());
-        if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), currentPassword)) {
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_ALLOWED, "Invalid current password"), HttpStatus.BAD_REQUEST);
-        }
-        if (passwordEncoder.matches(changePasswordRequest.getNewPassword(), currentPassword)) {
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_ALLOWED, "New password cannot be same as the old password"), HttpStatus.BAD_REQUEST);
+        try {
+            if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getReEnterNewPassword())) {
+                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_ALLOWED, "New password and Re-entered passwords don't match"), HttpStatus.BAD_REQUEST);
+            }
+            User user = userRepo.findUserByUsername(changePasswordRequest.getUsername());
+            String currentPassword = user.getPassword();
+            String newPassword = passwordEncoder.encode(changePasswordRequest.getNewPassword());
+            if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), currentPassword)) {
+                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_ALLOWED, "Invalid current password"), HttpStatus.BAD_REQUEST);
+            }
+            if (passwordEncoder.matches(changePasswordRequest.getNewPassword(), currentPassword)) {
+                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_ALLOWED, "New password cannot be same as the old password"), HttpStatus.BAD_REQUEST);
+
+            }
+            user.setPassword(newPassword);
+            userRepo.save(user);
+            return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK, "Password changed"), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("UserServiceImpl :: changePassword",e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+                    "Sorry some exception occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
-        user.setPassword(newPassword);
-        userRepo.save(user);
-        return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK, "Password changed"), HttpStatus.OK);
 
     }
 
     @Override
     public ResponseEntity<Object> userNameExists(String username) {
-        User user = this.userRepo.findUserByUsername(username);
-        if (user == null) {
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT,
-                    "Username" +
-                    " doesn't" +
-                    " exist"), HttpStatus.NOT_FOUND);
+        try {
+            User user = this.userRepo.findUserByUsername(username);
+            if (user == null) {
+                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT,
+                        "Username" +
+                        " doesn't" +
+                        " exist"), HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK, "Username is taken"), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("UserServiceImpl :: userNameExists",e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+                    "Sorry some exception occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+
         }
-        return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK, "Username is taken"), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<Object> searchUserByUsername(String username) {
-        String text = username.trim().toLowerCase();
-        List<User> users = this.userRepo.findUsersByUsernameLike("%"+text+"%");
-        if (users.isEmpty()) {
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT,
-                    "No matches found"), HttpStatus.NOT_FOUND);
+        try {
+            String text = username.trim().toLowerCase();
+            List<User> users = this.userRepo.findUsersByUsernameLike("%"+text+"%");
+            if (users.isEmpty()) {
+                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT,
+                        "No matches found"), HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "User(s) retrieved", UserMapper.mapToManageUserDto(users)), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("UserServiceImpl :: searchUserByUsername",e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+                    "Sorry some exception occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+
         }
-        return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "User(s) retrieved", UserMapper.mapToManageUserDto(users)), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<Object> getAll() {
-        SecurityContext context = SecurityContextHolder.getContext();
-        Principal principal = context.getAuthentication();
-        String username = principal.getName();
-        List<User> users = userRepo.findAllUsersToManage(username);
-        if(users.isEmpty()){
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT,
-                    "No Users"), HttpStatus.NOT_FOUND);
+        try {
+            SecurityContext context = SecurityContextHolder.getContext();
+            Principal principal = context.getAuthentication();
+            String username = principal.getName();
+            List<User> users = userRepo.findAllUsersToManage(username);
+            if(users.isEmpty()){
+                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT,
+                        "No Users"), HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "User(s) retrieved", UserMapper.mapToManageUserDto(users)), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("UserServiceImpl :: getAll",e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+                    "Sorry some exception occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+
         }
-        return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "User(s) retrieved", UserMapper.mapToManageUserDto(users)), HttpStatus.OK);
 
     }
 
     @Override
     public ResponseEntity<Object> getLockedUsers() {
-        List<User> lockedUsers = this.userRepo.findLockedUsers();
-        if(lockedUsers.isEmpty()){
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT,
-                    "No Locked Users"), HttpStatus.NOT_FOUND);
+        try {
+            List<User> lockedUsers = this.userRepo.findLockedUsers();
+            if(lockedUsers.isEmpty()){
+                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT,
+                        "No Locked Users"), HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "Locked User(s) retrieved", UserMapper.mapToManageUserDto(lockedUsers)), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("UserServiceImpl :: getLockedUsers",e);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+                    "Sorry some exception occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "Locked User(s) retrieved", UserMapper.mapToManageUserDto(lockedUsers)), HttpStatus.OK);
     }
 
     @Override
@@ -270,7 +304,6 @@ public class UserServiceImpl implements UserService , UserDetailsService {
             log.error("UserServiceImpl :: updateUserDetails",e);
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
                     "Unable to update user information"), HttpStatus.INTERNAL_SERVER_ERROR);
-
         }
     }
 
