@@ -10,6 +10,7 @@ import com.librarymanagement.LibraryApplication.models.requests.LockUserRequest;
 import com.librarymanagement.LibraryApplication.models.requests.UserRegisterRequest;
 import com.librarymanagement.LibraryApplication.repositories.UserRepo;
 import com.librarymanagement.LibraryApplication.services.UserService;
+import com.librarymanagement.LibraryApplication.utils.Constants;
 import com.librarymanagement.LibraryApplication.utils.ResponseConstants;
 import com.librarymanagement.LibraryApplication.utils.ResponseUtility;
 import lombok.RequiredArgsConstructor;
@@ -61,27 +62,6 @@ public class UserServiceImpl implements UserService , UserDetailsService {
     }
 
     @Override
-    public ResponseEntity<Object> setUpAdmin(UserRegisterRequest userRegisterRequest) {
-        try {
-            User user = userRepo.findUserByUsername(userRegisterRequest.getUsername());
-            if (user != null) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.ALREADY_EXISTS,
-                        "Username should be unique"), HttpStatus.CONFLICT);
-            }
-            String encodedPassword = passwordEncoder.encode(userRegisterRequest.getPassword());
-            user = UserMapper.mapToAdmin(userRegisterRequest, encodedPassword);
-            user.setReserveAndBorrowList(new ArrayList<>());
-            userRepo.save(user);
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.CREATED,
-                    "User registered successfully"), HttpStatus.OK);
-        } catch (Exception e) {
-            log.error("UserServiceImpl :: registerUser", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
-                    "Unable to register user"), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Override
     public ResponseEntity<Object> retrieveUser(String username) {
         try {
             User user = userRepo.findUserByUsername(username);
@@ -103,7 +83,7 @@ public class UserServiceImpl implements UserService , UserDetailsService {
     public ResponseEntity<Object> failedLoginAttempt(String username) {
         User user = userRepo.findUserByUsername(username);
         user.setPasswordAttemptCount(user.getPasswordAttemptCount() + 1);
-        if (user.getPasswordAttemptCount() > 4) {
+        if (user.getPasswordAttemptCount() > Constants.MAX_FAILED_LOGIN_ATTEMPT) {
             user.setIsNotLocked(Boolean.FALSE);
             user.setRemark("More than 5 unsuccessful login attempt");
             userRepo.save(user);
@@ -113,7 +93,7 @@ public class UserServiceImpl implements UserService , UserDetailsService {
         }
         userRepo.save(user);
         return new ResponseEntity<>(ResponseUtility.authenticationFailureWithMessage(ResponseConstants.BAD_CREDENTIALS,
-                "Invalid username or password. Attempts left:" + (5 - user.getPasswordAttemptCount())),
+                "Invalid username or password. Attempts left:" + (Constants.MAX_FAILED_LOGIN_ATTEMPT+1 - user.getPasswordAttemptCount())),
                 HttpStatus.UNAUTHORIZED);
 
     }

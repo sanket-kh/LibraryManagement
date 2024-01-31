@@ -59,7 +59,7 @@ public class AccountAssociatedOrganizationServiceImpl implements AccountAssociat
             List<String> listOfOrganizationName =
                     accountAssociatedOrganizationRepo.findListOfOrganizationNameByAccountTypeName(accountTypeName);
             if(listOfOrganizationName.isEmpty()){
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT, "No organization name under account type:"+accountTypeName), HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT, "No organization name under account type:"+accountTypeName), HttpStatus.NOT_FOUND);
             }
             return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
                     "Organization names by account type: "+accountTypeName, listOfOrganizationName), HttpStatus.OK);

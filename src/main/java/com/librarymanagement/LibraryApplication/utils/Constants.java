@@ -7,12 +7,18 @@ public class Constants {
     public static final Integer MAX_BORROW_DURATION_PER_BOOK = 90;
     public static final Integer BORROW_LIMIT_PER_USER = 2;
     public static final Integer MAX_RESERVE_LIMIT_PER_USER = 2;
+    public static final Integer MAX_FAILED_LOGIN_ATTEMPT = 4;
     public static final String[] PUBLIC_ACCESS_URI = new String[] {
             "/api/v1/auth/user/authentication",
             "/api/v1/auth/user/register",
             "/v3/api-docs",
-            "/v3/swagger-resources",
             "/swagger-ui/**",
+            "/swagger-ui/index.html",
+            "/swagger-ui/swagger-ui.css",
+            "/swagger-ui/favicon-32x32.png",
+            "/v3/api-docs/swagger-config",
+            "/v3/swagger-resources",
+            "/swagger-ui/swagger-initializer.js",
             "/webjars/**"};
     public static final String[] USER_ACCESS_URI = new String[] {
             "/api/v1/books/user/**",

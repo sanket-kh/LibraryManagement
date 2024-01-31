@@ -12,9 +12,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 public interface UserService extends UserDetailsService {
     ResponseEntity<Object> addNewUser(UserRegisterRequest registerRequest);
 
-    ResponseEntity<Object> setUpAdmin(UserRegisterRequest userRegisterRequest);
-
-
     ResponseEntity<Object> retrieveUser(String username);
 
     ResponseEntity<Object> failedLoginAttempt(String username);

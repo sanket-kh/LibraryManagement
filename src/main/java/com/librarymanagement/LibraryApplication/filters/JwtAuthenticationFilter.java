@@ -65,4 +65,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         ).findFirst();
         return matchedPath.isPresent();
     }
+
 }

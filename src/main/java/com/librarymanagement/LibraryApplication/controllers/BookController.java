@@ -1,12 +1,19 @@
 package com.librarymanagement.LibraryApplication.controllers;
 
 
+import com.librarymanagement.LibraryApplication.models.dtos.BookDto;
 import com.librarymanagement.LibraryApplication.models.requests.BookSearchFilterRequest;
 import com.librarymanagement.LibraryApplication.models.requests.ExistingBookRequest;
 import com.librarymanagement.LibraryApplication.models.requests.SaveBookRequest;
+import com.librarymanagement.LibraryApplication.models.responses.DefaultResponse;
 import com.librarymanagement.LibraryApplication.services.BookService;
 import com.librarymanagement.LibraryApplication.utils.ResponseConstants;
 import com.librarymanagement.LibraryApplication.utils.ResponseUtility;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -53,6 +60,23 @@ public class BookController {
         }
     }
     @GetMapping("/admin/get-all")
+    @Operation(summary = "get a list of associated organization by type",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "successful operation",
+                            content=@Content(mediaType="application/json",
+                                    array = @ArraySchema(schema = @Schema(implementation =
+                                            BookDto.class)))),
+                    @ApiResponse(responseCode = ResponseConstants.SERVER_ERROR, description = "Internal Server Error",
+                            content=@Content(mediaType = "application/json",
+                                    schema =@Schema(implementation = DefaultResponse.class))),
+                    @ApiResponse(responseCode = ResponseConstants.NOT_FOUND, description = "No " +
+                                                                                           "organization " +
+                                                                                           "found for " +
+                                                                                           "account type",
+                            content=@Content(mediaType = "application/json",
+                                    schema =@Schema(implementation = DefaultResponse.class))),
+
+            })
     public ResponseEntity<Object> getAllBooksLibrarian(@RequestParam(defaultValue = "0") Integer page) {
         try {
             return bookService.getAllBooksLibrarian(page);
