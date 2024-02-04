@@ -56,9 +56,7 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
             if (user == null) {
                 return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "Invalid username"), HttpStatus.OK);
             }
-            if (!user.getStatus()) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.DISABLED_USER, "User is disabled"), HttpStatus.OK);
-            }
+
             Book book = bookRepo.getBookByIsbn(borrowRequest.getIsbn());
             if (book == null) {
                 return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "The book doesnt exist in the library"), HttpStatus.NO_CONTENT);

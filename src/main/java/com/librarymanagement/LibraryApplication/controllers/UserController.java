@@ -1,6 +1,5 @@
 package com.librarymanagement.LibraryApplication.controllers;
 
-import com.librarymanagement.LibraryApplication.models.dtos.AccountAssociatedOrganizationDto;
 import com.librarymanagement.LibraryApplication.models.requests.ChangePasswordRequest;
 import com.librarymanagement.LibraryApplication.models.requests.ChangeUserDetailsReq;
 import com.librarymanagement.LibraryApplication.models.requests.LockUserRequest;

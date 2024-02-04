@@ -2,6 +2,7 @@ package com.librarymanagement.LibraryApplication.services.serviceImpls;
 
 import com.librarymanagement.LibraryApplication.entities.AccountType;
 import com.librarymanagement.LibraryApplication.mappers.AccountTypeMapper;
+import com.librarymanagement.LibraryApplication.models.dtos.AccountTypesDto;
 import com.librarymanagement.LibraryApplication.models.requests.AccountTypeRequest;
 import com.librarymanagement.LibraryApplication.repositories.AccountTypeRepo;
 import com.librarymanagement.LibraryApplication.services.AccountTypeService;
@@ -42,12 +43,17 @@ public class AccountTypeServiceImpl implements AccountTypeService {
         try {
             List<AccountType> accountTypeList = accountTypeRepo.findAllAccountTypes();
             if (accountTypeList.isEmpty()) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT, "Account type list is empty"), HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT,
+                        "Account type list is empty"), HttpStatus.NOT_FOUND);
             }
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "Account type list retrieved", AccountTypeMapper.mapToListOfAccountTypeName(accountTypeList)), HttpStatus.OK);
+            AccountTypesDto accountTypeName = AccountTypeMapper.mapToListOfAccountTypeName(accountTypeList);
+            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
+                    "Account type list retrieved", accountTypeName), HttpStatus.OK);
+
         } catch (Exception e) {
             log.error("AccountTypeService :: getAllAccountTypes",e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some exception occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+                    "Some exception occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
 

@@ -1,6 +1,5 @@
 package com.librarymanagement.LibraryApplication.controllers;
 
-import com.librarymanagement.LibraryApplication.models.dtos.AccountAssociatedOrganizationDto;
 import com.librarymanagement.LibraryApplication.models.dtos.LibrarianAccountDto;
 import com.librarymanagement.LibraryApplication.models.requests.LibrarianAccountRequest;
 import com.librarymanagement.LibraryApplication.models.responses.DefaultResponse;

@@ -2,6 +2,7 @@ package com.librarymanagement.LibraryApplication.services.serviceImpls;
 
 import com.librarymanagement.LibraryApplication.entities.AccountAssociatedOrganization;
 import com.librarymanagement.LibraryApplication.entities.AccountType;
+import com.librarymanagement.LibraryApplication.models.dtos.AccountAssociatedOrganizationDto;
 import com.librarymanagement.LibraryApplication.models.requests.AccountAssociatedOrganizationRequest;
 import com.librarymanagement.LibraryApplication.repositories.AccountAssociatedOrganizationRepo;
 import com.librarymanagement.LibraryApplication.repositories.AccountTypeRepo;
@@ -56,13 +57,14 @@ public class AccountAssociatedOrganizationServiceImpl implements AccountAssociat
     @Override
     public ResponseEntity<Object> getAccountAssociatedOrganizationByAccountType(String accountTypeName) {
         try {
-            List<String> listOfOrganizationName =
-                    accountAssociatedOrganizationRepo.findListOfOrganizationNameByAccountTypeName(accountTypeName);
-            if(listOfOrganizationName.isEmpty()){
+            AccountAssociatedOrganizationDto accountAssociatedOrganizationDto =
+                    new AccountAssociatedOrganizationDto();
+              accountAssociatedOrganizationDto.setOrganizations( accountAssociatedOrganizationRepo.findListOfOrganizationNameByAccountTypeName(accountTypeName));
+            if(accountAssociatedOrganizationDto.getOrganizations().isEmpty()){
                 return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT, "No organization name under account type:"+accountTypeName), HttpStatus.NOT_FOUND);
             }
             return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
-                    "Organization names by account type: "+accountTypeName, listOfOrganizationName), HttpStatus.OK);
+                    "Organization names by account type: "+accountTypeName, accountAssociatedOrganizationDto), HttpStatus.OK);
         } catch (Exception e) {
             log.error("AccountAssociatedOrganizationService :: addAccountAssociatedOrganization",e);
             return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some exception occurred"), HttpStatus.INTERNAL_SERVER_ERROR);

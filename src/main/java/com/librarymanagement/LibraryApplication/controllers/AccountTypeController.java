@@ -1,7 +1,6 @@
 package com.librarymanagement.LibraryApplication.controllers;
 
-import com.librarymanagement.LibraryApplication.models.dtos.AccountAssociatedOrganizationDto;
-import com.librarymanagement.LibraryApplication.models.dtos.AccountTypeDto;
+import com.librarymanagement.LibraryApplication.models.dtos.AccountTypesDto;
 import com.librarymanagement.LibraryApplication.models.requests.AccountTypeRequest;
 import com.librarymanagement.LibraryApplication.models.responses.DefaultResponse;
 import com.librarymanagement.LibraryApplication.services.AccountTypeService;
@@ -32,7 +31,7 @@ public class AccountTypeController {
                     @ApiResponse(responseCode = ResponseConstants.OK, description = "successful operation",
                             content=@Content(mediaType = "application/json",
                                     array =@ArraySchema(schema =
-                                    @Schema(implementation = AccountTypeDto.class)))),
+                                    @Schema(implementation = AccountTypesDto.class)))),
                     @ApiResponse(responseCode = ResponseConstants.SERVER_ERROR, description = "Internal Server Error",
                             content=@Content(mediaType = "application/json",
                                     schema =@Schema(implementation = DefaultResponse.class))),

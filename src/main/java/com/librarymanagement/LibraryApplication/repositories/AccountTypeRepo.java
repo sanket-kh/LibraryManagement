@@ -8,15 +8,13 @@ import java.util.List;
 
 public interface AccountTypeRepo extends JpaRepository<AccountType, Long> {
     @Query(value = """
-    SELECT * FROM ACCOUNT_TYPE
-""", nativeQuery = true)
+                 SELECT * FROM ACCOUNT_TYPE
+            """, nativeQuery = true)
     List<AccountType> findAllAccountTypes();
-
-
     AccountType findAccountTypeByAccountTypeNameIgnoreCase(String accountTypeName);
     AccountType findAccountTypeByAccountTypeName(String accountTypeName);
     @Query(value = """
-SELECT A.ACCOUNT_TYPE FROM ACCOUNT_TYPE A
-""", nativeQuery = true)
+            SELECT A.ACCOUNT_TYPE FROM ACCOUNT_TYPE A
+            """, nativeQuery = true)
     List<String> findAccountTypeNameList();
 }

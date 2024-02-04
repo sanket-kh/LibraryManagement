@@ -42,7 +42,7 @@ public class AccountAssociatedOrganizationController {
     responses = {
             @ApiResponse(responseCode = "200", description = "successful operation",
                     content=@Content(mediaType="application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = String.class)))),
+                            array = @ArraySchema(schema = @Schema(implementation = AccountAssociatedOrganizationDto.class)))),
             @ApiResponse(responseCode = ResponseConstants.SERVER_ERROR, description = "Internal Server Error",
             content=@Content(mediaType = "application/json",
                     schema =@Schema(implementation = DefaultResponse.class))),

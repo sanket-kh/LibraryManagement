@@ -19,9 +19,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.*;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.security.Principal;
 
 @Log4j2
 @Service
@@ -78,13 +81,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public ResponseEntity<Object> authenticate(AuthenticationRequest authenticationRequest) {
+        var start = System.nanoTime();
         try {
-            authenticationManager.authenticate(
+            Authentication authenticate = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
                             authenticationRequest.getPassword())
             );
         } catch (BadCredentialsException e) {
             log.error("AuthenticationService :: authenticate", e);
+            System.out.println(System.nanoTime()-start);
             return userServiceImpl.failedLoginAttempt(authenticationRequest.getUsername());
         } catch (AccessDeniedException e) {
             log.error("AuthenticationService :: authenticate", e);
@@ -100,16 +105,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     "Username or password is incorrect "), HttpStatus.UNAUTHORIZED);
         } catch (LockedException e) {
             log.error(" AuthenticationService :: authenticate", e);
+            System.out.println(System.nanoTime()-start);
             return new ResponseEntity<>(ResponseUtility.authenticationFailureWithMessage(ResponseConstants.LOCKED_USER, "User account is locked"), HttpStatus.UNAUTHORIZED);
         }
         try {
-            var user = userRepo.findUserByUsername(authenticationRequest.getUsername());
+            User user = userRepo.findUserByUsername(authenticationRequest.getUsername());
             AuthResponse authResponse = new AuthResponse();
 
-            Integer updateCount = userRepo.refreshLoginAttempts(user.getUsername());
-            var jwtToken = jwtService.generateToken(user);
+            userRepo.refreshLoginAttempts(user.getUsername());
+            String jwtToken = jwtService.generateToken(user);
             authResponse.setRole(user.getRole().name());
             authResponse.setAccessToken(jwtToken);
+            System.out.println(System.nanoTime()-start);
             return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
                     "User authenticated successfully", authResponse), HttpStatus.OK);
         } catch (Exception e) {
