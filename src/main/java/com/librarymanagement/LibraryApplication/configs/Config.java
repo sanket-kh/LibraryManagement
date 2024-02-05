@@ -1,7 +1,6 @@
 package com.librarymanagement.LibraryApplication.configs;
 
 import com.librarymanagement.LibraryApplication.repositories.UserRepo;
-import com.librarymanagement.LibraryApplication.services.UserService;
 import com.librarymanagement.LibraryApplication.services.serviceImpls.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
