@@ -2,9 +2,9 @@ package com.librarymanagement.LibraryApplication.mappers;
 
 
 import com.librarymanagement.LibraryApplication.entities.User;
-import com.librarymanagement.LibraryApplication.enums.Role;
 import com.librarymanagement.LibraryApplication.models.dtos.ManageUserDto;
 import com.librarymanagement.LibraryApplication.models.dtos.UserDto;
+import com.librarymanagement.LibraryApplication.models.requests.ChangeUserDetailsReq;
 import com.librarymanagement.LibraryApplication.models.requests.UserRegisterRequest;
 
 import java.util.List;
@@ -37,23 +37,7 @@ public class UserMapper {
         user.setPasswordAttemptCount(0);
         return user;
     }
-    public static User mapToAdmin(UserRegisterRequest userRegisterRequest, String encodedPassword) {
 
-        User user = new User();
-
-        user.setAddress(userRegisterRequest.getAddress());
-        user.setEmail(userRegisterRequest.getEmail());
-        user.setPassword(encodedPassword);
-        user.setPhone(userRegisterRequest.getPhone());
-        user.setFirstName(userRegisterRequest.getFirstName());
-        user.setLastName(userRegisterRequest.getLastName());
-        user.setUsername(userRegisterRequest.getUsername());
-        user.setStatus(Boolean.TRUE);
-        user.setIsNotLocked(Boolean.TRUE);
-        user.setPasswordAttemptCount(0);
-        user.setRole(Role.LIBRARIAN);
-        return user;
-    }
 
     public static ManageUserDto mapToManageUserDto(User user) {
         ManageUserDto manageUserDto = new ManageUserDto();
@@ -72,5 +56,14 @@ public class UserMapper {
 
     public static List<ManageUserDto> mapToManageUserDto(List<User> users) {
        return users.stream().map(UserMapper::mapToManageUserDto).toList();
+    }
+
+    public static User mapToUser(ChangeUserDetailsReq changeUserDetailsReq, User user) {
+        user.setAddress(changeUserDetailsReq.getAddress());
+        user.setEmail(changeUserDetailsReq.getEmail());
+        user.setFirstName(changeUserDetailsReq.getFirstName());
+        user.setLastName(changeUserDetailsReq.getLastName());
+        user.setPhone(changeUserDetailsReq.getPhone());
+        return user;
     }
 }

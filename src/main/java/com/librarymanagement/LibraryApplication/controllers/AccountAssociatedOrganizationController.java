@@ -33,7 +33,8 @@ public class AccountAssociatedOrganizationController {
         } catch (Exception e) {
             log.error("AccountAssociatedOrganizationController " +
                       ":: addNewAccountAssociatedOrganization", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -60,7 +61,8 @@ public class AccountAssociatedOrganizationController {
         } catch (Exception e) {
             log.error("AccountAssociatedOrganizationController " +
                       ":: getListOfAssociatedOrganizationByType",e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }

@@ -1,5 +1,8 @@
 package com.librarymanagement.LibraryApplication.utils;
 
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 public class Utils {
     public static String convertToTitleCaseIteratingChars(String text) {
         if (text == null || text.isEmpty()) {
@@ -22,5 +25,10 @@ public class Utils {
         }
 
         return converted.toString();
+    }
+
+    public static String getUsernameFromContext(){
+        SecurityContext context = SecurityContextHolder.getContext();
+        return context.getAuthentication().getName();
     }
 }

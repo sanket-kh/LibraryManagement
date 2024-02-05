@@ -5,15 +5,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface AccountAssociatedOrganizationRepo extends JpaRepository<AccountAssociatedOrganization, Long> {
     @Query(value = """
-    SELECT ORGANIZATION FROM ACCOUNT_ASSOCIATED_ORGANIZATION 
-    INNER JOIN LIBRARY_MANAGEMENT_SYSTEM.ACCOUNT_TYPE A ON ACCOUNT_ASSOCIATED_ORGANIZATION.ACCOUNT_TYPE_ID = A.ID
-    WHERE A.ACCOUNT_TYPE=:accountTypeName
-    AND ACCOUNT_ASSOCIATED_ORGANIZATION.ACTIVE='Y'
-""", nativeQuery = true)
+                SELECT ORGANIZATION FROM ACCOUNT_ASSOCIATED_ORGANIZATION
+                INNER JOIN LIBRARY_MANAGEMENT_SYSTEM.ACCOUNT_TYPE A ON ACCOUNT_ASSOCIATED_ORGANIZATION.ACCOUNT_TYPE_ID = A.ID
+                WHERE A.ACCOUNT_TYPE=:accountTypeName
+                AND ACCOUNT_ASSOCIATED_ORGANIZATION.ACTIVE='Y'
+            """, nativeQuery = true)
     List<String> findListOfOrganizationNameByAccountTypeName(String accountTypeName);
-    Optional<AccountAssociatedOrganization> findAccountAssociatedOrganizationByOrganizationNameAndActive(String organizationName, Character active);
+
+    AccountAssociatedOrganization findAccountAssociatedOrganizationByOrganizationNameAndActive(String organizationName, Character active);
 }

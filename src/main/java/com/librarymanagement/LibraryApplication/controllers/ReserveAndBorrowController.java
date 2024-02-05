@@ -33,20 +33,20 @@ public class ReserveAndBorrowController {
             responses = {
                     @ApiResponse(responseCode = ResponseConstants.OK, description = "Borrowed " +
                                                                                     "book successfully",
-                            content=@Content(mediaType = "application/json",
-                                    array =@ArraySchema(schema =
+                            content = @Content(mediaType = "application/json",
+                                    array = @ArraySchema(schema =
                                     @Schema(implementation = DefaultResponse.class)))),
                     @ApiResponse(responseCode = ResponseConstants.SERVER_ERROR, description = "Internal Server Error",
-                            content=@Content(mediaType = "application/json",
-                                    schema =@Schema(implementation = DefaultResponse.class))),
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = DefaultResponse.class))),
                     @ApiResponse(responseCode = ResponseConstants.NOT_FOUND, description = "No " +
                                                                                            "book " +
                                                                                            "found" +
                                                                                            " for " +
                                                                                            "given" +
                                                                                            " isbn",
-                            content=@Content(mediaType = "application/json",
-                                    schema =@Schema(implementation = DefaultResponse.class))),
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = DefaultResponse.class))),
 
             })
     public ResponseEntity<Object> burrowBook(@RequestBody BorrowRequest borrowRequest) {
@@ -54,8 +54,8 @@ public class ReserveAndBorrowController {
             return reserveAndBorrowService.burrowBook(borrowRequest);
         } catch (Exception e) {
             log.error("ReserveAndBorrowController :: burrowBook", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -65,8 +65,8 @@ public class ReserveAndBorrowController {
             return reserveAndBorrowService.returnBook(returnRequest);
         } catch (Exception e) {
             log.error("ReserveAndBorrowController :: returnBook", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -76,8 +76,8 @@ public class ReserveAndBorrowController {
             return reserveAndBorrowService.viewBurrowedBooksByUser(username);
         } catch (Exception e) {
             log.error("ReserveAndBorrowController :: getBorrowedBooksByUser", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -87,8 +87,8 @@ public class ReserveAndBorrowController {
             return reserveAndBorrowService.reserveUnavailableBook(reserveRequest);
         } catch (Exception e) {
             log.error("ReserveAndBorrowController :: reserveBook", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -98,8 +98,8 @@ public class ReserveAndBorrowController {
             return reserveAndBorrowService.cancelReservationOfBook(cancelReservationRequest);
         } catch (Exception e) {
             log.error("ReserveAndBorrowController :: cancelReservationBook", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -109,8 +109,8 @@ public class ReserveAndBorrowController {
             return reserveAndBorrowService.viewReservedBooksByUser(username);
         } catch (Exception e) {
             log.error("ReserveAndBorrowController :: getReservedBooksByUser", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -122,8 +122,8 @@ public class ReserveAndBorrowController {
             return reserveAndBorrowService.getUserTransaction(username, pageSize, pageNo);
         } catch (Exception e) {
             log.error("ReserveAndBorrowController :: getTransactionByUsername");
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -131,17 +131,17 @@ public class ReserveAndBorrowController {
     @Operation(summary = "get a list of associated organization by type",
             responses = {
                     @ApiResponse(responseCode = ResponseConstants.OK, description = "successful " +
-                                                                                  "operation",
-                            content=@Content(mediaType="application/json",
+                                                                                    "operation",
+                            content = @Content(mediaType = "application/json",
                                     array = @ArraySchema(schema = @Schema(implementation =
                                             BookTransactionsDto.class)))),
                     @ApiResponse(responseCode = ResponseConstants.SERVER_ERROR, description = "Internal Server Error",
-                            content=@Content(mediaType = "application/json",
-                                    schema =@Schema(implementation = DefaultResponse.class))),
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = DefaultResponse.class))),
                     @ApiResponse(responseCode = ResponseConstants.NOT_FOUND, description =
                             "transactions not found",
-                            content=@Content(mediaType = "application/json",
-                                    schema =@Schema(implementation = DefaultResponse.class))),
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = DefaultResponse.class))),
 
             })
     public ResponseEntity<Object> getAllTransactions(@RequestParam(defaultValue = Constants.DEFAULT_PAGE_SIZE) Integer pageSize,
@@ -150,8 +150,8 @@ public class ReserveAndBorrowController {
             return reserveAndBorrowService.getAllTransactions(pageNo, pageSize);
         } catch (Exception e) {
             log.error("ReserveAndBorrowController :: getAllTransactions");
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
 
@@ -163,8 +163,8 @@ public class ReserveAndBorrowController {
             return reserveAndBorrowService.searchTransactions(transactionSearchReq);
         } catch (Exception e) {
             log.error("ReserveAndBorrowController :: searchTransactions");
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }

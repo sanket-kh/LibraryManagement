@@ -27,7 +27,7 @@ public class WebClientRequestBuilder {
                     conn.addHandlerLast(new ReadTimeoutHandler(5000, TimeUnit.MILLISECONDS))
                             .addHandlerLast(new WriteTimeoutHandler(5000, TimeUnit.MILLISECONDS)));
 
-    public WebClient buildGetWebClientRequest(Object object) {
+    public WebClient buildGetWebClientRequest() {
         String token =
                 jwtServiceReportingModule.generateToken(clientDetailsService.loadUserByUsername(
                         "LibraryApplication"));

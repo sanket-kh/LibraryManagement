@@ -33,7 +33,8 @@ public class FineController {
             return fineService.payFine(paymentRequest);
         } catch (Exception e) {
             log.error("FineController :: payFine", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }
@@ -63,7 +64,8 @@ public class FineController {
             return fineService.getUserFinesList();
         } catch (Exception e) {
             log.error("FineController :: getFinesOwedByUser ", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }
@@ -73,7 +75,8 @@ public class FineController {
             return fineService.getFinesOwedByUser(username);
         } catch (Exception e) {
             log.error("FineController :: getFinesOwedByUser ", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }
@@ -85,7 +88,8 @@ public class FineController {
             return fineService.getAllFinesList(pageSize, pageNo);
         }catch (Exception e){
             log.error("FineController :: getAllFinesOwed ", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }
@@ -96,7 +100,8 @@ public class FineController {
             return fineService.getAllUnpaidFines(Constants.PAGE_SIZE, pageNo);
         }catch (Exception e){
             log.error("FineController :: getAllUnpaidFines ", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

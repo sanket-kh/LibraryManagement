@@ -33,7 +33,8 @@ public class LibrarianAccountController {
             return librarianAccountService.addLibrarianAccount(librarianAccountRequest);
         } catch (Exception e) {
             log.error("LibrarianAccountController::addAccountDetails", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -41,16 +42,16 @@ public class LibrarianAccountController {
     @Operation(summary = "get a list of librarian accounts",
             responses = {
                     @ApiResponse(responseCode = ResponseConstants.OK, description = "successful operation",
-                            content=@Content(mediaType = "application/json",
-                                    array =@ArraySchema(schema =
+                            content = @Content(mediaType = "application/json",
+                                    array = @ArraySchema(schema =
                                     @Schema(implementation = LibrarianAccountDto.class)))),
                     @ApiResponse(responseCode = ResponseConstants.SERVER_ERROR, description = "Internal Server Error",
-                            content=@Content(mediaType = "application/json",
-                                    schema =@Schema(implementation = DefaultResponse.class))),
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = DefaultResponse.class))),
                     @ApiResponse(responseCode = ResponseConstants.NOT_FOUND, description =
                             "Account details not found",
-                            content=@Content(mediaType = "application/json",
-                                    schema =@Schema(implementation = DefaultResponse.class))),
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = DefaultResponse.class))),
 
             })
     public ResponseEntity<Object> getAccountDetails() {
@@ -58,7 +59,8 @@ public class LibrarianAccountController {
             return librarianAccountService.getDetails();
         } catch (Exception e) {
             log.error("LibrarianAccountController :: getAccountDetails", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -68,26 +70,30 @@ public class LibrarianAccountController {
             return librarianAccountService.modifyDetails(librarianAccountRequest);
         } catch (Exception e) {
             log.error("LibrarianAccountController :: modifyAccountDetails", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @PostMapping("/clear")
-    public ResponseEntity<Object> clearAccountDetails(){
+    public ResponseEntity<Object> clearAccountDetails() {
         try {
             return librarianAccountService.makeAccDetailsInactive();
         } catch (Exception e) {
             log.error("LibrarianAccountController :: clearAccountDetails", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/fine-account/get")
-    public ResponseEntity<Object> getFineClearAccountByAccountType(@RequestParam String accountType){
+    public ResponseEntity<Object> getFineClearAccountByAccountType(@RequestParam String accountType) {
         try {
             return librarianAccountService.getClearFineAccountByAccountType(accountType);
         } catch (Exception e) {
             log.error("LibrarianAccountController :: getFineClearAccountByAccountType", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }

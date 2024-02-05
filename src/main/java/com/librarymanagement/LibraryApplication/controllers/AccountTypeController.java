@@ -49,7 +49,8 @@ public class AccountTypeController {
         } catch (Exception e) {
             log.error("AccountTypeController " +
                       ":: getAllAccountTypesList", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }
@@ -61,7 +62,8 @@ public class AccountTypeController {
         } catch (Exception e) {
             log.error("AccountTypeController " +
                       ":: addAccountType", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }

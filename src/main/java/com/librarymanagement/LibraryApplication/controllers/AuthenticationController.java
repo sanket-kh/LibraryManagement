@@ -43,7 +43,8 @@ public class AuthenticationController {
             return authenticationService.registerUser(userRegisterRequest);
         } catch (Exception e) {
             log.error("AuthenticationController :: register",e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Registration failed"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Registration failed", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -53,7 +54,8 @@ public class AuthenticationController {
             return authenticationService.authenticate(authenticationRequest);
         } catch (Exception e) {
             log.error("AuthenticationController :: register",e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR, "Login failed"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Login failed", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

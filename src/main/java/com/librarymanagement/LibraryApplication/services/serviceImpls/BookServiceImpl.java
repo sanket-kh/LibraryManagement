@@ -39,20 +39,20 @@ public class BookServiceImpl implements BookService {
         try {
             Book existingBook = bookRepo.getBookByIsbn(saveBookRequest.getIsbn());
             if (existingBook != null) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.ALREADY_EXISTS,
-                        "Book record already exists, please add to existing record"),
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.ALREADY_EXISTS,
+                        "Book record already exists, please add to existing record",
                         HttpStatus.CONFLICT);
             }
 
             Book book = BookMapper.mapSaveBookRequestToBook(saveBookRequest);
             bookRepo.save(book);
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.CREATED,
-                    "Book saved"), HttpStatus.OK);
+            return ResponseUtility.successResponseWithMessage(ResponseConstants.CREATED,
+                    "Book saved", HttpStatus.OK);
 
         } catch (Exception e) {
             log.error("BookServiceImpl :: saveBook ", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
-                    "Unable to save book"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+                    "Unable to save book", HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }
@@ -62,16 +62,16 @@ public class BookServiceImpl implements BookService {
         try {
             Book book = bookRepo.getBookByIsbn(isbn);
             if (book == null) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
-                        "Book not found"), HttpStatus.CONFLICT);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
+                        "Book not found", HttpStatus.CONFLICT);
             }
             UserBookDto userBookDto = mapBookToUserBookDto(book);
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
-                    "Book found", userBookDto), HttpStatus.OK);
+            return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
+                    "Book found", userBookDto, HttpStatus.OK);
         } catch (Exception e) {
             log.error("BookService :: getBookByIsbn", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
-                    "Unable to fetch book"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+                    "Unable to fetch book", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -82,19 +82,20 @@ public class BookServiceImpl implements BookService {
             Page<Book> bookPage = bookRepo.getAvailableBooks(pageable);
             List<Book> bookList = bookPage.getContent();
             if (bookList.isEmpty()) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
-                        "No books in the library"), HttpStatus.NOT_FOUND);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
+                        "No books in the library", HttpStatus.NOT_FOUND);
             }
-
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
-                    "Books found", BookMapper.mapBookListToUserBookDtoList(bookList)), HttpStatus.OK);
+            List<UserBookDto> userBookDtos = BookMapper.mapBookListToUserBookDtoList(bookList);
+            return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
+                    "Books found", userBookDtos, HttpStatus.OK);
 
         } catch (Exception e) {
             log.error("BookService :: getAllBooks", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
-                    "Unable to fetch books"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+                    "Unable to fetch books", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @Override
     public ResponseEntity<Object> getAllBooksLibrarian(Integer pageNumber) {
         try {
@@ -102,17 +103,17 @@ public class BookServiceImpl implements BookService {
             Page<Book> bookPage = bookRepo.findAll(pageable);
             List<Book> bookList = bookPage.getContent();
             if (bookList.isEmpty()) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
-                        "No books in the library"), HttpStatus.NOT_FOUND);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
+                        "No books in the library", HttpStatus.NOT_FOUND);
             }
-
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
-                    "Books found", BookMapper.mapBookListToBaseBookDtoList(bookList)), HttpStatus.OK);
+            List<BookDto> bookDtos = BookMapper.mapBookListToBaseBookDtoList(bookList);
+            return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
+                    "Books found",bookDtos , HttpStatus.OK);
 
         } catch (Exception e) {
             log.error("BookService :: getAllBooks", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
-                    "Unable to fetch books"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+                    "Unable to fetch books",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -121,21 +122,20 @@ public class BookServiceImpl implements BookService {
         try {
             Book book = bookRepo.getBookByIsbn(saveBookRequest.getIsbn());
             if (book == null) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
-                        "Book doesnt exist with isbn:" +saveBookRequest.getIsbn() ), HttpStatus.NOT_FOUND);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
+                        "Book doesnt exist with isbn:" + saveBookRequest.getIsbn(),
+                HttpStatus.NOT_FOUND);
             }
             book.setTitle(saveBookRequest.getTitle());
             book.setCopies(saveBookRequest.getCopies());
             book.setAuthor(saveBookRequest.getAuthor());
             bookRepo.save(book);
-            book = bookRepo.getBookByIsbn(saveBookRequest.getIsbn());
-            SaveBookRequest updatedBookDto = BookMapper.mapBookToSaveBookRequest(book);
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.UPDATED,
-                    "Book updated", updatedBookDto), HttpStatus.OK);
+            return ResponseUtility.successResponseWithMessage(ResponseConstants.UPDATED,
+                    "Book updated", HttpStatus.OK);
         } catch (Exception e) {
             log.error("BookService :: updateBookByIsbn", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
-                    "Failed to update book"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+                    "Failed to update book", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -144,21 +144,20 @@ public class BookServiceImpl implements BookService {
         try {
             Book book = bookRepo.getBookByIsbn(existingBookRequest.getIsbn());
             if (book == null) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
-                        "Book with isbn:" + existingBookRequest.getIsbn() + " doesnt exist"),
-                        HttpStatus.NOT_FOUND);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
+                        "Book with isbn:" + existingBookRequest.getIsbn() + " doesnt exist",
+                HttpStatus.NOT_FOUND);
             }
             book.setCopies(book.getCopies() + existingBookRequest.getCopies());
             bookRepo.save(book);
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.UPDATED,
-                    "Quantity of books updated"), HttpStatus.OK);
+            return ResponseUtility.successResponseWithMessage(ResponseConstants.UPDATED,
+                    "Quantity of books updated",HttpStatus.OK);
         } catch (Exception e) {
             log.error("BookService :: addExistingBookByIsbn", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
-                    "Unable update quantity of book"), HttpStatus.INTERNAL_SERVER_ERROR     );
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+                    "Unable update quantity of book",HttpStatus.INTERNAL_SERVER_ERROR     );
         }
     }
-
 
 
     @Override
@@ -167,37 +166,37 @@ public class BookServiceImpl implements BookService {
             List<Book> bookList = bookRepo.bookSearchFilter(bookSearchFilterRequest);
             System.out.println(bookList.size());
             if (bookList.isEmpty()) {
-                return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
-                        "Book(s) not found, try again"), HttpStatus.NOT_FOUND);
+                return ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
+                        "Book(s) not found, try again",HttpStatus.NOT_FOUND);
 
             }
             List<UserBookDto> bookDtoList = BookMapper.mapBookListToUserBookDtoList(bookList);
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
-                    "Book(s) found", bookDtoList), HttpStatus.OK);
+            return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
+                    "Book(s) found", bookDtoList,HttpStatus.OK);
         } catch (Exception e) {
             log.error("BookService :: searchBook", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
-                    "Unable to search book"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+                    "Unable to search book",HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
+
     @Override
     public ResponseEntity<Object> searchBookLibrarian(BookSearchFilterRequest bookSearchFilterRequest) {
         try {
             List<Book> bookList = bookRepo.bookSearchFilter(bookSearchFilterRequest);
             System.out.println(bookList.size());
             if (bookList.isEmpty()) {
-                return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
-                        "Book(s) not found, try again"), HttpStatus.NOT_FOUND);
-
+                return ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
+                        "Book(s) not found, try again",HttpStatus.NOT_FOUND);
             }
             List<BookDto> bookDtoList = BookMapper.mapBookListToBaseBookDtoList(bookList);
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
-                    "Book(s) found", bookDtoList), HttpStatus.OK);
+            return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
+                    "Book(s) found", bookDtoList,HttpStatus.OK);
         } catch (Exception e) {
             log.error("BookService :: searchBook", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
-                    "Unable to search book"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+                    "Unable to search book",HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -208,17 +207,17 @@ public class BookServiceImpl implements BookService {
         try {
             Book book = bookRepo.getBookByIsbn(isbn);
             if (book == null) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
-                        "Book with isbn: " + isbn + " doesn't exist"), HttpStatus.NOT_FOUND);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
+                        "Book with isbn: " + isbn + " doesn't exist",HttpStatus.NOT_FOUND);
             }
             book.setIsAvailable(Boolean.FALSE);
             bookRepo.save(book);
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
-                    "Book availability updated to unavailable"), HttpStatus.OK);
+            return ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
+                    "Book availability updated to unavailable",HttpStatus.OK);
         } catch (Exception e) {
             log.error("BookService :: setBookStatusUnavailable", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
-                    "Unable to update book's status"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+                    "Unable to update book's status",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -228,17 +227,18 @@ public class BookServiceImpl implements BookService {
         try {
             Book book = bookRepo.getBookByIsbn(isbn);
             if (book == null) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
-                        "Book with isbn: " + isbn + " doesn't exist"), HttpStatus.NOT_FOUND);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
+                        "Book with isbn: " + isbn + " doesn't exist",HttpStatus.NOT_FOUND);
             }
             book.setIsAvailable(Boolean.TRUE);
             bookRepo.save(book);
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
-                    "Book with isbn: " + isbn + " availability updated to available"), HttpStatus.OK);
+            return ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
+                    "Book with isbn: " + isbn + " availability updated to available",HttpStatus.OK)
+            ;
         } catch (Exception e) {
             log.error("BookService :: setBookStatusAvailable", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
-                    "Unable to update book's status"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+                    "Unable to update book's status", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

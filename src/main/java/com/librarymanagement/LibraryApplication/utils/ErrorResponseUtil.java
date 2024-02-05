@@ -47,18 +47,6 @@ public class ErrorResponseUtil {
     return errorResponse;
     }
 
-    public static void setGeneralFilterErrorResponse(ContentCachingResponseWrapper responseWrapper,
-                                               String statusCode, String message) throws IOException {
-        DefaultResponse errorResponse = setGeneralErrorResponseObject(ResponseConstants.JWT_ERROR,
-                message);
-        responseWrapper.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        responseWrapper.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        OutputStream responseStream = responseWrapper.getOutputStream();
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(responseStream, errorResponse);
-        responseStream.flush();
-        responseWrapper.copyBodyToResponse();
-    }
 
     public static DefaultResponse setGeneralErrorResponseObject(String statusCode,
                                                                 String message) {

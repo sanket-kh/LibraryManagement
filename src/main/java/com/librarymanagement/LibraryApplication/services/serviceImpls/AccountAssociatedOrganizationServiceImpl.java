@@ -14,8 +14,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 @Log4j2
 @Service
 @RequiredArgsConstructor
@@ -29,14 +27,15 @@ public class AccountAssociatedOrganizationServiceImpl implements AccountAssociat
             AccountType existingAccountType =
                     accountTypeRepo.findAccountTypeByAccountTypeName(associatedOrganizationRequest.getAccountTypeName());
             if(existingAccountType==null){
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT, "Provided account type doesnt exist"), HttpStatus.NO_CONTENT);
+                return   ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT,
+                        "Provided account type doesnt exist", HttpStatus.NOT_FOUND);
             }
 
             AccountAssociatedOrganization accountAssociatedOrganization =
                     new AccountAssociatedOrganization();
-            ;
-            if( accountAssociatedOrganizationRepo.findAccountAssociatedOrganizationByOrganizationNameAndActive(associatedOrganizationRequest.getAccountAssociatedOrganizationName(),'Y').isEmpty()){
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.ALREADY_EXISTS, "Provided organization name doesnt already"), HttpStatus.CONFLICT);
+            if( accountAssociatedOrganizationRepo.findAccountAssociatedOrganizationByOrganizationNameAndActive(associatedOrganizationRequest.getAccountAssociatedOrganizationName(),'Y')==null){
+                return   ResponseUtility.failureResponseWithMessage(ResponseConstants.ALREADY_EXISTS,
+                        "Provided organization name doesnt already", HttpStatus.CONFLICT);
 
             }
             accountAssociatedOrganization.setOrganizationName(associatedOrganizationRequest.getAccountAssociatedOrganizationName());
@@ -45,10 +44,12 @@ public class AccountAssociatedOrganizationServiceImpl implements AccountAssociat
             existingAccountType.getAccountAssociatedOrganizations().add(accountAssociatedOrganization);
             accountAssociatedOrganizationRepo.save(accountAssociatedOrganization);
             accountTypeRepo.save(existingAccountType);
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK, "Account associated organization added"), HttpStatus.OK);
+            return   ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
+                    "Account associated organization added", HttpStatus.OK);
         } catch (Exception e) {
             log.error("AccountAssociatedOrganizationService :: addAccountAssociatedOrganization",e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some exception occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return   ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+                    "Some exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
 
@@ -61,13 +62,15 @@ public class AccountAssociatedOrganizationServiceImpl implements AccountAssociat
                     new AccountAssociatedOrganizationDto();
               accountAssociatedOrganizationDto.setOrganizations( accountAssociatedOrganizationRepo.findListOfOrganizationNameByAccountTypeName(accountTypeName));
             if(accountAssociatedOrganizationDto.getOrganizations().isEmpty()){
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT, "No organization name under account type:"+accountTypeName), HttpStatus.NOT_FOUND);
+                return   ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT,
+                        "No organization name under account type:"+accountTypeName, HttpStatus.NOT_FOUND);
             }
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
-                    "Organization names by account type: "+accountTypeName, accountAssociatedOrganizationDto), HttpStatus.OK);
+            return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
+                    "Organization names by account type: "+accountTypeName, accountAssociatedOrganizationDto, HttpStatus.OK);
         } catch (Exception e) {
             log.error("AccountAssociatedOrganizationService :: addAccountAssociatedOrganization",e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some exception occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return   ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+                    "Some exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }

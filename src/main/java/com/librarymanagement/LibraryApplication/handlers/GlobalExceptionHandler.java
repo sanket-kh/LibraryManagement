@@ -26,8 +26,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleValidationErrors(MethodArgumentNotValidException ex) {
         List<String> errors = ex.getBindingResult().getFieldErrors()
                 .stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
-        return new ResponseEntity<>(ResponseUtility.failureResponseWithMessageAndBody(ResponseConstants.BAD_REQUEST,
-                "Invalid request parameters", getErrorsMap(errors)),HttpStatus.OK);
+        return ResponseUtility.failureResponseWithMessageAndBody(ResponseConstants.BAD_REQUEST,
+                "Invalid request parameters", getErrorsMap(errors),HttpStatus.OK);
     }
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex){
@@ -40,8 +40,8 @@ public class GlobalExceptionHandler {
         errorMap.put(ex.getName(), "expected type: "+ Objects.requireNonNull(ex.getRequiredType()).getSimpleName()+"."+" " +
                         "Provided: "+ex.getValue());
 
-        return new ResponseEntity<>(ResponseUtility.failureResponseWithMessageAndBody(ResponseConstants.BAD_REQUEST,
-                "Invalid request parameter", errorMap),HttpStatus.BAD_REQUEST);
+        return ResponseUtility.failureResponseWithMessageAndBody(ResponseConstants.BAD_REQUEST,
+                "Invalid request parameter", errorMap,HttpStatus.BAD_REQUEST);
     }
 
 

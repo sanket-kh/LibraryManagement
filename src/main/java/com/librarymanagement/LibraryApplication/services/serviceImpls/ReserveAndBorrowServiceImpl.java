@@ -24,6 +24,7 @@ import com.librarymanagement.LibraryApplication.services.ReserveAndBorrowService
 import com.librarymanagement.LibraryApplication.utils.Constants;
 import com.librarymanagement.LibraryApplication.utils.ResponseConstants;
 import com.librarymanagement.LibraryApplication.utils.ResponseUtility;
+import com.librarymanagement.LibraryApplication.utils.Utils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -52,24 +53,24 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
     @Override
     public ResponseEntity<Object> burrowBook(BorrowRequest borrowRequest) {
         try {
-            User user = userRepo.findUserByUsername(borrowRequest.getUsername());
-            if (user == null) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "Invalid username"), HttpStatus.OK);
-            }
-
+            User user = userRepo.findUserByUsername(Utils.getUsernameFromContext());
             Book book = bookRepo.getBookByIsbn(borrowRequest.getIsbn());
             if (book == null) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "The book doesnt exist in the library"), HttpStatus.NO_CONTENT);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
+                        "The book doesnt exist in the library", HttpStatus.NO_CONTENT);
             }
             if (!book.getIsAvailable() || book.getCopies() == 0) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "The book is unavailable"), HttpStatus.NO_CONTENT);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
+                        "The book is unavailable", HttpStatus.NO_CONTENT);
             }
             ReserveAndBorrow existingTransaction = reserveAndBurrowRepo.findExistingTransactionByBookAndUser(book, user);
             if (existingTransaction != null) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.FORBIDDEN, "User cannot issue same book more than once"), HttpStatus.CONFLICT);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.FORBIDDEN,
+                        "User cannot issue same book more than once", HttpStatus.CONFLICT);
             }
             if (reserveAndBurrowRepo.findBorrowedBooksByUsername(user.getUsername()).size() >= Constants.BORROW_LIMIT_PER_USER) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.FORBIDDEN, "User has maximum number of books burrowed"), HttpStatus.FORBIDDEN);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.FORBIDDEN,
+                        "User has maximum number of books burrowed", HttpStatus.FORBIDDEN);
             }
             ReserveAndBorrow reserveAndBorrow = new ReserveAndBorrow();
             reserveAndBorrow.setBook(book);
@@ -81,27 +82,24 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
             bookRepo.save(book);
             reserveAndBurrowRepo.save(reserveAndBorrow);
 
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK, "The book has been issued "), HttpStatus.OK);
+            return ResponseUtility.successResponseWithMessage(ResponseConstants.OK, "The book has been issued ", HttpStatus.OK);
         } catch (Exception e) {
             log.error("ReserveAndBorrowServiceImpl :: borrowBook ", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Unable to borrow book"), HttpStatus.OK);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Unable to borrow book", HttpStatus.OK);
         }
     }
 
     @Override
     public ResponseEntity<Object> returnBook(BorrowRequest returnRequest) {
         try {
-            User user = userRepo.findUserByUsername(returnRequest.getUsername());
-            if (user == null) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "Invalid username"), HttpStatus.OK);
-            }
+            User user = userRepo.findUserByUsername(Utils.getUsernameFromContext());
             Book book = bookRepo.getBookByIsbn(returnRequest.getIsbn());
             if (book == null) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "The book doesnt exist in the library"), HttpStatus.OK);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "The book doesnt exist in the library", HttpStatus.OK);
             }
             ReserveAndBorrow existingTransaction = reserveAndBurrowRepo.findExistingTransactionByBookAndUser(book, user);
             if (existingTransaction == null) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.FORBIDDEN, "User has not burrowed this book"), HttpStatus.OK);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.FORBIDDEN, "User has not burrowed this book", HttpStatus.OK);
             }
 
             existingTransaction.setReturnDate(LocalDate.now());
@@ -124,30 +122,27 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
 
             reserveAndBurrowRepo.save(existingTransaction);
 
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK, "Book returned. " + libraryResponse.getMessage()), HttpStatus.OK);
+            return ResponseUtility.successResponseWithMessage(ResponseConstants.OK, "Book returned. " + libraryResponse.getMessage(), HttpStatus.OK);
         } catch (Exception e) {
             log.error("ReserveAndBorrowServiceImpl :: returnBook ", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Unable to return book"), HttpStatus.OK);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Unable to return book", HttpStatus.OK);
         }
     }
 
     @Override
     public ResponseEntity<Object> reserveUnavailableBook(ReserveRequest reserveRequest) {
         try {
-            User user = userRepo.findUserByUsername(reserveRequest.getUsername());
-            if (user == null) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "Invalid username"), HttpStatus.OK);
-            }
+            User user = userRepo.findUserByUsername(Utils.getUsernameFromContext());
             Book book = bookRepo.getBookByIsbn(reserveRequest.getIsbn());
             if (book == null) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "The book doesnt exist in the library"), HttpStatus.OK);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "The book doesnt exist in the library", HttpStatus.OK);
             }
             if (book.getCopies() != 0) {
-                return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.FORBIDDEN, "Cannot reserve available book. Borrow it instead"), HttpStatus.OK);
+                return ResponseUtility.successResponseWithMessage(ResponseConstants.FORBIDDEN, "Cannot reserve available book. Borrow it instead", HttpStatus.OK);
             }
             List<ReservedBookDto> reservedBookDtoList = reserveAndBurrowRepo.findReservedBooksByUsername(user.getUsername());
             if (reservedBookDtoList.size() > Constants.MAX_RESERVE_LIMIT_PER_USER) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.FORBIDDEN, "Maximum reservation has already been made by the user"), HttpStatus.OK);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.FORBIDDEN, "Maximum reservation has already been made by the user", HttpStatus.OK);
             }
             ReserveAndBorrow reserveAndBorrow = new ReserveAndBorrow();
             reserveAndBorrow.setBook(book);
@@ -155,10 +150,10 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
             reserveAndBorrow.setIsIssued(Boolean.FALSE);
             reserveAndBurrowRepo.save(reserveAndBorrow);
 
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK, "The book has been reserved"), HttpStatus.OK);
+            return ResponseUtility.successResponseWithMessage(ResponseConstants.OK, "The book has been reserved", HttpStatus.OK);
         } catch (Exception e) {
             log.error("ReserveAndBorrowServiceImpl :: reserveUnavailableBook ", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Unable to reserve book"), HttpStatus.OK);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Unable to reserve book", HttpStatus.OK);
         }
     }
 
@@ -167,21 +162,21 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
         try {
             User user = userRepo.findUserByUsername(cancleReserveRequest.getUsername());
             if (user == null) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "Invalid username"), HttpStatus.OK);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "Invalid username", HttpStatus.OK);
             }
             Book book = bookRepo.getBookByIsbn(cancleReserveRequest.getIsbn());
             if (book == null) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "The book doesnt exist in the library"), HttpStatus.OK);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "The book doesnt exist in the library", HttpStatus.OK);
             }
             ReserveAndBorrow reserveAndBorrow = reserveAndBurrowRepo.findReservedTransactionByUserAndBook(user, book);
             if (reserveAndBorrow == null) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "User has not reserved the book"), HttpStatus.OK);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "User has not reserved the book", HttpStatus.OK);
             }
             reserveAndBorrow.setReserved(Boolean.FALSE);
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK, "Reservation canceled"), HttpStatus.OK);
+            return ResponseUtility.successResponseWithMessage(ResponseConstants.OK, "Reservation canceled", HttpStatus.OK);
         } catch (Exception e) {
             log.error("ReserveAndBorrowServiceImpl :: cancelReservationOfBook ", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Unable to cancel reservation of book"), HttpStatus.OK);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Unable to cancel reservation of book", HttpStatus.OK);
         }
     }
 
@@ -190,12 +185,12 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
         try {
             User user = userRepo.findUserByUsername(username);
             if (user == null) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "Invalid username"), HttpStatus.OK);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "Invalid username", HttpStatus.OK);
             }
             List<BorrowedBookDto> borrowedBookList = reserveAndBurrowRepo.findBorrowedBooksByUsername(username);
 
             if (borrowedBookList.isEmpty()) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "User has not borrowed any book"), HttpStatus.OK);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "User has not borrowed any book", HttpStatus.OK);
             }
             borrowedBookList.forEach(borrowedBookDto -> {
                 long overdue =
@@ -203,10 +198,10 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
                                 LocalDate.now());
                 borrowedBookDto.setOverdue((int) overdue);
             });
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessageAndBody(ResponseConstants.OK, "List of books retrieved", borrowedBookList), HttpStatus.OK);
+            return ResponseUtility.failureResponseWithMessageAndBody(ResponseConstants.OK, "List of books retrieved", borrowedBookList, HttpStatus.OK);
         } catch (Exception e) {
             log.error("ReserveAndBorrowServiceImpl :: viewBurrowedBooksByUser ", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Unable to view books reserved by user"), HttpStatus.OK);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Unable to view books reserved by user", HttpStatus.OK);
         }
     }
 
@@ -215,18 +210,18 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
         try {
             User user = userRepo.findUserByUsername(username);
             if (user == null) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "Invalid username"), HttpStatus.OK);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "Invalid username", HttpStatus.OK);
             }
             List<ReservedBookDto> reservedBookDtoList = reserveAndBurrowRepo.findReservedBooksByUsername(username);
 
             if (reservedBookDtoList.isEmpty()) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "User has not reserved any book"), HttpStatus.OK);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "User has not reserved any book", HttpStatus.OK);
             }
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "List of books " +
-                                                                                                                "retrieved", reservedBookDtoList), HttpStatus.OK);
+            return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "List of books " +
+                                                                                           "retrieved", reservedBookDtoList, HttpStatus.OK);
         } catch (Exception e) {
             log.error("ReserveAndBorrowServiceImpl :: viewReservedBooksByUser ", e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Unable to view books borrowed by user"), HttpStatus.OK);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Unable to view books borrowed by user", HttpStatus.OK);
         }
     }
 
@@ -236,20 +231,20 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
         try {
             User user = this.userRepo.findUserByUsername(username);
             if (user == null) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "Invalid User"), HttpStatus.UNAUTHORIZED);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "Invalid User", HttpStatus.UNAUTHORIZED);
             }
             Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("returnDate").descending());
             Page<UserBookTransaction> page =
                     reserveAndBurrowRepo.getAllActiveUserTransaction(pageable, username);
             List<UserBookTransaction> userBookTransactions = page.getContent();
             if (userBookTransactions.isEmpty()) {
-                return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.NOT_FOUND, "No " +
-                                                                                                                    "transaction done yet"), HttpStatus.OK);
+                return ResponseUtility.successResponseWithMessage(ResponseConstants.NOT_FOUND, "No " +
+                                                                                               "transaction done yet", HttpStatus.OK);
             }
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "User transactions fetched", userBookTransactions), HttpStatus.OK);
+            return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "User transactions fetched", userBookTransactions, HttpStatus.OK);
         } catch (Exception e) {
-            log.error("ReserveAndBorrowServiceImpl :: getUserTransaction",e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("ReserveAndBorrowServiceImpl :: getUserTransaction", e);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
 
@@ -261,13 +256,13 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
             Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("returnDate"));
             Page<BookTransactionsDto> allTransactions = reserveAndBurrowRepo.getAllTransaction(pageable);
             if (allTransactions.isEmpty()) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "No " +
-                                                                                                                    "transaction done yet"), HttpStatus.NOT_FOUND);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "No " +
+                                                                                               "transaction done yet", HttpStatus.NOT_FOUND);
             }
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "Transactions fetched", allTransactions.getContent()), HttpStatus.OK);
+            return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK, "Transactions fetched", allTransactions.getContent(), HttpStatus.OK);
         } catch (Exception e) {
-            log.error("ReserveAndBorrowServiceImpl :: getAllTransactions",e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("ReserveAndBorrowServiceImpl :: getAllTransactions", e);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
 
@@ -279,16 +274,16 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
             List<ReserveAndBorrow> reserveAndBorrowList =
                     reserveAndBurrowRepo.searchFilter(transactionSearchReq);
             if (reserveAndBorrowList.isEmpty()) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "No transactions found"), HttpStatus.NOT_FOUND);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "No transactions found", HttpStatus.NOT_FOUND);
             }
 
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
+            return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
                     "transactions found",
-                    ReserveAndBorrowMapper.mapToBookTransactionDto(reserveAndBorrowList)),
+                    ReserveAndBorrowMapper.mapToBookTransactionDto(reserveAndBorrowList),
                     HttpStatus.OK);
         } catch (Exception e) {
-            log.error("ReserveAndBorrowServiceImpl :: searchTransactions",e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("ReserveAndBorrowServiceImpl :: searchTransactions", e);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
 

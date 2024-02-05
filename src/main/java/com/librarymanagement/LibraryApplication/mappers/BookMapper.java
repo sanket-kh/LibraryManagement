@@ -41,14 +41,6 @@ public class BookMapper {
         return book;
     }
 
-    public static SaveBookRequest mapBookToSaveBookRequest(Book book) {
-        SaveBookRequest saveBookRequest = new SaveBookRequest();
-        saveBookRequest.setTitle(book.getTitle());
-        saveBookRequest.setIsbn(book.getIsbn());
-        saveBookRequest.setCopies(book.getCopies());
-        saveBookRequest.setAuthor(book.getAuthor());
-        return saveBookRequest;
-    }
 
     public static List<BookDto> mapBookListToBaseBookDtoList(List<Book> bookList) {
         List<BookDto> bookDtoList = new ArrayList<>();

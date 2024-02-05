@@ -29,12 +29,13 @@ public class AccountTypeServiceImpl implements AccountTypeService {
                 accountType = new AccountType();
                 accountType.setAccountTypeName(accountTypeRequest.getAccountTypeName());
                 accountTypeRepo.save(accountType);
-                return new ResponseEntity<>(ResponseUtility.successResponseWithMessage(ResponseConstants.OK, "Account type added"), HttpStatus.OK);
+                return ResponseUtility.successResponseWithMessage(ResponseConstants.OK, "Account " +
+                                                                                        "type added", HttpStatus.OK);
             }
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.ALREADY_EXISTS, "Account type " + "already exist"), HttpStatus.CONFLICT);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.ALREADY_EXISTS, "Account type " + "already exist", HttpStatus.CONFLICT);
         } catch (Exception e) {
             log.error("AccountTypeService :: addAccountType",e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some exception occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -43,17 +44,17 @@ public class AccountTypeServiceImpl implements AccountTypeService {
         try {
             List<AccountType> accountTypeList = accountTypeRepo.findAllAccountTypes();
             if (accountTypeList.isEmpty()) {
-                return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT,
-                        "Account type list is empty"), HttpStatus.NOT_FOUND);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT,
+                        "Account type list is empty", HttpStatus.NOT_FOUND);
             }
             AccountTypesDto accountTypeName = AccountTypeMapper.mapToListOfAccountTypeName(accountTypeList);
-            return new ResponseEntity<>(ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
-                    "Account type list retrieved", accountTypeName), HttpStatus.OK);
+            return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
+                    "Account type list retrieved", accountTypeName, HttpStatus.OK);
 
         } catch (Exception e) {
             log.error("AccountTypeService :: getAllAccountTypes",e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
-                    "Some exception occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+                    "Some exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
 

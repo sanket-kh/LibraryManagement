@@ -11,6 +11,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -20,32 +21,37 @@ import reactor.core.publisher.Mono;
 public class ReportingStatisticServiceImpl implements ReportingStatisticService {
     private final WebClientRequestBuilder webClientRequestBuilder;
 
+    private static Mono<DefaultResponse> getDefaultResponseMono(ClientResponse clientResponse) {
+        if (clientResponse.statusCode().equals(HttpStatus.OK)) {
+            return clientResponse.bodyToMono(DefaultResponse.class);
+        } else if (clientResponse.statusCode().is4xxClientError()) {
+            return Mono.just(new DefaultResponse(false,
+                    "Reporting module error: 4xx or 5xx",
+                    ResponseConstants.SERVER_ERROR, null
+                    ));
+        } else {
+            return Mono.just(new DefaultResponse(false,
+                    "Reporting module error: 4xx or 5xx",
+                    ResponseConstants.SERVER_ERROR, null
+                    ));
+        }
+    }
+
     @Override
     public ResponseEntity<Object> getListOfAllBooks() {
         try {
-            WebClient webClient =webClientRequestBuilder.buildGetWebClientRequest(null);
+            WebClient webClient = webClientRequestBuilder.buildGetWebClientRequest();
 
 
             Mono<DefaultResponse> response = webClient.get()
                     .uri(UriConstants.GET_ALL_BOOKS).header("Authorization")
-                    .exchangeToMono(clientResponse -> {
-                                if (clientResponse.statusCode().equals(HttpStatus.OK)) {
-                                    return clientResponse.bodyToMono(DefaultResponse.class);
-                                } else if (clientResponse.statusCode().is4xxClientError()) {
-                                    return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                                            "Reporting module error: 4xx or 5xx"));
-                                } else {
-                                    return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                                            "Reporting module error"));
-                                }
-                            }
+                    .exchangeToMono(ReportingStatisticServiceImpl::getDefaultResponseMono
                     );
-
-            DefaultResponse defaultResponse = response.block();
-            return new ResponseEntity<>(defaultResponse, HttpStatus.OK);
+            return new ResponseEntity<>(response.block(), HttpStatus.OK);
         } catch (Exception e) {
-            log.error("ReportingStatisticService :: getListOfAllBooks",e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("ReportingStatisticService :: getListOfAllBooks", e);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Sorry exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
 
@@ -54,31 +60,16 @@ public class ReportingStatisticServiceImpl implements ReportingStatisticService 
     @Override
     public ResponseEntity<Object> getListOfAllAvailableBooks() {
         try {
-            WebClient webClient =
-                    webClientRequestBuilder.buildGetWebClientRequest(null);
-
-
-            Mono<DefaultResponse> response = webClient.get()
-                    .uri(UriConstants.GET_ALL_AVAILABLE_BOOKS)
-                    .exchangeToMono(clientResponse -> {
-                                if (clientResponse.statusCode().equals(HttpStatus.OK)) {
-                                    return clientResponse.bodyToMono(DefaultResponse.class);
-                                } else if (clientResponse.statusCode().is4xxClientError() ||
-                                        clientResponse.statusCode().is5xxServerError()) {
-                                    return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                                            "Reporting module error: 4xx or 5xx"));
-                                } else {
-                                    return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                                            "Reporting module error"));
-                                }
-                            }
+            Mono<DefaultResponse> response = webClientRequestBuilder
+                    .buildGetWebClientRequest().get()
+                    .uri(UriConstants.GET_ALL_AVAILABLE_BOOKS).header("Authorization")
+                    .exchangeToMono(ReportingStatisticServiceImpl::getDefaultResponseMono
                     );
-
-            DefaultResponse defaultResponse = response.block();
-            return new ResponseEntity<>(defaultResponse, HttpStatus.OK);
+            return new ResponseEntity<>(response.block(), HttpStatus.OK);
         } catch (Exception e) {
-            log.error("LibrarianAccountService :: getListOfAllAvailableBooks",e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("ReportingStatisticService :: getListOfAllBooks", e);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Sorry exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -86,313 +77,162 @@ public class ReportingStatisticServiceImpl implements ReportingStatisticService 
     public ResponseEntity<Object> getListOfAllReservedBooks() {
         try {
             WebClient webClient =
-                    webClientRequestBuilder.buildGetWebClientRequest(null);
+                    webClientRequestBuilder.buildGetWebClientRequest();
 
             Mono<DefaultResponse> response = webClient.get()
-                    .uri(UriConstants.GET_ALL_RESERVED_BOOKS)
-                    .exchangeToMono(clientResponse -> {
-                                if (clientResponse.statusCode().equals(HttpStatus.OK)) {
-                                    return clientResponse.bodyToMono(DefaultResponse.class);
-                                } else if (clientResponse.statusCode().is4xxClientError() ||
-                                        clientResponse.statusCode().is5xxServerError()) {
-                                    return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                                            "Reporting module error: 4xx or 5xx"));
-                                } else {
-                                    return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                                            "Reporting module error"));
-                                }
-                            }
+                    .uri(UriConstants.GET_ALL_RESERVED_BOOKS).header("Authorization")
+                    .exchangeToMono(ReportingStatisticServiceImpl::getDefaultResponseMono
                     );
-
-            DefaultResponse defaultResponse = response.block();
-            return new ResponseEntity<>(defaultResponse, HttpStatus.OK);
+            return new ResponseEntity<>(response.block(), HttpStatus.OK);
         } catch (Exception e) {
-            log.error("LibrarianAccountService :: getListOfAllReservedBooks",e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
-
+            log.error("ReportingStatisticService :: getListOfAllBooks", e);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Sorry exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
     @Override
     public ResponseEntity<Object> getCountOfTotalBooks() {
         try {
-            WebClient webClient =
-                    webClientRequestBuilder.buildGetWebClientRequest(null);
-
-
-            Mono<DefaultResponse> response = webClient.get()
-                    .uri(UriConstants.GET_COUNT_OF_TOTAL_BOOKS)
-                    .exchangeToMono(clientResponse -> {
-                                if (clientResponse.statusCode().equals(HttpStatus.OK)) {
-                                    return clientResponse.bodyToMono(DefaultResponse.class);
-                                } else if (clientResponse.statusCode().is4xxClientError() ||
-                                        clientResponse.statusCode().is5xxServerError()) {
-                                    return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                                            "Reporting module error: 4xx or 5xx"));
-                                } else {
-                                    return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                                            "Reporting module error"));
-                                }
-                            }
+            Mono<DefaultResponse> response = webClientRequestBuilder
+                    .buildGetWebClientRequest().get()
+                    .uri(UriConstants.GET_COUNT_OF_TOTAL_BOOKS).header("Authorization")
+                    .exchangeToMono(ReportingStatisticServiceImpl::getDefaultResponseMono
                     );
-
-            DefaultResponse defaultResponse = response.block();
-            return new ResponseEntity<>(defaultResponse, HttpStatus.OK);
+            return new ResponseEntity<>(response.block(), HttpStatus.OK);
         } catch (Exception e) {
-            log.error("LibrarianAccountService :: getCountOfTotalBooks",e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
-
+            log.error("ReportingStatisticService :: getListOfAllBooks", e);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Sorry exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
     public ResponseEntity<Object> getCountOfAvailableBooks() {
         try {
-            WebClient webClient =
-                    webClientRequestBuilder.buildGetWebClientRequest(null);
-
-
-            Mono<DefaultResponse> response = webClient.get()
-                    .uri(UriConstants.GET_COUNT_OF_AVAILABLE_BOOKS)
-                    .exchangeToMono(clientResponse -> {
-                                if (clientResponse.statusCode().equals(HttpStatus.OK)) {
-                                    return clientResponse.bodyToMono(DefaultResponse.class);
-                                } else if (clientResponse.statusCode().is4xxClientError() ||
-                                        clientResponse.statusCode().is5xxServerError()) {
-                                    return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                                            "Reporting module error: 4xx or 5xx"));
-                                } else {
-                                    return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                                            "Reporting module error"));
-                                }
-                            }
+            Mono<DefaultResponse> response = webClientRequestBuilder
+                    .buildGetWebClientRequest().get()
+                    .uri(UriConstants.GET_COUNT_OF_AVAILABLE_BOOKS).header("Authorization")
+                    .exchangeToMono(ReportingStatisticServiceImpl::getDefaultResponseMono
                     );
-
-            DefaultResponse defaultResponse = response.block();
-            return new ResponseEntity<>(defaultResponse, HttpStatus.OK);
+            return new ResponseEntity<>(response.block(), HttpStatus.OK);
         } catch (Exception e) {
-            log.error("LibrarianAccountService :: getCountOfAvailableBooks",e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("ReportingStatisticService :: getListOfAllBooks", e);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Sorry exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
     public ResponseEntity<Object> getBookCount() {
         try {
-            WebClient webClient =
-                    webClientRequestBuilder.buildGetWebClientRequest(null);
-
-
-            Mono<DefaultResponse> response = webClient.get()
-                    .uri(UriConstants.GET_UNIQUE_BOOK_COUNT)
-                    .exchangeToMono(clientResponse -> {
-                                if (clientResponse.statusCode().equals(HttpStatus.OK)) {
-                                    return clientResponse.bodyToMono(DefaultResponse.class);
-                                } else if (clientResponse.statusCode().is4xxClientError() ||
-                                           clientResponse.statusCode().is5xxServerError()) {
-                                    return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                                            "Reporting module error: 4xx or 5xx"));
-                                } else {
-                                    return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                                            "Reporting module error"));
-                                }
-                            }
+            Mono<DefaultResponse> response = webClientRequestBuilder
+                    .buildGetWebClientRequest().get()
+                    .uri(UriConstants.GET_UNIQUE_BOOK_COUNT).header("Authorization")
+                    .exchangeToMono(ReportingStatisticServiceImpl::getDefaultResponseMono
                     );
-
-            DefaultResponse defaultResponse = response.block();
-            return new ResponseEntity<>(defaultResponse, HttpStatus.OK);
+            return new ResponseEntity<>(response.block(), HttpStatus.OK);
         } catch (Exception e) {
-            log.error("LibrarianAccountService :: getBookCount",e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("ReportingStatisticService :: getListOfAllBooks", e);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Sorry exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
     public ResponseEntity<Object> getCountOfTotalBorrowedBooks() {
         try {
-            WebClient webClient =
-                    webClientRequestBuilder.buildGetWebClientRequest(null);
-
-
-            Mono<DefaultResponse> response = webClient.get()
-                    .uri(UriConstants.GET_COUNT_BORROWED_BOOKS)
-                    .exchangeToMono(clientResponse -> {
-                                if (clientResponse.statusCode().equals(HttpStatus.OK)) {
-                                    return clientResponse.bodyToMono(DefaultResponse.class);
-                                } else if (clientResponse.statusCode().is4xxClientError() ||
-                                           clientResponse.statusCode().is5xxServerError()) {
-                                    return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                                            "Reporting module error: 4xx or 5xx"));
-                                } else {
-                                    return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                                            "Reporting module error"));
-                                }
-                            }
+            Mono<DefaultResponse> response = webClientRequestBuilder
+                    .buildGetWebClientRequest().get()
+                    .uri(UriConstants.GET_COUNT_BORROWED_BOOKS).header("Authorization")
+                    .exchangeToMono(ReportingStatisticServiceImpl::getDefaultResponseMono
                     );
-
-            DefaultResponse defaultResponse = response.block();
-            return new ResponseEntity<>(defaultResponse, HttpStatus.OK);
+            return new ResponseEntity<>(response.block(), HttpStatus.OK);
         } catch (Exception e) {
-            log.error("LibrarianAccountService :: getCountOfTotalBorrowedBooks",e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("ReportingStatisticService :: getListOfAllBooks", e);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Sorry exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
     public ResponseEntity<Object> getCountOfUniqueBorrowedBooks() {
         try {
-            WebClient webClient =
-                    webClientRequestBuilder.buildGetWebClientRequest(null);
-
-
-            Mono<DefaultResponse> response = webClient.get()
-                    .uri(UriConstants.GET_COUNT_BORROWED_BOOKS_UNIQUE)
-                    .exchangeToMono(clientResponse -> {
-                                if (clientResponse.statusCode().equals(HttpStatus.OK)) {
-                                    return clientResponse.bodyToMono(DefaultResponse.class);
-                                } else if (clientResponse.statusCode().is4xxClientError() ||
-                                           clientResponse.statusCode().is5xxServerError()) {
-                                    return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                                            "Reporting module error: 4xx or 5xx"));
-                                } else {
-                                    return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                                            "Reporting module error"));
-                                }
-                            }
+            Mono<DefaultResponse> response = webClientRequestBuilder
+                    .buildGetWebClientRequest().get()
+                    .uri(UriConstants.GET_COUNT_BORROWED_BOOKS_UNIQUE).header("Authorization")
+                    .exchangeToMono(ReportingStatisticServiceImpl::getDefaultResponseMono
                     );
-
-            DefaultResponse defaultResponse = response.block();
-            return new ResponseEntity<>(defaultResponse, HttpStatus.OK);
+            return new ResponseEntity<>(response.block(), HttpStatus.OK);
         } catch (Exception e) {
-            log.error("LibrarianAccountService :: getCountOfUniqueBorrowedBooks",e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
-
+            log.error("ReportingStatisticService :: getListOfAllBooks", e);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Sorry exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
     public ResponseEntity<Object> getCountOfUser() {
         try {
-            WebClient webClient =
-                    webClientRequestBuilder.buildGetWebClientRequest(null);
-
-
-            Mono<DefaultResponse> response = webClient.get()
-                    .uri(UriConstants.GET_COUNT_USERS)
-                    .exchangeToMono(clientResponse -> {
-                                if (clientResponse.statusCode().equals(HttpStatus.OK)) {
-                                    return clientResponse.bodyToMono(DefaultResponse.class);
-                                } else if (clientResponse.statusCode().is4xxClientError() ||
-                                           clientResponse.statusCode().is5xxServerError()) {
-                                    return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                                            "Reporting module error: 4xx or 5xx"));
-                                } else {
-                                    return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                                            "Reporting module error"));
-                                }
-                            }
+            Mono<DefaultResponse> response = webClientRequestBuilder
+                    .buildGetWebClientRequest().get()
+                    .uri(UriConstants.GET_COUNT_USERS).header("Authorization")
+                    .exchangeToMono(ReportingStatisticServiceImpl::getDefaultResponseMono
                     );
-
-            DefaultResponse defaultResponse = response.block();
-            return new ResponseEntity<>(defaultResponse, HttpStatus.OK);
+            return new ResponseEntity<>(response.block(), HttpStatus.OK);
         } catch (Exception e) {
-            log.error("LibrarianAccountService :: getCountOfUser",e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("ReportingStatisticService :: getListOfAllBooks", e);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Sorry exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
     public ResponseEntity<Object> getCountOfActiveUser() {
         try {
-            WebClient webClient =
-                    webClientRequestBuilder.buildGetWebClientRequest(null);
-
-
-            Mono<DefaultResponse> response = webClient.get()
-                    .uri(UriConstants.GET_COUNT_ACTIVE_USERS)
-                    .exchangeToMono(clientResponse -> {
-                                if (clientResponse.statusCode().equals(HttpStatus.OK)) {
-                                    return clientResponse.bodyToMono(DefaultResponse.class);
-                                } else if (clientResponse.statusCode().is4xxClientError() ||
-                                           clientResponse.statusCode().is5xxServerError()) {
-                                    return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                                            "Reporting module error: 4xx or 5xx"));
-                                } else {
-                                    return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                                            "Reporting module error"));
-                                }
-                            }
+            Mono<DefaultResponse> response = webClientRequestBuilder
+                    .buildGetWebClientRequest().get()
+                    .uri(UriConstants.GET_COUNT_ACTIVE_USERS).header("Authorization")
+                    .exchangeToMono(ReportingStatisticServiceImpl::getDefaultResponseMono
                     );
-
-            DefaultResponse defaultResponse = response.block();
-            return new ResponseEntity<>(defaultResponse, HttpStatus.OK);
+            return new ResponseEntity<>(response.block(), HttpStatus.OK);
         } catch (Exception e) {
-            log.error("LibrarianAccountService :: getCountOfActiveUser",e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("ReportingStatisticService :: getListOfAllBooks", e);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Sorry exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
     public ResponseEntity<Object> getCountOfLockedUser() {
         try {
-            WebClient webClient =
-                    webClientRequestBuilder.buildGetWebClientRequest(null);
 
-
-            Mono<DefaultResponse> response = webClient.get()
-                    .uri(UriConstants.GET_COUNT_LOCKED_USERS)
-                    .exchangeToMono(clientResponse -> {
-                                if (clientResponse.statusCode().equals(HttpStatus.OK)) {
-                                    return clientResponse.bodyToMono(DefaultResponse.class);
-                                } else if (clientResponse.statusCode().is4xxClientError() ||
-                                           clientResponse.statusCode().is5xxServerError()) {
-                                    return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                                            "Reporting module error: 4xx or 5xx"));
-                                } else {
-                                    return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                                            "Reporting module error"));
-                                }
-                            }
+            Mono<DefaultResponse> response = webClientRequestBuilder
+                    .buildGetWebClientRequest().get()
+                    .uri(UriConstants.GET_COUNT_LOCKED_USERS).header("Authorization")
+                    .exchangeToMono(ReportingStatisticServiceImpl::getDefaultResponseMono
                     );
-
-            DefaultResponse defaultResponse = response.block();
-            return new ResponseEntity<>(defaultResponse, HttpStatus.OK);
+            return new ResponseEntity<>(response.block(), HttpStatus.OK);
         } catch (Exception e) {
-            log.error("LibrarianAccountService :: getCountOfLockedUser",e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
-
+            log.error("ReportingStatisticService :: getListOfAllBooks", e);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Sorry exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
     public ResponseEntity<Object> getCountOfDisabledUser() {
         try {
-            WebClient webClient =
-                    webClientRequestBuilder.buildGetWebClientRequest(null);
-
-
-            Mono<DefaultResponse> response = webClient.get()
-                    .uri(UriConstants.GET_COUNT_DISABLED_USERS)
-                    .exchangeToMono(clientResponse -> {
-                                if (clientResponse.statusCode().equals(HttpStatus.OK)) {
-                                    return clientResponse.bodyToMono(DefaultResponse.class);
-                                } else if (clientResponse.statusCode().is4xxClientError() ||
-                                           clientResponse.statusCode().is5xxServerError()) {
-                                    return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                                            "Reporting module error: 4xx or 5xx"));
-                                } else {
-                                    return Mono.just(ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                                            "Reporting module error"));
-                                }
-                            }
+            Mono<DefaultResponse> response = webClientRequestBuilder
+                    .buildGetWebClientRequest().get()
+                    .uri(UriConstants.GET_COUNT_DISABLED_USERS).header("Authorization")
+                    .exchangeToMono(ReportingStatisticServiceImpl::getDefaultResponseMono
                     );
-
-            DefaultResponse defaultResponse = response.block();
-            return new ResponseEntity<>(defaultResponse, HttpStatus.OK);
+            return new ResponseEntity<>(response.block(), HttpStatus.OK);
         } catch (Exception e) {
-            log.error("LibrarianAccountService :: getCountOfDisabledUser",e);
-            return new ResponseEntity<>(ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred"), HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("ReportingStatisticService :: getListOfAllBooks", e);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Sorry exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
