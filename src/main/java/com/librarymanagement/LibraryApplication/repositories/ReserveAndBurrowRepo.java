@@ -69,8 +69,8 @@ public interface ReserveAndBurrowRepo extends JpaRepository<ReserveAndBorrow, Lo
             FROM ReserveAndBorrow R
             INNER JOIN Book B ON R.book = B
             INNER JOIN User U ON R.user = U
-            WHERE R.isIssued= FALSE
-            AND U.username = :username
+            WHERE U.username = :username
+            order by R.returnDate
             """)
     Page<UserBookTransaction> getAllActiveUserTransaction(Pageable pageable,String username);
 
@@ -91,4 +91,13 @@ public interface ReserveAndBurrowRepo extends JpaRepository<ReserveAndBorrow, Lo
                 """)
     Page<FinesDto> getAllFinesTransaction(Pageable pageable);
 
+    @Query(value = """
+SELECT new com.librarymanagement.LibraryApplication.models.dtos.UserBookDto(B.isbn, B.author,B.title)
+from ReserveAndBorrow R
+inner join Book B on R.book = B
+inner join User U on R.user = U
+where R.user.username =:username
+And R.isIssued = true
+""")
+    List<UserBookDto> getBooksBorrowedByUser(String username);
 }

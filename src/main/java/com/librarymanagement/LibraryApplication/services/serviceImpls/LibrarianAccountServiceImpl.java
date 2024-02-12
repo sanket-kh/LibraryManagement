@@ -202,7 +202,8 @@ public class LibrarianAccountServiceImpl implements LibrarianAccountService {
     @Override
     public ResponseEntity<Object> getClearFineAccountByAccountType(String accountTypeName) {
         try {
-            LibrarianAccount account = this.librarianAccountRepo.getClearFineAccountByAccountType(accountTypeName);
+            LibrarianAccount account =
+                    this.librarianAccountRepo.getClearFineAccountByAccountTypeAndUsername(accountTypeName);
             if (account == null) {
                 return ResponseUtility.successResponseWithMessage(ResponseConstants.NO_CONTENT,
                         "Details not found", HttpStatus.NOT_FOUND);

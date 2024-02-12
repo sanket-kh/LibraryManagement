@@ -41,17 +41,4 @@ public class Config {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
-
-
-//    @Bean
-//    public FilterRegistrationBean<ExceptionHandlingFilter> exceptionFilterRegistration(){
-//        FilterRegistrationBean<ExceptionHandlingFilter> registrationBean =
-//                new FilterRegistrationBean<>();
-//        registrationBean.setFilter(new ExceptionHandlingFilter());
-//        registrationBean.addUrlPatterns("/**");
-//        registrationBean.setOrder(Ordered.LOWEST_PRECEDENCE);
-//        return registrationBean;
-//    }
-
-
 }

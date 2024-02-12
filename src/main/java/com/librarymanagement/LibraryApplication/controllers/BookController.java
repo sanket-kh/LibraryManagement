@@ -62,6 +62,16 @@ public class BookController {
                     "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("/user/get-borrowed")
+    public ResponseEntity<Object> getBorrowedBooksUser() {
+        try {
+            return bookService.getBorrowedBooksUser();
+        } catch (Exception e) {
+            log.error("BookController :: getAllBooks", e);
+            return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
+                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     @GetMapping("/admin/get-all")
     @Operation(summary = "get a list of associated organization by type",
             responses = {

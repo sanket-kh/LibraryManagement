@@ -23,4 +23,6 @@ public interface BookService {
     ResponseEntity<Object> setBookStatusUnavailable(Long isbn);
 
     ResponseEntity<Object> setBookStatusAvailable(Long isbn);
+
+    ResponseEntity<Object> getBorrowedBooksUser();
 }

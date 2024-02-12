@@ -4,8 +4,10 @@ import com.librarymanagement.LibraryApplication.utils.RegexConstants;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Range;
 
 @Getter
 @Setter
@@ -17,13 +19,14 @@ public class UserRegisterRequest {
     private String lastName;
 
     @NotBlank(message = "username is empty")
+    @Size(min = 3, max = 20 , message = "username should be between 3 to 20 characters")
     @Pattern(regexp = RegexConstants.USERNAME_REGEX , message = "Invalid username format")
     private String username;
 
     @Email(message = "Invalid email format")
     private String email;
 
-    @Pattern(regexp = RegexConstants.PHONE_REGEX, message = "Invalid phone number format")
+    @Range(min = 9600000000L , max=9999999999L, message = "Invalid phone number format")
     private Long phone;
 
     @Pattern(regexp = RegexConstants.ADDRESS_REGEX, message = "Invalid address format")
