@@ -4,7 +4,7 @@ import com.library.fine.Dtos.FineDto;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -14,9 +14,9 @@ public class ReserveAndBorrowDto {
 
     private Boolean isIssued;
 
-    private LocalDate issueDate;
+    private LocalDateTime issueDate;
 
-    private LocalDate returnDate;
+    private LocalDateTime returnDate;
 
     private UserDto user;
 

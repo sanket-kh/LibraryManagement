@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -18,8 +18,8 @@ public class UserFineDto{
     private String title;
     private String author;
     private Long isbn;
-    private LocalDate issueDate;
-    private LocalDate returnDate;
+    private LocalDateTime issueDate;
+    private LocalDateTime returnDate;
     private Integer amount;
     private Integer overdue;
 

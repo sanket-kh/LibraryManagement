@@ -7,7 +7,7 @@ import com.librarymanagement.LibraryApplication.entities.User;
 import com.librarymanagement.LibraryApplication.models.dtos.LibrarianAccountDto;
 import com.librarymanagement.LibraryApplication.models.requests.LibrarianAccountRequest;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class LibrarianAccountMapper {
@@ -19,7 +19,7 @@ public class LibrarianAccountMapper {
         librarianAccount.setActive('Y');
         librarianAccount.setAccountNumber(request.getAccountNumber());
         librarianAccount.setAccountName(request.getAccountName());
-        librarianAccount.setRecordedDate(LocalDate.now());
+        librarianAccount.setRecordedDate(LocalDateTime.now());
         librarianAccount.setAccountType(accountType);
         librarianAccount.setAccountAssociatedOrganization(accountAssociatedOrganization);
         librarianAccount.setLibrarian(user);
@@ -33,7 +33,7 @@ public class LibrarianAccountMapper {
         librarianAccount.setActive('Y');
         librarianAccount.setAccountNumber(request.getAccountNumber());
         librarianAccount.setAccountName(request.getAccountName());
-        librarianAccount.setModifiedDate(LocalDate.now());
+        librarianAccount.setModifiedDate(LocalDateTime.now());
         librarianAccount.setAccountType(accountType);
         librarianAccount.setAccountAssociatedOrganization(accountAssociatedOrganization);
         librarianAccount.setLibrarian(user);

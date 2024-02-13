@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -62,7 +62,7 @@ public interface ReserveAndBurrowRepo extends JpaRepository<ReserveAndBorrow, Lo
     WHERE R.RETURN_DATE IS NULL
     AND DATEDIFF(:currentDate, R.ISSUED_DATE)>5
 """ , nativeQuery = true)
-    List<ReserveAndBorrow> reserveAndBorrowListOfDelayedReturn(LocalDate currentDate);
+    List<ReserveAndBorrow> reserveAndBorrowListOfDelayedReturn(LocalDateTime currentDate);
 
     @Query(value = """
             SELECT new com.librarymanagement.LibraryApplication.models.dtos.UserBookTransaction(B.isbn,B.title,B.author,R.issueDate,R.returnDate)
@@ -79,6 +79,7 @@ public interface ReserveAndBurrowRepo extends JpaRepository<ReserveAndBorrow, Lo
             FROM ReserveAndBorrow R
             INNER JOIN Book B ON R.book = B
             INNER JOIN User U ON R.user= U
+            ORDER BY R.returnDate DESC NULLS FIRST
             """)
     Page<BookTransactionsDto> getAllTransaction(Pageable pageable);
 

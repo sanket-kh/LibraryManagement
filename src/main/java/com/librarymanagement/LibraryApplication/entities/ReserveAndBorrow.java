@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -23,10 +23,10 @@ public class ReserveAndBorrow {
     private Boolean isIssued;
 
     @Column(name = "ISSUED_DATE")
-    private LocalDate issueDate;
+    private LocalDateTime issueDate;
 
     @Column(name = "RETURN_DATE")
-    private LocalDate returnDate;
+    private LocalDateTime returnDate;
 
     @ManyToOne
     @JoinColumn(name = "USER_ID")

@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -23,10 +23,10 @@ public class LibrarianAccount {
     private Long accountNumber;
 
     @Column(name = "RECORDED_DATE")
-    private LocalDate recordedDate;
+    private LocalDateTime recordedDate;
 
     @Column(name="MODIFIED_DATE")
-    private LocalDate modifiedDate;
+    private LocalDateTime modifiedDate;
 
     @Column(name = "ACTIVE")
     private Character active;

@@ -62,7 +62,7 @@ public class ReserveAndBorrowDaoImpl implements ReserveAndBorrowDao {
                                                   "AND R.issueDate between :fromDate AND :toDate ";
 
         }
-        if (transactionSearchReq.getToDate() == null){
+        if (transactionSearchReq.getFromDate() != null && transactionSearchReq.getToDate() == null){
             TRANSACTION_SEARCH_FILTER_QUERY = TRANSACTION_SEARCH_FILTER_QUERY +
                                               "AND R.issueDate = :fromDate ";
         }

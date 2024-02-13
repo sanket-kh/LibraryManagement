@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -17,10 +17,10 @@ public class BorrowedBookDto {
     private String author;
     private String title;
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate issuedDate;
+    private LocalDateTime issuedDate;
     private Integer overdue;
 
-    public BorrowedBookDto(Long isbn, String author, String title, LocalDate issuedDate) {
+    public BorrowedBookDto(Long isbn, String author, String title, LocalDateTime issuedDate) {
         this.isbn = isbn;
         this.author = author;
         this.title = title;

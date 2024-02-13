@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 @Getter
 @Setter
 public class TransactionSearchReq {
@@ -17,11 +18,11 @@ public class TransactionSearchReq {
     @Max(value =13L , message="ISBN should be max 13 digits")
     private Long isbn;
 
-    @JsonFormat(pattern ="yyyy-MM-dd")
-    private LocalDate fromDate;
+    @JsonFormat(pattern ="yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime fromDate;
 
-    @JsonFormat(pattern ="yyyy-MM-dd")
-    private LocalDate toDate;
+    @JsonFormat(pattern ="yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime toDate;
 
 
 }

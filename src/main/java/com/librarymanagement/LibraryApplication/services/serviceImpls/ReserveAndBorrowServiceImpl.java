@@ -36,7 +36,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -66,16 +66,16 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
             ReserveAndBorrow existingTransaction = reserveAndBurrowRepo.findExistingTransactionByBookAndUser(book, user);
             if (existingTransaction != null) {
                 return ResponseUtility.failureResponseWithMessage(ResponseConstants.FORBIDDEN,
-                        "User cannot issue same book more than once", HttpStatus.CONFLICT);
+                        "You cannot issue same book more than once", HttpStatus.CONFLICT);
             }
             if (reserveAndBurrowRepo.findBorrowedBooksByUsername(user.getUsername()).size() >= Constants.BORROW_LIMIT_PER_USER) {
                 return ResponseUtility.failureResponseWithMessage(ResponseConstants.FORBIDDEN,
-                        "User has maximum number of books burrowed", HttpStatus.FORBIDDEN);
+                        "You has maximum number of books burrowed", HttpStatus.FORBIDDEN);
             }
             ReserveAndBorrow reserveAndBorrow = new ReserveAndBorrow();
             reserveAndBorrow.setBook(book);
             reserveAndBorrow.setUser(user);
-            reserveAndBorrow.setIssueDate(LocalDate.now());
+            reserveAndBorrow.setIssueDate(LocalDateTime.now());
             reserveAndBorrow.setIsIssued(Boolean.TRUE);
             book.setCopies(book.getCopies() - 1);
 
@@ -102,7 +102,7 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
                 return ResponseUtility.failureResponseWithMessage(ResponseConstants.FORBIDDEN, "User has not burrowed this book", HttpStatus.OK);
             }
 
-            existingTransaction.setReturnDate(LocalDate.now());
+            existingTransaction.setReturnDate(LocalDateTime.now());
             existingTransaction.setIsIssued(Boolean.FALSE);
             book.setCopies(book.getCopies() + 1);
             bookRepo.save(book);
@@ -195,7 +195,7 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
             borrowedBookList.forEach(borrowedBookDto -> {
                 long overdue =
                         ChronoUnit.DAYS.between(borrowedBookDto.getIssuedDate().plusDays(Constants.MAX_BORROW_DURATION_PER_BOOK),
-                                LocalDate.now());
+                                LocalDateTime.now());
                 borrowedBookDto.setOverdue((int) overdue);
             });
             return ResponseUtility.failureResponseWithMessageAndBody(ResponseConstants.OK, "List of books retrieved", borrowedBookList, HttpStatus.OK);
@@ -253,7 +253,8 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
     @Override
     public ResponseEntity<Object> getAllTransactions(Integer pageNo, Integer pageSize) {
         try {
-            Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("returnDate"));
+            Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC
+                    ,"returnDate"));
             Page<BookTransactionsDto> allTransactions = reserveAndBurrowRepo.getAllTransaction(pageable);
             if (allTransactions.isEmpty()) {
                 return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND, "No " +
