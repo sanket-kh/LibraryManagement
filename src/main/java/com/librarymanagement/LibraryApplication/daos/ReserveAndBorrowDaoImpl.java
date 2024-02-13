@@ -29,9 +29,14 @@ public class ReserveAndBorrowDaoImpl implements ReserveAndBorrowDao {
             searchQuery.setParameter("username", "%" + transactionSearchReq.getUsername().trim() +
                                                  "%");
         }
-        if (transactionSearchReq.getDate() != null) {
-            searchQuery.setParameter("date", transactionSearchReq.getDate());
+        if (transactionSearchReq.getFromDate() != null && transactionSearchReq.getToDate() != null) {
+            searchQuery.setParameter("fromDate", transactionSearchReq.getFromDate());
+            searchQuery.setParameter("toDate", transactionSearchReq.getToDate());
         }
+        if (transactionSearchReq.getFromDate() != null && transactionSearchReq.getToDate() == null) {
+            searchQuery.setParameter("fromDate", transactionSearchReq.getFromDate());
+        }
+
         var transactionList = searchQuery.getResultList();
         return transactionList;
 
@@ -49,14 +54,20 @@ public class ReserveAndBorrowDaoImpl implements ReserveAndBorrowDao {
         }
         if (transactionSearchReq.getUsername() != null && !transactionSearchReq.getUsername().isEmpty()) {
             TRANSACTION_SEARCH_FILTER_QUERY = TRANSACTION_SEARCH_FILTER_QUERY +
-                                              " AND U.username like :username ";
+                                              "AND U.username like :username ";
         }
-        if (transactionSearchReq.getDate() != null) {
+
+        if (transactionSearchReq.getFromDate() != null && transactionSearchReq.getToDate() != null) {
+                TRANSACTION_SEARCH_FILTER_QUERY = TRANSACTION_SEARCH_FILTER_QUERY +
+                                                  "AND R.issueDate between :fromDate AND :toDate ";
+
+        }
+        if (transactionSearchReq.getToDate() == null){
             TRANSACTION_SEARCH_FILTER_QUERY = TRANSACTION_SEARCH_FILTER_QUERY +
-                                              " AND ( R.issueDate = :date  OR R.returnDate = " +
-                                              ":date )";
+                                              "AND R.issueDate = :fromDate ";
         }
-        return TRANSACTION_SEARCH_FILTER_QUERY+"Order by R.returnDate ";
+
+        return TRANSACTION_SEARCH_FILTER_QUERY+"Order by R.issueDate";
     }
 
 }

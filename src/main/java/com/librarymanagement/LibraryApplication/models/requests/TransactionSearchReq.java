@@ -17,6 +17,11 @@ public class TransactionSearchReq {
     @Max(value =13L , message="ISBN should be max 13 digits")
     private Long isbn;
 
-    @JsonFormat(pattern ="yyyy-M-d")
-    private LocalDate date;
+    @JsonFormat(pattern ="yyyy-MM-dd")
+    private LocalDate fromDate;
+
+    @JsonFormat(pattern ="yyyy-MM-dd")
+    private LocalDate toDate;
+
+
 }
