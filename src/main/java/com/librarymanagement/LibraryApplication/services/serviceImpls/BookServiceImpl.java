@@ -81,7 +81,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public ResponseEntity<Object> getAllBooksUser(Integer pageNumber) {
         try {
-            Pageable pageable = PageRequest.of(pageNumber, Constants.PAGE_SIZE, Sort.by("title"));
+            Pageable pageable = PageRequest.of(pageNumber,Constants.PAGE_SIZE, Sort.by("title"));
             Page<Book> bookPage = bookRepo.getAvailableBooks(pageable);
             List<Book> bookList = bookPage.getContent();
             if (bookList.isEmpty()) {

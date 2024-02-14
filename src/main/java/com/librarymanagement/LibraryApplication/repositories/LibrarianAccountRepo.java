@@ -30,7 +30,9 @@ public interface LibrarianAccountRepo extends JpaRepository<LibrarianAccount, Lo
     @Transactional
     @Query(value = """
             update LibrarianAccount L
-            set L.active='N' where L.librarian=:user
+            set L.active='N'
+            where L.librarian=:user
+            and L.active='Y'
             """)
     Integer makeAccountDetailInactive(User user);
 
