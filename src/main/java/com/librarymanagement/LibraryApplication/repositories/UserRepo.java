@@ -47,8 +47,9 @@ public interface UserRepo extends JpaRepository<User, Long> {
 
     @Query(value = """
             SELECT * FROM USER  WHERE USER.USERNAME LIKE :username
+            and USER.USERNAME !=:loggedInUser
             """, nativeQuery = true)
-    List<User> findUsersByUsernameLike(String username);
+    List<User> findUsersByUsernameLike(String username, String loggedInUser);
 
     @Query(value = """
             SELECT * FROM USER  WHERE USER.IS_NOT_LOCKED='FALSE'

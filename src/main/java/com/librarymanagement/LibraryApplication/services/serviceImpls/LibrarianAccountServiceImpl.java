@@ -24,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -157,6 +158,7 @@ public class LibrarianAccountServiceImpl implements LibrarianAccountService {
                 if (librarianAccount == null) {
                     librarianAccount = LibrarianAccountMapper.mapToAddLibrarianAccount(request,
                             result.accountType, result.accountAssociatedOrganization, user);
+                    librarianAccount.setModifiedDate(LocalDateTime.now());
                 } else {
                     LibrarianAccountMapper.mapToModifyLibrarianAccount(request,
                             result.accountType,

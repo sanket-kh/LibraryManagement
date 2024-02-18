@@ -27,7 +27,9 @@ public class OpenApiConfig {
                 .info(new Info().title("Library Application API")
                         .description("APIs for a book management system")
                         .version("1.0.0").contact(new Contact().name("Sanket Khatiwada")
-                                .email( "www.libraryapplication.com").url("salloszraj@gmail.com"))
+                                .email("libraryapplication.@gmail.com").url("www" +
+                                                                            ".libraryapplication" +
+                                                                            ".com.np"))
                         .license(new License().name("License of API")
                                 .url("www.libraryapplication.com")));
     }

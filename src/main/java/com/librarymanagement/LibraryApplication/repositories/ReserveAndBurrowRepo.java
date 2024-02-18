@@ -70,7 +70,7 @@ public interface ReserveAndBurrowRepo extends JpaRepository<ReserveAndBorrow, Lo
             INNER JOIN Book B ON R.book = B
             INNER JOIN User U ON R.user = U
             WHERE U.username = :username
-            order by R.returnDate
+            ORDER BY R.returnDate DESC NULLS FIRST
             """)
     Page<UserBookTransaction> getAllActiveUserTransaction(Pageable pageable,String username);
 

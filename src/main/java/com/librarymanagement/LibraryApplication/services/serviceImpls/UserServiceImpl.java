@@ -199,7 +199,8 @@ public class UserServiceImpl implements UserService , UserDetailsService {
     public ResponseEntity<Object> searchUserByUsername(String username) {
         try {
             String text = username.trim().toLowerCase();
-            List<User> users = this.userRepo.findUsersByUsernameLike("%"+text+"%");
+            String loggedInUser = Utils.getUsernameFromContext();
+            List<User> users = this.userRepo.findUsersByUsernameLike("%"+text+"%" , loggedInUser);
             if (users.isEmpty()) {
                 return  ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT,
                         "No matches found", HttpStatus.NOT_FOUND);
