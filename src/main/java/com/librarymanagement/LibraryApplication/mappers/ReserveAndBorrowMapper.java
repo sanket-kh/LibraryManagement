@@ -1,7 +1,9 @@
 package com.librarymanagement.LibraryApplication.mappers;
 
 
+import com.librarymanagement.LibraryApplication.entities.Book;
 import com.librarymanagement.LibraryApplication.entities.ReserveAndBorrow;
+import com.librarymanagement.LibraryApplication.entities.User;
 import com.librarymanagement.LibraryApplication.models.dtos.BookTransactionsDto;
 import com.librarymanagement.LibraryApplication.models.dtos.ReserveAndBorrowDto;
 
@@ -32,6 +34,13 @@ public class ReserveAndBorrowMapper {
         bookTransactionsDto.setReturnDate(reserveAndBorrow.getReturnDate());
         return bookTransactionsDto;
 
+    }
+    public static ReserveAndBorrow mapToReserveAndBorrow(Book book, User user) {
+        ReserveAndBorrow reserveAndBorrow = new ReserveAndBorrow();
+        reserveAndBorrow.setBook(book);
+        reserveAndBorrow.setUser(user);
+        reserveAndBorrow.setIsIssued(Boolean.FALSE);
+        return reserveAndBorrow;
     }
 
     public static List<BookTransactionsDto> mapToBookTransactionDto(List<ReserveAndBorrow> reserveAndBorrows) {

@@ -15,28 +15,27 @@ import reactor.netty.http.client.HttpClient;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
+
 @Component
 @RequiredArgsConstructor
 public class WebClientRequestBuilder {
     private final JwtServiceReportingModule jwtServiceReportingModule;
     private final ClientDetailsService clientDetailsService;
     private final HttpClient httpClient = HttpClient.create()
-            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
-            .responseTimeout(Duration.ofMillis(5000))
-            .doOnConnected(conn ->
-                    conn.addHandlerLast(new ReadTimeoutHandler(5000, TimeUnit.MILLISECONDS))
-                            .addHandlerLast(new WriteTimeoutHandler(5000, TimeUnit.MILLISECONDS)));
+            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, Constants.TIMEOUT_DURATION)
+            .responseTimeout(Duration.ofMillis(Constants.TIMEOUT_DURATION)).doOnConnected(
+                    conn -> conn.addHandlerLast(new ReadTimeoutHandler(Constants.TIMEOUT_DURATION,
+                            TimeUnit.MILLISECONDS)).addHandlerLast(
+                            new WriteTimeoutHandler(Constants.TIMEOUT_DURATION,
+                                    TimeUnit.MILLISECONDS)));
 
     public WebClient buildGetWebClientRequest() {
-        String token =
-                jwtServiceReportingModule.generateToken(clientDetailsService.loadUserByUsername(
-                        "LibraryApplication"));
-        return WebClient.builder()
-                .baseUrl(UriConstants.REPORTING_STATISTIC_BASE_URL)
+        String token = jwtServiceReportingModule.generateToken(
+                clientDetailsService.loadUserByUsername("LibraryApplication"));
+        return WebClient.builder().baseUrl(UriConstants.REPORTING_STATISTIC_BASE_URL)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .defaultHeader("Authorization","Bearer "+token)
-                .clientConnector(new ReactorClientHttpConnector(httpClient))
-                .build();
+                .defaultHeader("Authorization", "Bearer " + token)
+                .clientConnector(new ReactorClientHttpConnector(httpClient)).build();
 
     }
 

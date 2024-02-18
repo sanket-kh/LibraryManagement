@@ -40,6 +40,14 @@ public class BookMapper {
         book.setIsAvailable(Boolean.TRUE);
         return book;
     }
+    public static Book mapUpdateBookRequestToBook(SaveBookRequest saveBookRequest, Book book) {
+        book.setIsbn(saveBookRequest.getIsbn());
+        book.setTitle(Utils.convertToTitleCaseIteratingChars(saveBookRequest.getTitle()));
+        book.setCopies(saveBookRequest.getCopies());
+        book.setAuthor(Utils.convertToTitleCaseIteratingChars(saveBookRequest.getAuthor()));
+        book.setIsAvailable(Boolean.TRUE);
+        return book;
+    }
 
 
     public static List<BookDto> mapBookListToBaseBookDtoList(List<Book> bookList) {

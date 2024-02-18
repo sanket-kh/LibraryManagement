@@ -27,7 +27,7 @@ public class Utils {
         return converted.toString();
     }
 
-    public static String getUsernameFromContext(){
+    public static String getUsernameFromContext() {
         SecurityContext context = SecurityContextHolder.getContext();
         return context.getAuthentication().getName();
     }

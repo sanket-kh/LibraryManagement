@@ -47,9 +47,9 @@ public interface LibrarianAccountRepo extends JpaRepository<LibrarianAccount, Lo
     void makeAccountTypeInactiveByUser(String accType, User user);
 
     @Query(value = """
-SELECT L FROM LibrarianAccount L
-INNER JOIN AccountType A ON A = L.accountType
-WHERE L.active='L' AND A.accountTypeName= :accountTypeName
-""")
+            SELECT L FROM LibrarianAccount L
+            INNER JOIN AccountType A ON A = L.accountType
+            WHERE L.active='L' AND A.accountTypeName= :accountTypeName
+            """)
     LibrarianAccount getClearFineAccountByAccountTypeAndUsername(String accountTypeName);
 }

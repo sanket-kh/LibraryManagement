@@ -129,9 +129,7 @@ public class BookServiceImpl implements BookService {
                         "Book doesnt exist with isbn:" + saveBookRequest.getIsbn(),
                 HttpStatus.NOT_FOUND);
             }
-            book.setTitle(saveBookRequest.getTitle());
-            book.setCopies(saveBookRequest.getCopies());
-            book.setAuthor(saveBookRequest.getAuthor());
+            book = BookMapper.mapUpdateBookRequestToBook(saveBookRequest,book);
             bookRepo.save(book);
             return ResponseUtility.successResponseWithMessage(ResponseConstants.UPDATED,
                     "Book updated", HttpStatus.OK);

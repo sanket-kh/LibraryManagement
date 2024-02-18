@@ -35,7 +35,8 @@ public class ResponseUtility {
     }
 
     public static ResponseEntity<Object> successResponseWithMessage(String statusCode,
-                                                                    String message, HttpStatus httpStatus) {
+                                                                    String message,
+                                                                    HttpStatus httpStatus) {
         DefaultResponse defaultResponse = new DefaultResponse();
         defaultResponse.setSuccess(true);
         defaultResponse.setMessage(message);
@@ -44,7 +45,8 @@ public class ResponseUtility {
         //implement RESPONSE ENTITY HERE
     }
 
-    public static ResponseEntity<Object> failureResponseWithMessage(String statusCode, String message,
+    public static ResponseEntity<Object> failureResponseWithMessage(String statusCode,
+                                                                    String message,
                                                                     HttpStatus httpStatus) {
         DefaultResponse defaultResponse = new DefaultResponse();
         defaultResponse.setSuccess(false);
@@ -55,7 +57,8 @@ public class ResponseUtility {
 
 
     public static ResponseEntity<Object> authenticationSuccessWithMessage(String statusCode,
-                                                                   String message, HttpStatus httpStatus) {
+                                                                          String message,
+                                                                          HttpStatus httpStatus) {
         DefaultResponse authenticationResponse = new DefaultResponse();
         authenticationResponse.setMessage(message);
         authenticationResponse.setSuccess(Boolean.TRUE);

@@ -6,7 +6,7 @@ spring:
         username: root
     jpa:
         hibernate:
-            ddl-auto: update
+            ddl-auto: none
         show-sql: true
     profiles:
       active: local

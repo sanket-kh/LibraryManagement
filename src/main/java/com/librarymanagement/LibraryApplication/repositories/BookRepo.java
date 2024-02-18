@@ -13,9 +13,9 @@ public interface BookRepo extends JpaRepository<Book, Long>, BookDao {
 
     Book getBookByIsbn(Long isbn);
     @Query(value = """
-select B from Book B 
-where B.isAvailable = true 
-""")
+            select B from Book B
+            where B.isAvailable = true
+            """)
     Page<Book> getAvailableBooks(Pageable pageable);
 
 }

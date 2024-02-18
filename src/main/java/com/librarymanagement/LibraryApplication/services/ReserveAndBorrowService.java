@@ -10,13 +10,10 @@ public interface ReserveAndBorrowService {
 
     ResponseEntity<Object> returnBook(BorrowRequest returnRequest);
 
-    ResponseEntity<Object> reserveUnavailableBook(ReserveRequest reserveRequest);
 
-    ResponseEntity<Object> cancelReservationOfBook(ReserveRequest cancleReserveRequest);
 
     ResponseEntity<Object> viewBurrowedBooksByUser(String username);
 
-    ResponseEntity<Object> viewReservedBooksByUser(String username);
 
     ResponseEntity<Object> getUserTransaction(String username, Integer pageSize, Integer pageNo);
 

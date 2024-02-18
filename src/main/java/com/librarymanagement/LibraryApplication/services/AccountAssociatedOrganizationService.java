@@ -5,7 +5,9 @@ import org.springframework.http.ResponseEntity;
 
 
 public interface AccountAssociatedOrganizationService {
-    ResponseEntity<Object> addAccountAssociatedOrganization(AccountAssociatedOrganizationRequest associatedOrganizationRequest);
+    ResponseEntity<Object> addAccountAssociatedOrganization(
+            AccountAssociatedOrganizationRequest associatedOrganizationRequest);
+
     ResponseEntity<Object> getAccountAssociatedOrganizationByAccountType(String accountTypeName);
 
 }

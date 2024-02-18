@@ -98,7 +98,8 @@ public class FineServiceImpl implements FineService {
     @Override
     public ResponseEntity<Object> getAllFinesList(Integer pageSize, Integer pageNo) {
         try {
-            Pageable pageable = PageRequest.of(pageNo, 20, Sort.by(Sort.Direction.DESC,"id"));
+            Pageable pageable = PageRequest.of(pageNo, Constants.PAGE_SIZE, Sort.by(Sort.Direction.DESC,
+                    "id"));
             Page<Fine> fines = fineRepo.findAll(pageable);
             PageResponse pageResponse = PageMapper.mapFinePageToPageResponse(fines);
             return  ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,

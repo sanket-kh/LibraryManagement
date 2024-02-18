@@ -15,34 +15,33 @@ public interface UserRepo extends JpaRepository<User, Long> {
 
     User findUserByUsername(String username);
 
-    @Query(value = "SELECT * " +
-            "FROM USER U " +
-            "WHERE U.username =:username " +
-            "AND U.PASSWORD_ATTEMPT_COUNT < 5 " +
-            "AND u.IS_NOT_LOCKED IS TRUE " +
-            "AND u.STATUS IS TRUE", nativeQuery = true)
-    User loadUserByUsername(String username);
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE USER U  " +
-            " SET U.IS_NOT_LOCKED = TRUE , U.PASSWORD_ATTEMPT_COUNT = 0 , U.REMARK='' " +
-            " Where U.USERNAME = :username ", nativeQuery = true)
-    Integer unlockUser(String username);
+    @Query(value = """
+             UPDATE USER U
+             SET U.IS_NOT_LOCKED = TRUE, U.PASSWORD_ATTEMPT_COUNT = 0, U.REMARK=''
+             Where U.USERNAME = :username
+            """, nativeQuery = true)
+    void unlockUser(String username);
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE USER U " +
-            "SET U.PASSWORD_ATTEMPT_COUNT = 0 " +
-            "WHERE U.USERNAME =:username ", nativeQuery = true)
-    Integer refreshLoginAttempts(String username);
+    @Query(value = """
+            UPDATE USER U
+            SET U.PASSWORD_ATTEMPT_COUNT = 0
+            WHERE U.USERNAME =:username
+            """, nativeQuery = true)
+    void refreshLoginAttempts(String username);
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE USER U " +
-            "SET U.IS_NOT_LOCKED = FALSE , U.REMARK = :remarks " +
-            "WHERE U.USERNAME = :username", nativeQuery = true)
-    Integer lockUserByUsername(String username, String remarks);
+    @Query(value = """
+            UPDATE USER U
+            SET U.IS_NOT_LOCKED = FALSE , U.REMARK = :remarks
+            WHERE U.USERNAME = :username
+            """, nativeQuery = true)
+    void lockUserByUsername(String username, String remarks);
 
 
     @Query(value = """

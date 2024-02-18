@@ -26,7 +26,7 @@ public class UserRegisterRequest {
     @Email(message = "Invalid email format")
     private String email;
 
-    @Range(min = 9600000000L , max=9999999999L, message = "Invalid phone number format")
+    @Range(min = 9600000000L , max=9899999999L, message = "Invalid phone number format")
     private Long phone;
 
     @Pattern(regexp = RegexConstants.ADDRESS_REGEX, message = "Invalid address format")

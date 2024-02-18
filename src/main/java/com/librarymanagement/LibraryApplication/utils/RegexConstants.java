@@ -12,5 +12,4 @@ public class RegexConstants {
 
     public static final String USERNAME_REGEX = "^[A-Za-z][A-Za-z0-9_]{3,20}$";
 
-    public static final String ISBN_REGEX = "^[0-9]";
 }

@@ -160,7 +160,7 @@ public class LibrarianAccountServiceImpl implements LibrarianAccountService {
                             result.accountType, result.accountAssociatedOrganization, user);
                     librarianAccount.setModifiedDate(LocalDateTime.now());
                 } else {
-                    LibrarianAccountMapper.mapToModifyLibrarianAccount(request,
+                   librarianAccount= LibrarianAccountMapper.mapToModifyLibrarianAccount(request,
                             result.accountType,
                             result.accountAssociatedOrganization,
                             user, librarianAccount);

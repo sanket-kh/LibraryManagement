@@ -28,7 +28,8 @@ public class LibrarianAccountController {
     private final LibrarianAccountService librarianAccountService;
 
     @PostMapping("/add")
-    public ResponseEntity<Object> addAccountDetails(@RequestBody List<LibrarianAccountRequest> librarianAccountRequest) {
+    public ResponseEntity<Object> addAccountDetails(
+            @RequestBody List<LibrarianAccountRequest> librarianAccountRequest) {
         try {
             return librarianAccountService.addLibrarianAccount(librarianAccountRequest);
         } catch (Exception e) {
@@ -39,21 +40,23 @@ public class LibrarianAccountController {
     }
 
     @GetMapping("/get")
-    @Operation(summary = "get a list of librarian accounts",
-            responses = {
-                    @ApiResponse(responseCode = ResponseConstants.OK, description = "successful operation",
-                            content = @Content(mediaType = "application/json",
-                                    array = @ArraySchema(schema =
-                                    @Schema(implementation = LibrarianAccountDto.class)))),
-                    @ApiResponse(responseCode = ResponseConstants.SERVER_ERROR, description = "Internal Server Error",
-                            content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = DefaultResponse.class))),
-                    @ApiResponse(responseCode = ResponseConstants.NOT_FOUND, description =
-                            "Account details not found",
-                            content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = DefaultResponse.class))),
+    @Operation(summary = "get a list of librarian accounts", responses = {
+            @ApiResponse(responseCode = ResponseConstants.OK, description = "successful " +
+                                                                            "operation", content
+                    = @Content(mediaType = "application/json", array = @ArraySchema(schema =
+            @Schema(implementation = LibrarianAccountDto.class)))),
+            @ApiResponse(responseCode = ResponseConstants.SERVER_ERROR, description = "Internal " +
+                                                                                      "Server " +
+                                                                                      "Error",
+                    content = @Content(mediaType = "application/json", schema =
+                    @Schema(implementation = DefaultResponse.class))),
+            @ApiResponse(responseCode = ResponseConstants.NOT_FOUND, description = "Account " +
+                                                                                   "details not " +
+                                                                                   "found",
+                    content = @Content(mediaType = "application/json", schema =
+                    @Schema(implementation = DefaultResponse.class))),
 
-            })
+    })
     public ResponseEntity<Object> getAccountDetails() {
         try {
             return librarianAccountService.getDetails();
@@ -65,7 +68,8 @@ public class LibrarianAccountController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<Object> modifyAccountDetails(@RequestBody List<LibrarianAccountRequest> librarianAccountRequest) {
+    public ResponseEntity<Object> modifyAccountDetails(
+            @RequestBody List<LibrarianAccountRequest> librarianAccountRequest) {
         try {
             return librarianAccountService.modifyDetails(librarianAccountRequest);
         } catch (Exception e) {
@@ -87,7 +91,8 @@ public class LibrarianAccountController {
     }
 
     @GetMapping("/fine-account/get")
-    public ResponseEntity<Object> getFineClearAccountByAccountType(@RequestParam String accountType) {
+    public ResponseEntity<Object> getFineClearAccountByAccountType(
+            @RequestParam String accountType) {
         try {
             return librarianAccountService.getClearFineAccountByAccountType(accountType);
         } catch (Exception e) {

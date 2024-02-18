@@ -8,6 +8,7 @@ public class Constants {
     public static final Integer BORROW_LIMIT_PER_USER = 2;
     public static final Integer MAX_RESERVE_LIMIT_PER_USER = 2;
     public static final Integer MAX_FAILED_LOGIN_ATTEMPT = 4;
+    public static final Integer TIMEOUT_DURATION =5000;
     public static final String[] PUBLIC_ACCESS_URI = new String[] {
             "/api/v1/auth/user/authentication",
             "/api/v1/auth/user/register",

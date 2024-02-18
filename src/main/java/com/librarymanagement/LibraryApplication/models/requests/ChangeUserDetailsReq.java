@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Range;
 
 @Getter
 @Setter
@@ -18,7 +19,7 @@ public class ChangeUserDetailsReq {
     @Email(message = "Invalid email format")
     private String email;
 
-    @Pattern(regexp = RegexConstants.PHONE_REGEX, message = "Invalid phone number format")
+    @Range(min = 9600000000L , max=9899999999L, message = "Invalid phone number format")
     private Long phone;
 
     @Pattern(regexp = RegexConstants.ADDRESS_REGEX, message = "Invalid address format")

@@ -78,7 +78,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public ResponseEntity<Object> authenticate(AuthenticationRequest authenticationRequest) {
-        var start = System.nanoTime();
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
@@ -86,7 +85,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             );
         } catch (BadCredentialsException e) {
             log.error("AuthenticationService :: authenticate", e);
-            System.out.println(System.nanoTime()-start);
             return userServiceImpl.failedLoginAttempt(authenticationRequest.getUsername());
         } catch (AccessDeniedException e) {
             log.error("AuthenticationService :: authenticate", e);
@@ -102,9 +100,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     "Username or password is incorrect ", HttpStatus.UNAUTHORIZED);
         } catch (LockedException e) {
             log.error(" AuthenticationService :: authenticate", e);
-            System.out.println(System.nanoTime()-start);
             return  ResponseUtility.failureResponseWithMessage(ResponseConstants.LOCKED_USER,
                     "User account is locked", HttpStatus.UNAUTHORIZED);
+        }catch (Exception e) {
+            log.error(" AuthenticationService :: authenticate", e);
+            return  ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
         try {
             User user = userRepo.findUserByUsername(authenticationRequest.getUsername());
@@ -114,7 +115,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             String jwtToken = jwtService.generateToken(user);
             authResponse.setRole(user.getRole().name());
             authResponse.setAccessToken(jwtToken);
-            System.out.println(System.nanoTime()-start);
             return  ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
                     "User authenticated successfully", authResponse, HttpStatus.OK);
         } catch (Exception e) {

@@ -82,7 +82,7 @@ public class FineController {
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity<Object> getAllFinesOwed(@RequestParam(defaultValue = "5" ) Integer pageSize ,
+    public ResponseEntity<Object> getAllFinesOwed(@RequestParam(defaultValue = Constants.DEFAULT_PAGE_SIZE ) Integer pageSize ,
                                                   @RequestParam(defaultValue = "0") Integer pageNo) {
         try {
             return fineService.getAllFinesList(pageSize, pageNo);

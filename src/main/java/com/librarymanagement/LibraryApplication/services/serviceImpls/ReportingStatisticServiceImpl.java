@@ -51,7 +51,7 @@ public class ReportingStatisticServiceImpl implements ReportingStatisticService 
         } catch (Exception e) {
             log.error("ReportingStatisticService :: getListOfAllBooks", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Sorry exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    "Sorry some exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
 
@@ -69,7 +69,7 @@ public class ReportingStatisticServiceImpl implements ReportingStatisticService 
         } catch (Exception e) {
             log.error("ReportingStatisticService :: getListOfAllBooks", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Sorry exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    "Sorry some exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -87,7 +87,7 @@ public class ReportingStatisticServiceImpl implements ReportingStatisticService 
         } catch (Exception e) {
             log.error("ReportingStatisticService :: getListOfAllBooks", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Sorry exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    "Sorry some exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -103,7 +103,7 @@ public class ReportingStatisticServiceImpl implements ReportingStatisticService 
         } catch (Exception e) {
             log.error("ReportingStatisticService :: getListOfAllBooks", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Sorry exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    "Sorry some exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -119,7 +119,7 @@ public class ReportingStatisticServiceImpl implements ReportingStatisticService 
         } catch (Exception e) {
             log.error("ReportingStatisticService :: getListOfAllBooks", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Sorry exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    "Sorry some exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -135,7 +135,7 @@ public class ReportingStatisticServiceImpl implements ReportingStatisticService 
         } catch (Exception e) {
             log.error("ReportingStatisticService :: getListOfAllBooks", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Sorry exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    "Sorry some exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -151,7 +151,7 @@ public class ReportingStatisticServiceImpl implements ReportingStatisticService 
         } catch (Exception e) {
             log.error("ReportingStatisticService :: getListOfAllBooks", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Sorry exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    "Sorry some exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -167,7 +167,7 @@ public class ReportingStatisticServiceImpl implements ReportingStatisticService 
         } catch (Exception e) {
             log.error("ReportingStatisticService :: getListOfAllBooks", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Sorry exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    "Sorry some exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -183,7 +183,7 @@ public class ReportingStatisticServiceImpl implements ReportingStatisticService 
         } catch (Exception e) {
             log.error("ReportingStatisticService :: getListOfAllBooks", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Sorry exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    "Sorry some exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -199,7 +199,7 @@ public class ReportingStatisticServiceImpl implements ReportingStatisticService 
         } catch (Exception e) {
             log.error("ReportingStatisticService :: getListOfAllBooks", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Sorry exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    "Sorry some exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -216,7 +216,7 @@ public class ReportingStatisticServiceImpl implements ReportingStatisticService 
         } catch (Exception e) {
             log.error("ReportingStatisticService :: getListOfAllBooks", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Sorry exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    "Sorry some exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -232,7 +232,7 @@ public class ReportingStatisticServiceImpl implements ReportingStatisticService 
         } catch (Exception e) {
             log.error("ReportingStatisticService :: getListOfAllBooks", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Sorry exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    "Sorry some exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
