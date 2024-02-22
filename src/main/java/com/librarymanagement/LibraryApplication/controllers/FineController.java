@@ -34,7 +34,7 @@ public class FineController {
         } catch (Exception e) {
             log.error("FineController :: payFine", e);
             return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }
@@ -65,7 +65,7 @@ public class FineController {
         } catch (Exception e) {
             log.error("FineController :: getFinesOwedByUser ", e);
             return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }
@@ -76,7 +76,7 @@ public class FineController {
         } catch (Exception e) {
             log.error("FineController :: getFinesOwedByUser ", e);
             return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }
@@ -89,7 +89,7 @@ public class FineController {
         }catch (Exception e){
             log.error("FineController :: getAllFinesOwed ", e);
             return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }
@@ -101,7 +101,7 @@ public class FineController {
         }catch (Exception e){
             log.error("FineController :: getAllUnpaidFines ", e);
             return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

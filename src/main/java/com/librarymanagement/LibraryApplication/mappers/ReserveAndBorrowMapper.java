@@ -1,14 +1,14 @@
 package com.librarymanagement.LibraryApplication.mappers;
 
 
-import com.librarymanagement.LibraryApplication.entities.Book;
 import com.librarymanagement.LibraryApplication.entities.ReserveAndBorrow;
-import com.librarymanagement.LibraryApplication.entities.User;
 import com.librarymanagement.LibraryApplication.models.dtos.BookTransactionsDto;
 import com.librarymanagement.LibraryApplication.models.dtos.ReserveAndBorrowDto;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
-
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReserveAndBorrowMapper {
     public static ReserveAndBorrowDto mapToReserveAndBorrowDto(ReserveAndBorrow reserveAndBorrow) {
         ReserveAndBorrowDto reserveAndBorrowDto = new ReserveAndBorrowDto();
@@ -35,13 +35,7 @@ public class ReserveAndBorrowMapper {
         return bookTransactionsDto;
 
     }
-    public static ReserveAndBorrow mapToReserveAndBorrow(Book book, User user) {
-        ReserveAndBorrow reserveAndBorrow = new ReserveAndBorrow();
-        reserveAndBorrow.setBook(book);
-        reserveAndBorrow.setUser(user);
-        reserveAndBorrow.setIsIssued(Boolean.FALSE);
-        return reserveAndBorrow;
-    }
+
 
     public static List<BookTransactionsDto> mapToBookTransactionDto(List<ReserveAndBorrow> reserveAndBorrows) {
         return reserveAndBorrows.stream().map(ReserveAndBorrowMapper::mapToBookTransactionDto).toList();

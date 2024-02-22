@@ -19,7 +19,6 @@ public class ReserveAndBorrowDaoImpl implements ReserveAndBorrowDao {
         String TRANSACTION_SEARCH_FILTER_QUERY = getQueryString(transactionSearchReq);
 
 
-        System.out.println(" Query : " + TRANSACTION_SEARCH_FILTER_QUERY);
         Query searchQuery = this.entityManager.createQuery(TRANSACTION_SEARCH_FILTER_QUERY);
 
         if (transactionSearchReq.getIsbn() != null && transactionSearchReq.getIsbn() != 0) {

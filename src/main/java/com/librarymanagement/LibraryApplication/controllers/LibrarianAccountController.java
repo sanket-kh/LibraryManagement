@@ -4,6 +4,7 @@ import com.librarymanagement.LibraryApplication.models.dtos.LibrarianAccountDto;
 import com.librarymanagement.LibraryApplication.models.requests.LibrarianAccountRequest;
 import com.librarymanagement.LibraryApplication.models.responses.DefaultResponse;
 import com.librarymanagement.LibraryApplication.services.LibrarianAccountService;
+import com.librarymanagement.LibraryApplication.utils.Constants;
 import com.librarymanagement.LibraryApplication.utils.ResponseConstants;
 import com.librarymanagement.LibraryApplication.utils.ResponseUtility;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,7 +36,7 @@ public class LibrarianAccountController {
         } catch (Exception e) {
             log.error("LibrarianAccountController::addAccountDetails", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -63,7 +64,7 @@ public class LibrarianAccountController {
         } catch (Exception e) {
             log.error("LibrarianAccountController :: getAccountDetails", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -75,7 +76,7 @@ public class LibrarianAccountController {
         } catch (Exception e) {
             log.error("LibrarianAccountController :: modifyAccountDetails", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -86,7 +87,7 @@ public class LibrarianAccountController {
         } catch (Exception e) {
             log.error("LibrarianAccountController :: clearAccountDetails", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -98,7 +99,7 @@ public class LibrarianAccountController {
         } catch (Exception e) {
             log.error("LibrarianAccountController :: getFineClearAccountByAccountType", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }

@@ -11,5 +11,5 @@ public enum Permission {
     LIBRARIAN_READ("librarian:read"),
     LIBRARIAN_WRITE("librarian:write");
 
-    private final String permission;
+    private final String perms;
 }

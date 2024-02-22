@@ -49,7 +49,7 @@ public class ReserveAndBorrowController {
         } catch (Exception e) {
             log.error("ReserveAndBorrowController :: burrowBook", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -60,7 +60,7 @@ public class ReserveAndBorrowController {
         } catch (Exception e) {
             log.error("ReserveAndBorrowController :: returnBook", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -71,7 +71,7 @@ public class ReserveAndBorrowController {
         } catch (Exception e) {
             log.error("ReserveAndBorrowController :: getBorrowedBooksByUser", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -88,7 +88,7 @@ public class ReserveAndBorrowController {
         } catch (Exception e) {
             log.error("ReserveAndBorrowController :: getTransactionByUsername");
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -115,7 +115,7 @@ public class ReserveAndBorrowController {
         } catch (Exception e) {
             log.error("ReserveAndBorrowController :: getAllTransactions");
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
 
@@ -129,7 +129,7 @@ public class ReserveAndBorrowController {
         } catch (Exception e) {
             log.error("ReserveAndBorrowController :: searchTransactions");
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }

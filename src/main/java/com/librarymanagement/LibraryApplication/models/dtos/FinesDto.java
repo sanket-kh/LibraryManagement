@@ -17,14 +17,4 @@ public class FinesDto {
     private Integer amount;
     private Boolean isPaid;
 
-    public FinesDto(String username, String firstName, String lastName, Long isbn, String title, Integer overDue, Integer amount, Boolean isPaid) {
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.isbn = isbn;
-        this.title = title;
-        this.overDue = overDue;
-        this.amount = amount;
-        this.isPaid = isPaid;
-    }
 }

@@ -1,5 +1,9 @@
 package com.librarymanagement.LibraryApplication.utils;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UriConstants {
     public static final String REPORTING_STATISTIC_BASE_URL = "http://localhost:8081/";
     public static final String GET_ALL_BOOKS = "api/v1/report/all-books";

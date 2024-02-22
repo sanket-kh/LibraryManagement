@@ -7,9 +7,10 @@ import com.librarymanagement.LibraryApplication.models.requests.BookSearchFilter
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.List;
-
+@Log4j2
 public class BookDaoImpl implements BookDao {
     @PersistenceContext
     EntityManager entityManager;
@@ -21,7 +22,6 @@ public class BookDaoImpl implements BookDao {
         String BOOK_SEARCH_FILTER_QUERY = getQueryString(bookSearchFilterRequest);
 
 
-        System.out.println(" Query : " + BOOK_SEARCH_FILTER_QUERY);
         Query searchQuery = this.entityManager.createQuery(BOOK_SEARCH_FILTER_QUERY);
 
         if (bookSearchFilterRequest.getIsbn() != null && bookSearchFilterRequest.getIsbn() != 0) {
@@ -33,8 +33,9 @@ public class BookDaoImpl implements BookDao {
         if (bookSearchFilterRequest.getAuthor() != null && !bookSearchFilterRequest.getAuthor().isEmpty()) {
             searchQuery.setParameter("author", "%" + bookSearchFilterRequest.getAuthor().trim() + "%");
         }
-        var bookList = searchQuery.getResultList();
-        return bookList;
+
+        return (List<Book>) searchQuery.getResultList();
+
 
     }
 

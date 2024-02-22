@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Log4j2
 @Service
 @RequiredArgsConstructor
@@ -24,18 +25,21 @@ public class AccountTypeServiceImpl implements AccountTypeService {
     @Override
     public ResponseEntity<Object> addAccountType(AccountTypeRequest accountTypeRequest) {
         try {
-            AccountType accountType = accountTypeRepo.findAccountTypeByAccountTypeNameIgnoreCase(accountTypeRequest.getAccountTypeName());
+            AccountType accountType = accountTypeRepo.findAccountTypeByAccountTypeNameIgnoreCase(
+                    accountTypeRequest.getAccountTypeName());
             if (accountType == null) {
                 accountType = new AccountType();
                 accountType.setAccountTypeName(accountTypeRequest.getAccountTypeName());
                 accountTypeRepo.save(accountType);
-                return ResponseUtility.successResponseWithMessage(ResponseConstants.OK, "Account " +
-                                                                                        "type added", HttpStatus.OK);
+                return ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
+                        "Account " + "type added", HttpStatus.OK);
             }
-            return ResponseUtility.failureResponseWithMessage(ResponseConstants.ALREADY_EXISTS, "Account type " + "already exist", HttpStatus.CONFLICT);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.ALREADY_EXISTS,
+                    "Account type " + "already exist", HttpStatus.CONFLICT);
         } catch (Exception e) {
-            log.error("AccountTypeService :: addAccountType",e);
-            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("AccountTypeService :: addAccountType", e);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+                    "Some exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -47,12 +51,13 @@ public class AccountTypeServiceImpl implements AccountTypeService {
                 return ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT,
                         "Account type list is empty", HttpStatus.NOT_FOUND);
             }
-            AccountTypesDto accountTypeName = AccountTypeMapper.mapToListOfAccountTypeName(accountTypeList);
+            AccountTypesDto accountTypeName =
+                    AccountTypeMapper.mapToListOfAccountTypeName(accountTypeList);
             return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
                     "Account type list retrieved", accountTypeName, HttpStatus.OK);
 
         } catch (Exception e) {
-            log.error("AccountTypeService :: getAllAccountTypes",e);
+            log.error("AccountTypeService :: getAllAccountTypes", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
                     "Some exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
 

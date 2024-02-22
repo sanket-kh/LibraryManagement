@@ -2,8 +2,10 @@ package com.librarymanagement.LibraryApplication.mappers;
 
 import com.librarymanagement.LibraryApplication.entities.Fine;
 import com.librarymanagement.LibraryApplication.models.responses.PageResponse;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
-
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PageMapper {
     public static PageResponse mapFinePageToPageResponse(Page<Fine> page){
         PageResponse pageResponse =new PageResponse();

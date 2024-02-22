@@ -7,6 +7,7 @@ import com.librarymanagement.LibraryApplication.models.requests.UserRegisterRequ
 import com.librarymanagement.LibraryApplication.models.responses.DefaultResponse;
 import com.librarymanagement.LibraryApplication.services.AuthenticationService;
 import com.librarymanagement.LibraryApplication.services.UserService;
+import com.librarymanagement.LibraryApplication.utils.Constants;
 import com.librarymanagement.LibraryApplication.utils.ResponseConstants;
 import com.librarymanagement.LibraryApplication.utils.ResponseUtility;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,7 +38,7 @@ public class UserController {
         } catch (Exception e) {
             log.error("UserController :: registerUser", e);
             return  ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -62,7 +63,7 @@ public class UserController {
         } catch (Exception e) {
             log.error("UserController :: updateUserDetails", e);
             return  ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -74,7 +75,7 @@ public class UserController {
         } catch (Exception e) {
             log.error("UserController :: usernameExists", e);
             return  ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -85,7 +86,7 @@ public class UserController {
         } catch (Exception e) {
             log.error("UserController :: retrieveUser", e);
             return  ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -96,7 +97,7 @@ public class UserController {
         } catch (Exception e) {
             log.error("UserController :: searchUserByUsername", e);
             return  ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -107,7 +108,7 @@ public class UserController {
         } catch (Exception e) {
             log.error("UserController :: getAllUsers", e);
             return  ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -116,9 +117,9 @@ public class UserController {
         try {
             return userService.unlockUserAccount(username);
         } catch (Exception e) {
-            log.error("UserController :: getAllUsers", e);
+            log.error("UserController :: unlockUser", e);
             return  ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -127,9 +128,9 @@ public class UserController {
         try {
             return userService.lockUserAccount(lockUserRequest);
         } catch (Exception e) {
-            log.error("UserController :: getAllUsers", e);
+            log.error("UserController :: lockUser", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -140,7 +141,7 @@ public class UserController {
         } catch (Exception e) {
             log.error("UserController :: changePassword", e);
             return  ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -151,7 +152,7 @@ public class UserController {
         } catch (Exception e) {
             log.error("UserController :: getAllLockedUsers", e);
             return  ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -162,7 +163,7 @@ public class UserController {
         } catch (Exception e) {
             log.error("UserController :: getUserDetailsByUsername", e);
             return  ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -173,7 +174,7 @@ public class UserController {
         } catch (Exception e) {
             log.error("UserController :: setUpAdmin", e);
             return  ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

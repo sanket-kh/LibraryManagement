@@ -158,7 +158,7 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
                 borrowedBookDto.setOverdue((int) overdue);
             });
             return ResponseUtility.failureResponseWithMessageAndBody(ResponseConstants.OK,
-                    "List " + "of " + "books" + " retrieved", borrowedBookList, HttpStatus.OK);
+                    "List of books retrieved", borrowedBookList, HttpStatus.OK);
         } catch (Exception e) {
             log.error("ReserveAndBorrowServiceImpl :: viewBurrowedBooksByUser ", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,

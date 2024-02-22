@@ -76,7 +76,6 @@ public class LibrarianAccountServiceImpl implements LibrarianAccountService {
                             "Invalid account associated organization name", HttpStatus.BAD_REQUEST);
                 }
                  Result result = checkAccountAssociatedOrganizationValidity(request);
-                assert result != null;
                 librarianAccount = LibrarianAccountMapper.mapToAddLibrarianAccount(request,
                         result.accountType, result.accountAssociatedOrganization, user);
                 librarianAccounts.add(librarianAccount);

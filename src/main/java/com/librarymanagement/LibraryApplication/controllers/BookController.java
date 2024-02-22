@@ -7,6 +7,7 @@ import com.librarymanagement.LibraryApplication.models.requests.ExistingBookRequ
 import com.librarymanagement.LibraryApplication.models.requests.SaveBookRequest;
 import com.librarymanagement.LibraryApplication.models.responses.DefaultResponse;
 import com.librarymanagement.LibraryApplication.services.BookService;
+import com.librarymanagement.LibraryApplication.utils.Constants;
 import com.librarymanagement.LibraryApplication.utils.ResponseConstants;
 import com.librarymanagement.LibraryApplication.utils.ResponseUtility;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,7 +37,7 @@ public class BookController {
         } catch (Exception e) {
             log.error("BookController :: saveBook", e);
             return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }
@@ -48,7 +49,7 @@ public class BookController {
         } catch (Exception e) {
             log.error("BookController :: getBookByIsbn", e);
             return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -57,9 +58,9 @@ public class BookController {
         try {
             return bookService.getAllBooksUser(page);
         } catch (Exception e) {
-            log.error("BookController :: getAllBooks", e);
+            log.error("BookController :: getAllBooksUser", e);
             return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @GetMapping("/user/get-borrowed")
@@ -67,9 +68,9 @@ public class BookController {
         try {
             return bookService.getBorrowedBooksUser();
         } catch (Exception e) {
-            log.error("BookController :: getAllBooks", e);
+            log.error("BookController :: getBorrowedBooksUser", e);
             return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @GetMapping("/admin/get-all")
@@ -94,9 +95,9 @@ public class BookController {
         try {
             return bookService.getAllBooksLibrarian(page);
         } catch (Exception e) {
-            log.error("BookController :: getAllBooks", e);
+            log.error("BookController :: getAllBooksLibrarian", e);
             return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -107,7 +108,7 @@ public class BookController {
         } catch (Exception e) {
             log.error("BookController :: updateBookById", e);
             return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -118,7 +119,7 @@ public class BookController {
         } catch (Exception e) {
             log.error("BookController :: addExistingBookByIsbn", e);
             return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -133,7 +134,7 @@ public class BookController {
         } catch (Exception e) {
             log.error("BookController :: searchBook", e);
             return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @PostMapping("/admin/search")
@@ -145,9 +146,9 @@ public class BookController {
             }
             return bookService.searchBookLibrarian(bookSearchFilterRequest);
         } catch (Exception e) {
-            log.error("BookController :: searchBook", e);
+            log.error("BookController :: searchBookLibrarian", e);
             return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -158,7 +159,7 @@ public class BookController {
         } catch (Exception e) {
             log.error("BookController :: setBookUnavailable", e);
             return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -169,7 +170,7 @@ public class BookController {
         } catch (Exception e) {
             log.error("BookController :: setBookAvailable", e);
             return   ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

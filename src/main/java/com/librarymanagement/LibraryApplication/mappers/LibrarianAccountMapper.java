@@ -6,10 +6,12 @@ import com.librarymanagement.LibraryApplication.entities.LibrarianAccount;
 import com.librarymanagement.LibraryApplication.entities.User;
 import com.librarymanagement.LibraryApplication.models.dtos.LibrarianAccountDto;
 import com.librarymanagement.LibraryApplication.models.requests.LibrarianAccountRequest;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LibrarianAccountMapper {
     public static LibrarianAccount mapToAddLibrarianAccount(LibrarianAccountRequest request,
                                                             AccountType accountType,

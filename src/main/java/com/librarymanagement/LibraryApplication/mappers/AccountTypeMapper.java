@@ -2,9 +2,11 @@ package com.librarymanagement.LibraryApplication.mappers;
 
 import com.librarymanagement.LibraryApplication.entities.AccountType;
 import com.librarymanagement.LibraryApplication.models.dtos.AccountTypesDto;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
-
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AccountTypeMapper {
     public static String mapToAccountTypeName(AccountType accountType){
        return  accountType.getAccountTypeName();

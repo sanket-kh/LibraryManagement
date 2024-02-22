@@ -6,11 +6,14 @@ import com.librarymanagement.LibraryApplication.models.dtos.BookDto;
 import com.librarymanagement.LibraryApplication.models.dtos.UserBookDto;
 import com.librarymanagement.LibraryApplication.models.requests.SaveBookRequest;
 import com.librarymanagement.LibraryApplication.utils.Utils;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BookMapper {
+
 
     public static BookDto mapBookToBaseBookDto(Book book) {
         BookDto bookDto = new BookDto();

@@ -18,6 +18,5 @@ public class UserDto {
 
     private String address;
 
-//    private Boolean status;
 
 }

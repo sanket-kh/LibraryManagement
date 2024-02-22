@@ -6,9 +6,12 @@ import com.librarymanagement.LibraryApplication.models.dtos.ManageUserDto;
 import com.librarymanagement.LibraryApplication.models.dtos.UserDto;
 import com.librarymanagement.LibraryApplication.models.requests.ChangeUserDetailsReq;
 import com.librarymanagement.LibraryApplication.models.requests.UserRegisterRequest;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserMapper {
     public static UserDto mapUserToBaseUserDto(User user) {
         UserDto baseUserDto = new UserDto();
@@ -55,7 +58,7 @@ public class UserMapper {
     }
 
     public static List<ManageUserDto> mapToManageUserDto(List<User> users) {
-       return users.stream().map(UserMapper::mapToManageUserDto).toList();
+        return users.stream().map(UserMapper::mapToManageUserDto).toList();
     }
 
     public static User mapToUser(ChangeUserDetailsReq changeUserDetailsReq, User user) {

@@ -7,9 +7,11 @@ import com.librarymanagement.LibraryApplication.entities.Fine;
 import com.librarymanagement.LibraryApplication.models.dtos.FinesDto;
 import com.librarymanagement.LibraryApplication.models.dtos.ReserveAndBorrowDto;
 import com.librarymanagement.LibraryApplication.utils.Constants;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
-
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FineMapper {
 
 

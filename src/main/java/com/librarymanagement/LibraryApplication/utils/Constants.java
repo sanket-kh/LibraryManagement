@@ -1,14 +1,19 @@
 package com.librarymanagement.LibraryApplication.utils;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Constants {
     public static final Integer FINE_PER_DAY = 1;
     public static final Integer PAGE_SIZE=10;
     public static final String DEFAULT_PAGE_SIZE="10";
     public static final Integer MAX_BORROW_DURATION_PER_BOOK = 90;
     public static final Integer BORROW_LIMIT_PER_USER = 2;
-    public static final Integer MAX_RESERVE_LIMIT_PER_USER = 2;
     public static final Integer MAX_FAILED_LOGIN_ATTEMPT = 4;
     public static final Integer TIMEOUT_DURATION =5000;
+
+    public static final String EXCEPTION_MESSAGE = "Server Error";
     public static final String[] PUBLIC_ACCESS_URI = new String[] {
             "/api/v1/auth/user/authentication",
             "/api/v1/auth/user/register",

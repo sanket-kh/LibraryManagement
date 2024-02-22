@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationErrors(MethodArgumentNotValidException ex) {
         List<String> errors = ex.getBindingResult().getFieldErrors()
-                .stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
+                .stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
         return ResponseUtility.failureResponseWithMessageAndBody(ResponseConstants.BAD_REQUEST,
                 "Invalid request parameters", getErrorsMap(errors),HttpStatus.OK);
     }

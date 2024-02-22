@@ -1,8 +1,10 @@
 package com.librarymanagement.LibraryApplication.utils;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-
+@NoArgsConstructor(access= AccessLevel.PRIVATE)
 public class Utils {
     public static String convertToTitleCaseIteratingChars(String text) {
         if (text == null || text.isEmpty()) {

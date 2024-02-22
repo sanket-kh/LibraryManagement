@@ -1,6 +1,7 @@
 package com.librarymanagement.LibraryApplication.controllers;
 
 import com.librarymanagement.LibraryApplication.services.ReportingStatisticService;
+import com.librarymanagement.LibraryApplication.utils.Constants;
 import com.librarymanagement.LibraryApplication.utils.ResponseConstants;
 import com.librarymanagement.LibraryApplication.utils.ResponseUtility;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class ReportingStatisticController {
         } catch (Exception e) {
             log.error("ReportingStatisticController :: getListOfAllBooks", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -38,7 +39,7 @@ public class ReportingStatisticController {
         } catch (Exception e) {
             log.error("ReportingStatisticController :: getListOfAllAvailableBooks", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -49,7 +50,7 @@ public class ReportingStatisticController {
         } catch (Exception e) {
             log.error("ReportingStatisticController :: getListOfAllReservedBooks", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -60,7 +61,7 @@ public class ReportingStatisticController {
         } catch (Exception e) {
             log.error("ReportingStatisticController :: getCountOfAvailableBooks", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -71,7 +72,7 @@ public class ReportingStatisticController {
         } catch (Exception e) {
             log.error("ReportingStatisticController :: getCountOfTotalBooks", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -82,7 +83,7 @@ public class ReportingStatisticController {
         } catch (Exception e) {
             log.error("ReportingStatisticController :: getBookCount", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -93,7 +94,7 @@ public class ReportingStatisticController {
         } catch (Exception e) {
             log.error("ReportingStatisticController :: getCountOfTotalBorrowedBooks", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -104,7 +105,7 @@ public class ReportingStatisticController {
         } catch (Exception e) {
             log.error("ReportingStatisticController :: getCountOfDifferentBorrowedBooks", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -115,7 +116,7 @@ public class ReportingStatisticController {
         } catch (Exception e) {
             log.error("ReportingStatisticController :: getCountOfUser", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -126,7 +127,7 @@ public class ReportingStatisticController {
         } catch (Exception e) {
             log.error("ReportingStatisticController :: getCountOfActiveUser", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -137,7 +138,7 @@ public class ReportingStatisticController {
         } catch (Exception e) {
             log.error("ReportingStatisticController :: getCountOfLockedUser", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -148,7 +149,7 @@ public class ReportingStatisticController {
         } catch (Exception e) {
             log.error("ReportingStatisticController :: getCountOfDisabledUser", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.SERVER_ERROR,
-                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+                    Constants.EXCEPTION_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
