@@ -19,6 +19,7 @@ import com.librarymanagement.LibraryApplication.repositories.ReserveAndBurrowRep
 import com.librarymanagement.LibraryApplication.repositories.UserRepo;
 import com.librarymanagement.LibraryApplication.services.FineService;
 import com.librarymanagement.LibraryApplication.services.ReserveAndBorrowService;
+import com.librarymanagement.LibraryApplication.specificationbuilders.ReserveAndBorrowSpecificationBuilder;
 import com.librarymanagement.LibraryApplication.utils.Constants;
 import com.librarymanagement.LibraryApplication.utils.ResponseConstants;
 import com.librarymanagement.LibraryApplication.utils.ResponseUtility;
@@ -30,6 +31,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -221,8 +223,12 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
     @Override
     public ResponseEntity<Object> searchTransactions(TransactionSearchReq transactionSearchReq) {
         try {
+            Specification<ReserveAndBorrow> specification =
+                    ReserveAndBorrowSpecificationBuilder.buildSearchTransactionSpec(
+                            transactionSearchReq);
+            Pageable pageable = PageRequest.of(Constants.PAGE_NUMBER, Constants.PAGE_SIZE * 2);
             List<ReserveAndBorrow> reserveAndBorrowList =
-                    reserveAndBurrowRepo.searchFilter(transactionSearchReq);
+                    reserveAndBurrowRepo.findAll(specification, pageable);
             if (reserveAndBorrowList.isEmpty()) {
                 return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
                         "No transactions found", HttpStatus.NOT_FOUND);

@@ -7,6 +7,7 @@ import com.librarymanagement.LibraryApplication.entities.User;
 import com.librarymanagement.LibraryApplication.models.dtos.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -18,6 +19,8 @@ import java.util.List;
 public interface ReserveAndBurrowRepo extends JpaRepository<ReserveAndBorrow, Long>,
         PagingAndSortingRepository<ReserveAndBorrow, Long>, ReserveAndBorrowDao {
 
+    List<ReserveAndBorrow> findAll(Specification<ReserveAndBorrow> specification,
+                                   Pageable pageable);
 
     @Query(value = """
                         SELECT R from ReserveAndBorrow R

@@ -5,6 +5,7 @@ import com.librarymanagement.LibraryApplication.models.requests.TransactionSearc
 
 import java.util.List;
 
+@Deprecated(since = "2024/02/22")
 public interface ReserveAndBorrowDao {
     List<ReserveAndBorrow> searchFilter(TransactionSearchReq transactionSearchReq);
 }

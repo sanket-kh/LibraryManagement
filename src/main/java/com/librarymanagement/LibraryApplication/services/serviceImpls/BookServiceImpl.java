@@ -10,6 +10,7 @@ import com.librarymanagement.LibraryApplication.models.requests.SaveBookRequest;
 import com.librarymanagement.LibraryApplication.repositories.BookRepo;
 import com.librarymanagement.LibraryApplication.repositories.ReserveAndBurrowRepo;
 import com.librarymanagement.LibraryApplication.services.BookService;
+import com.librarymanagement.LibraryApplication.specificationbuilders.BookSpecificationBuilder;
 import com.librarymanagement.LibraryApplication.utils.Constants;
 import com.librarymanagement.LibraryApplication.utils.ResponseConstants;
 import com.librarymanagement.LibraryApplication.utils.ResponseUtility;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -81,7 +83,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public ResponseEntity<Object> getAllBooksUser(Integer pageNumber) {
         try {
-            Pageable pageable = PageRequest.of(pageNumber,Constants.PAGE_SIZE, Sort.by("title"));
+            Pageable pageable = PageRequest.of(pageNumber, Constants.PAGE_SIZE, Sort.by("title"));
             Page<Book> bookPage = bookRepo.getAvailableBooks(pageable);
             List<Book> bookList = bookPage.getContent();
             if (bookList.isEmpty()) {
@@ -111,12 +113,12 @@ public class BookServiceImpl implements BookService {
             }
             List<BookDto> bookDtos = BookMapper.mapBookListToBaseBookDtoList(bookList);
             return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
-                    "Books found",bookDtos , HttpStatus.OK);
+                    "Books found", bookDtos, HttpStatus.OK);
 
         } catch (Exception e) {
             log.error("BookService :: getAllBooks", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
-                    "Unable to fetch books",HttpStatus.INTERNAL_SERVER_ERROR);
+                    "Unable to fetch books", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -127,9 +129,9 @@ public class BookServiceImpl implements BookService {
             if (book == null) {
                 return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
                         "Book doesnt exist with isbn:" + saveBookRequest.getIsbn(),
-                HttpStatus.NOT_FOUND);
+                        HttpStatus.NOT_FOUND);
             }
-            book = BookMapper.mapUpdateBookRequestToBook(saveBookRequest,book);
+            book = BookMapper.mapUpdateBookRequestToBook(saveBookRequest, book);
             bookRepo.save(book);
             return ResponseUtility.successResponseWithMessage(ResponseConstants.UPDATED,
                     "Book updated", HttpStatus.OK);
@@ -147,16 +149,16 @@ public class BookServiceImpl implements BookService {
             if (book == null) {
                 return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
                         "Book with isbn:" + existingBookRequest.getIsbn() + " doesnt exist",
-                HttpStatus.NOT_FOUND);
+                        HttpStatus.NOT_FOUND);
             }
             book.setCopies(book.getCopies() + existingBookRequest.getCopies());
             bookRepo.save(book);
             return ResponseUtility.successResponseWithMessage(ResponseConstants.UPDATED,
-                    "Quantity of books updated",HttpStatus.OK);
+                    "Quantity of books updated", HttpStatus.OK);
         } catch (Exception e) {
             log.error("BookService :: addExistingBookByIsbn", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
-                    "Unable update quantity of book",HttpStatus.INTERNAL_SERVER_ERROR     );
+                    "Unable update quantity of book", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -164,40 +166,48 @@ public class BookServiceImpl implements BookService {
     @Override
     public ResponseEntity<Object> searchBookUser(BookSearchFilterRequest bookSearchFilterRequest) {
         try {
-            List<Book> bookList = bookRepo.bookSearchFilter(bookSearchFilterRequest);
-            System.out.println(bookList.size());
+            Specification<Book> specification =
+                    BookSpecificationBuilder.searchBookSpecBuilder(bookSearchFilterRequest);
+            Pageable pageable = PageRequest.of(0, 10);
+            Page<Book> bookPage = bookRepo.findAll(specification, pageable);
+            List<Book> bookList = bookPage.getContent();
             if (bookList.isEmpty()) {
                 return ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
-                        "Book(s) not found, try again",HttpStatus.NOT_FOUND);
+                        "Book(s) not found, try again", HttpStatus.NOT_FOUND);
 
             }
             List<UserBookDto> bookDtoList = BookMapper.mapBookListToUserBookDtoList(bookList);
             return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
-                    "Book(s) found", bookDtoList,HttpStatus.OK);
+                    "Book(s) found", bookDtoList, HttpStatus.OK);
+
         } catch (Exception e) {
             log.error("BookService :: searchBook", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
-                    "Unable to search book",HttpStatus.INTERNAL_SERVER_ERROR);
+                    "Unable to search book", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
+
     @Override
-    public ResponseEntity<Object> searchBookLibrarian(BookSearchFilterRequest bookSearchFilterRequest) {
+    public ResponseEntity<Object> searchBookLibrarian(
+            BookSearchFilterRequest bookSearchFilterRequest) {
         try {
-            List<Book> bookList = bookRepo.bookSearchFilter(bookSearchFilterRequest);
-            System.out.println(bookList.size());
+            Specification<Book> specification =
+                    BookSpecificationBuilder.searchBookSpecBuilder(bookSearchFilterRequest);
+            Pageable pageable = PageRequest.of(0, 10);
+            Page<Book> bookPage = bookRepo.findAll(specification, pageable);
+            List<Book> bookList = bookPage.getContent();
             if (bookList.isEmpty()) {
                 return ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
-                        "Book(s) not found, try again",HttpStatus.NOT_FOUND);
+                        "Book(s) not found, try again", HttpStatus.NOT_FOUND);
             }
             List<BookDto> bookDtoList = BookMapper.mapBookListToBaseBookDtoList(bookList);
             return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
-                    "Book(s) found", bookDtoList,HttpStatus.OK);
+                    "Book(s) found", bookDtoList, HttpStatus.OK);
         } catch (Exception e) {
             log.error("BookService :: searchBook", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
-                    "Unable to search book",HttpStatus.INTERNAL_SERVER_ERROR);
+                    "Unable to search book", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -209,16 +219,16 @@ public class BookServiceImpl implements BookService {
             Book book = bookRepo.getBookByIsbn(isbn);
             if (book == null) {
                 return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
-                        "Book with isbn: " + isbn + " doesn't exist",HttpStatus.NOT_FOUND);
+                        "Book with isbn: " + isbn + " doesn't exist", HttpStatus.NOT_FOUND);
             }
             book.setIsAvailable(Boolean.FALSE);
             bookRepo.save(book);
             return ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
-                    "Book availability updated to unavailable",HttpStatus.OK);
+                    "Book availability updated to unavailable", HttpStatus.OK);
         } catch (Exception e) {
             log.error("BookService :: setBookStatusUnavailable", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
-                    "Unable to update book's status",HttpStatus.INTERNAL_SERVER_ERROR);
+                    "Unable to update book's status", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -229,13 +239,13 @@ public class BookServiceImpl implements BookService {
             Book book = bookRepo.getBookByIsbn(isbn);
             if (book == null) {
                 return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
-                        "Book with isbn: " + isbn + " doesn't exist",HttpStatus.NOT_FOUND);
+                        "Book with isbn: " + isbn + " doesn't exist", HttpStatus.NOT_FOUND);
             }
             book.setIsAvailable(Boolean.TRUE);
             bookRepo.save(book);
             return ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
-                    "Book with isbn: " + isbn + " availability updated to available",HttpStatus.OK)
-            ;
+                    "Book with isbn: " + isbn + " availability updated to available",
+                    HttpStatus.OK);
         } catch (Exception e) {
             log.error("BookService :: setBookStatusAvailable", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
@@ -246,10 +256,11 @@ public class BookServiceImpl implements BookService {
     @Override
     public ResponseEntity<Object> getBorrowedBooksUser() {
         String username = Utils.getUsernameFromContext();
-        List<UserBookDto> booksBorrowedByUser = this.reserveAndBurrowRepo.getBooksBorrowedByUser(username);
-        if(booksBorrowedByUser.isEmpty()){
+        List<UserBookDto> booksBorrowedByUser =
+                this.reserveAndBurrowRepo.getBooksBorrowedByUser(username);
+        if (booksBorrowedByUser.isEmpty()) {
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
-                    "You have not borrowed any books",HttpStatus.NOT_FOUND);
+                    "You have not borrowed any books", HttpStatus.NOT_FOUND);
         }
         return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
                 "Books borrowed by user retrieved", booksBorrowedByUser, HttpStatus.OK);

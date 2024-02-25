@@ -37,5 +37,6 @@ public class Constants {
             "/api/v1/user/transactions",
             "/api/v1/fine/user/**",
     "/api/v1/user/change-password"};
-    
+
+    public static final int PAGE_NUMBER = 0;
 }

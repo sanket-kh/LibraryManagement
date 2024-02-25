@@ -13,6 +13,7 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserMapper {
+
     public static UserDto mapUserToBaseUserDto(User user) {
         UserDto baseUserDto = new UserDto();
         baseUserDto.setAddress(user.getAddress());

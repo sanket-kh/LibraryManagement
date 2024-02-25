@@ -2,6 +2,7 @@ package com.librarymanagement.LibraryApplication.services.serviceImpls;
 
 import com.librarymanagement.LibraryApplication.entities.User;
 import com.librarymanagement.LibraryApplication.mappers.UserMapper;
+import com.librarymanagement.LibraryApplication.mappers.UserMapperInterface;
 import com.librarymanagement.LibraryApplication.models.dtos.ManageUserDto;
 import com.librarymanagement.LibraryApplication.models.dtos.UserDto;
 import com.librarymanagement.LibraryApplication.models.requests.ChangePasswordRequest;
@@ -34,6 +35,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepo userRepo;
+    private final UserMapperInterface userMapperInterface;
 
 
     @Override

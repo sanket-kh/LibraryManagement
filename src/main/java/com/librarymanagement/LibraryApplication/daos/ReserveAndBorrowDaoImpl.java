@@ -7,7 +7,10 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 
 import java.util.List;
-
+/**
+ * @deprecated As of 2024/02/22, replaced by jpa specifications
+ */
+@Deprecated(since = "2024/02/22")
 public class ReserveAndBorrowDaoImpl implements ReserveAndBorrowDao {
     @PersistenceContext
     EntityManager entityManager;
