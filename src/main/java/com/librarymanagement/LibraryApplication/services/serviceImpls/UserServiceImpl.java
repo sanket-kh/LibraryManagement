@@ -85,8 +85,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             user.setRemark("More than 5 unsuccessful login attempt");
             userRepo.save(user);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.BAD_CREDENTIALS,
-                    "5 wrong attempts occurred. Account is locked",
-                    HttpStatus.UNAUTHORIZED);
+                    "5 wrong attempts occurred. Account is locked", HttpStatus.UNAUTHORIZED);
         }
         userRepo.save(user);
         return ResponseUtility.failureResponseWithMessage(ResponseConstants.BAD_CREDENTIALS,
@@ -100,17 +99,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         try {
             User user = userRepo.findUserByUsername(username);
             if (user == null) {
-                return ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT, "User doesnt exist", HttpStatus.NO_CONTENT);
+                return ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT,
+                        "User doesnt exist", HttpStatus.NO_CONTENT);
             }
             if (user.getIsNotLocked()) {
-                return ResponseUtility.successResponseWithMessage(ResponseConstants.OK, "User already unlocked", HttpStatus.OK);
+                return ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
+                        "User already unlocked", HttpStatus.OK);
             }
             userRepo.unlockUser(username);
-            return ResponseUtility.authenticationSuccessWithMessage(ResponseConstants.OK, "User unlocked",
-                    HttpStatus.OK);
+            return ResponseUtility.authenticationSuccessWithMessage(ResponseConstants.OK,
+                    "User unlocked", HttpStatus.OK);
         } catch (Exception e) {
-            return ResponseUtility.authenticationSuccessWithMessage(ResponseConstants.OK, "Failed to unlock user",
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseUtility.authenticationSuccessWithMessage(ResponseConstants.OK,
+                    "Failed to unlock user", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -133,11 +134,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             }
             userRepo.lockUserByUsername(lockUserRequest.getUsername(), lockUserRequest.getRemark());
             return ResponseUtility.authenticationSuccessWithMessage(ResponseConstants.OK,
-                    "Account locked",
-                    HttpStatus.OK);
+                    "Account locked", HttpStatus.OK);
         } catch (Exception e) {
-            return ResponseUtility.authenticationSuccessWithMessage(ResponseConstants.INTERNAL_ERROR,
-                    "Failed to lock user",
+            return ResponseUtility.authenticationSuccessWithMessage(
+                    ResponseConstants.INTERNAL_ERROR, "Failed to lock user",
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -146,14 +146,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public ResponseEntity<Object> changePassword(ChangePasswordRequest changePasswordRequest) {
 
         try {
-            if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getReEnterNewPassword())) {
+            if (!changePasswordRequest.getNewPassword()
+                    .equals(changePasswordRequest.getReEnterNewPassword())) {
                 return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_ALLOWED,
-                        "New password and Re-entered passwords don't match", HttpStatus.BAD_REQUEST);
+                        "New password and Re-entered passwords don't match",
+                        HttpStatus.BAD_REQUEST);
             }
             User user = userRepo.findUserByUsername(changePasswordRequest.getUsername());
             String currentPassword = user.getPassword();
             String newPassword = passwordEncoder.encode(changePasswordRequest.getNewPassword());
-            if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), currentPassword)) {
+            if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(),
+                    currentPassword)) {
                 return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_ALLOWED,
                         "Invalid current password", HttpStatus.BAD_REQUEST);
             }
@@ -180,9 +183,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             User user = this.userRepo.findUserByUsername(username);
             if (user == null) {
                 return ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT,
-                        "Username" +
-                        " doesn't" +
-                        " exist", HttpStatus.NOT_FOUND);
+                        "Username" + " doesn't" + " exist", HttpStatus.NOT_FOUND);
             }
             return ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
                     "Username is taken", HttpStatus.OK);
@@ -199,13 +200,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         try {
             String text = username.trim().toLowerCase();
             String loggedInUser = Utils.getUsernameFromContext();
-            List<User> users = this.userRepo.findUsersByUsernameLike("%" + text + "%", loggedInUser);
+            List<User> users =
+                    this.userRepo.findUsersByUsernameLike("%" + text + "%", loggedInUser);
             if (users.isEmpty()) {
                 return ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT,
                         "No matches found", HttpStatus.NOT_FOUND);
             }
             return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
-                    "User(s) retrieved", UserMapper.mapToManageUserDto(users), HttpStatus.OK);
+                    "User(s) retrieved", userMapperInterface.mapToManageUserDtoList(users), HttpStatus.OK);
         } catch (Exception e) {
             log.error("UserServiceImpl :: searchUserByUsername", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
