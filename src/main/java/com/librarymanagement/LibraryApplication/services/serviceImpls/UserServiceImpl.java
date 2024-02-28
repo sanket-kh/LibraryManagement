@@ -1,7 +1,6 @@
 package com.librarymanagement.LibraryApplication.services.serviceImpls;
 
 import com.librarymanagement.LibraryApplication.entities.User;
-import com.librarymanagement.LibraryApplication.mappers.UserMapper;
 import com.librarymanagement.LibraryApplication.mappers.UserMapperInterface;
 import com.librarymanagement.LibraryApplication.models.dtos.ManageUserDto;
 import com.librarymanagement.LibraryApplication.models.dtos.UserDto;
@@ -47,7 +46,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                         "Username is already taken", HttpStatus.CONFLICT);
             }
             String encodedPassword = passwordEncoder.encode(userRegisterRequest.getPassword());
-            user = UserMapper.mapToUser(userRegisterRequest, encodedPassword);
+            user = userMapperInterface.mapToUser(userRegisterRequest, encodedPassword);
             userRepo.save(user);
             return ResponseUtility.successResponseWithMessage(ResponseConstants.CREATED,
                     "User registered successfully", HttpStatus.OK);
@@ -66,7 +65,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
                         "User doesnt exist", HttpStatus.NO_CONTENT);
             }
-            UserDto userDto = UserMapper.mapUserToBaseUserDto(user);
+            UserDto userDto = userMapperInterface.mapToUserDto(user);
             return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
                     "User information retrieved", userDto, HttpStatus.OK);
         } catch (Exception e) {
@@ -207,7 +206,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                         "No matches found", HttpStatus.NOT_FOUND);
             }
             return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
-                    "User(s) retrieved", userMapperInterface.mapToManageUserDtoList(users), HttpStatus.OK);
+                    "User(s) retrieved", userMapperInterface.mapToManageUserDtoList(users),
+                    HttpStatus.OK);
         } catch (Exception e) {
             log.error("UserServiceImpl :: searchUserByUsername", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
@@ -226,7 +226,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                         "No Users", HttpStatus.NOT_FOUND);
             }
             return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
-                    "User(s) retrieved", UserMapper.mapToManageUserDto(users), HttpStatus.OK);
+                    "User(s) retrieved", userMapperInterface.mapToManageUserDtoList(users), HttpStatus.OK);
         } catch (Exception e) {
             log.error("UserServiceImpl :: getAll", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
@@ -245,7 +245,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                         "No Locked Users", HttpStatus.NOT_FOUND);
             }
             return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
-                    "Locked User(s) retrieved", UserMapper.mapToManageUserDto(lockedUsers),
+                    "Locked User(s) retrieved", userMapperInterface.mapToManageUserDtoList(lockedUsers),
                     HttpStatus.OK);
         } catch (Exception e) {
             log.error("UserServiceImpl :: getLockedUsers", e);
@@ -267,7 +267,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
                         "User doesnt exist", HttpStatus.NO_CONTENT);
             }
-            ManageUserDto userDto = UserMapper.mapToManageUserDto(user);
+            ManageUserDto userDto = userMapperInterface.mapToManageUserDto(user);
             return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
                     "User information retrieved", userDto, HttpStatus.OK);
         } catch (Exception e) {
@@ -281,7 +281,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public ResponseEntity<Object> updateUserDetails(ChangeUserDetailsReq changeUserDetailsReq) {
         try {
             String username = Utils.getUsernameFromContext();
-            User user = UserMapper.mapToUser(changeUserDetailsReq,
+            User user = userMapperInterface.updateUserFromRequest(changeUserDetailsReq,
                     userRepo.findUserByUsername(username));
             userRepo.save(user);
             return ResponseUtility.successResponseWithMessage(ResponseConstants.OK,

@@ -1,14 +1,15 @@
-package com.librarymanagement.LibraryApplication.mappers;
+package com.librarymanagement.LibraryApplication.mappers.deprecatedmappers;
 
 
 import com.librarymanagement.LibraryApplication.entities.ReserveAndBorrow;
 import com.librarymanagement.LibraryApplication.models.dtos.BookTransactionsDto;
 import com.librarymanagement.LibraryApplication.models.dtos.ReserveAndBorrowDto;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+/**
+ * @deprecated since 2/26/2024. Replaced by the mapper interfaces and MapStruct library
+ */
+@Deprecated(since = "2/26/2024")
 public class ReserveAndBorrowMapper {
     public static ReserveAndBorrowDto mapToReserveAndBorrowDto(ReserveAndBorrow reserveAndBorrow) {
         ReserveAndBorrowDto reserveAndBorrowDto = new ReserveAndBorrowDto();
@@ -37,8 +38,10 @@ public class ReserveAndBorrowMapper {
     }
 
 
-    public static List<BookTransactionsDto> mapToBookTransactionDto(List<ReserveAndBorrow> reserveAndBorrows) {
-        return reserveAndBorrows.stream().map(ReserveAndBorrowMapper::mapToBookTransactionDto).toList();
+    public static List<BookTransactionsDto> mapToBookTransactionDto(
+            List<ReserveAndBorrow> reserveAndBorrows) {
+        return reserveAndBorrows.stream().map(ReserveAndBorrowMapper::mapToBookTransactionDto)
+                .toList();
 
     }
 }

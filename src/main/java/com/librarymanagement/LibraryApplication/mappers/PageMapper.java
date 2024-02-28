@@ -1,20 +1,21 @@
 package com.librarymanagement.LibraryApplication.mappers;
 
 import com.librarymanagement.LibraryApplication.entities.Fine;
+import com.librarymanagement.LibraryApplication.models.dtos.FinesDto;
 import com.librarymanagement.LibraryApplication.models.responses.PageResponse;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.springframework.data.domain.Page;
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class PageMapper {
-    public static PageResponse mapFinePageToPageResponse(Page<Fine> page){
-        PageResponse pageResponse =new PageResponse();
-        pageResponse.setPageSize(page.getSize());
-        pageResponse.setPageNo(page.getPageable().getPageNumber());
-        pageResponse.setPageSize(page.getPageable().getPageSize());
-        pageResponse.setTotalPages(page.getTotalPages());
-        pageResponse.setContent(FineMapper.mapToFinesDto(page.getContent()));
-        pageResponse.setTotalElements(page.getTotalElements());
-        return pageResponse;
-    }
+
+import java.util.List;
+
+@Mapper(componentModel = "spring")
+public interface PageMapper {
+    @Mapping(target = "totalPages", expression = "java(fines.getTotalPages())")
+    @Mapping(target = "totalElements", expression = "java(fines.getTotalElements())")
+    @Mapping(target = "pageSize", expression = "java(fines.getSize())")
+    @Mapping(target = "pageNo", source = "pageNo")
+    @Mapping(target = "content", source = "finesDto")
+    PageResponse mapFinePageToPageResponse(Page<Fine> fines, List<FinesDto> finesDto,
+                                           Integer pageNo);
 }

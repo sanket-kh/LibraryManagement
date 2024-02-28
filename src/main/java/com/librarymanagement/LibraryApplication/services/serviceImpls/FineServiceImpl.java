@@ -6,8 +6,9 @@ import com.library.fine.responses.LibraryResponse;
 import com.library.fine.services.LibService;
 import com.librarymanagement.LibraryApplication.entities.Fine;
 import com.librarymanagement.LibraryApplication.entities.User;
-import com.librarymanagement.LibraryApplication.mappers.FineMapper;
+import com.librarymanagement.LibraryApplication.mappers.FineMapperInterface;
 import com.librarymanagement.LibraryApplication.mappers.PageMapper;
+import com.librarymanagement.LibraryApplication.models.dtos.FinesDto;
 import com.librarymanagement.LibraryApplication.models.requests.PaymentRequest;
 import com.librarymanagement.LibraryApplication.models.responses.PageResponse;
 import com.librarymanagement.LibraryApplication.repositories.FineRepo;
@@ -16,6 +17,7 @@ import com.librarymanagement.LibraryApplication.services.FineService;
 import com.librarymanagement.LibraryApplication.utils.Constants;
 import com.librarymanagement.LibraryApplication.utils.ResponseConstants;
 import com.librarymanagement.LibraryApplication.utils.ResponseUtility;
+import com.librarymanagement.LibraryApplication.utils.Utils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -25,9 +27,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,6 +40,8 @@ public class FineServiceImpl implements FineService {
     private final LibService fineService;
     private final FineRepo fineRepo;
     private final UserRepo userRepo;
+    private final PageMapper pageMapper;
+    private final FineMapperInterface fineMapper;
 
 
     @Override
@@ -48,7 +49,7 @@ public class FineServiceImpl implements FineService {
         try {
             return fineService.setFine(fineCalculationRequest);
         } catch (Exception e) {
-            log.error("FineService :: FineServiceImpl",e);
+            log.error("FineService :: FineServiceImpl", e);
             LibraryResponse libraryResponse = new LibraryResponse();
             libraryResponse.setMessage("Some error occurred");
             libraryResponse.setSuccess(false);
@@ -62,20 +63,22 @@ public class FineServiceImpl implements FineService {
         try {
             Integer owedAmount = fineRepo.getFineOwedByUserOnBook(paymentRequest.getUsername(),
                     paymentRequest.getIsbn());
-            FinePaymentRequest finePaymentRequest = new FinePaymentRequest();
-            finePaymentRequest.setAmount(owedAmount);
-            finePaymentRequest.setIsPaid(Boolean.FALSE);
-            finePaymentRequest.setPaidAmount(paymentRequest.getAmount());
-            finePaymentRequest.setOverDue(owedAmount / Constants.FINE_PER_DAY);
+            FinePaymentRequest finePaymentRequest =
+                    fineMapper.mapToFinPaymentRequest(owedAmount, paymentRequest);
             LibraryResponse libraryResponse = fineService.payFine(finePaymentRequest);
             if (libraryResponse.getResponseBody() == null) {
-                return  ResponseUtility.failureResponseWithMessage(ResponseConstants.INSUFFICIENT_FUND, libraryResponse.getMessage(), HttpStatus.CONFLICT);
+                return ResponseUtility.failureResponseWithMessage(
+                        ResponseConstants.INSUFFICIENT_FUND, libraryResponse.getMessage(),
+                        HttpStatus.CONFLICT);
             }
-            fineRepo.clearFinesForUsernameOnBook(paymentRequest.getUsername(), paymentRequest.getIsbn());
-            return  ResponseUtility.successResponseWithMessage(ResponseConstants.OK, libraryResponse.getMessage(), HttpStatus.OK);
+            fineRepo.clearFinesForUsernameOnBook(paymentRequest.getUsername(),
+                    paymentRequest.getIsbn());
+            return ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
+                    libraryResponse.getMessage(), HttpStatus.OK);
         } catch (Exception e) {
-            log.error("FineServiceImpl :: payFine",e);
-            return  ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR, "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("FineServiceImpl :: payFine", e);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+                    "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -83,30 +86,29 @@ public class FineServiceImpl implements FineService {
     @Override
     public ResponseEntity<Object> getUserFinesList() {
         try {
-            SecurityContext context = SecurityContextHolder.getContext();
-            Authentication authentication = context.getAuthentication();
-            String username = authentication.getName();
+            String username = Utils.getUsernameFromContext();
             return getUserFineResponse(username);
         } catch (Exception e) {
-            log.error("FineServiceImpl :: getUserFinesList",e);
-            return  ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+            log.error("FineServiceImpl :: getUserFinesList", e);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
                     "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
-
         }
     }
 
     @Override
     public ResponseEntity<Object> getAllFinesList(Integer pageSize, Integer pageNo) {
         try {
-            Pageable pageable = PageRequest.of(pageNo, Constants.PAGE_SIZE, Sort.by(Sort.Direction.DESC,
-                    "id"));
+            Pageable pageable =
+                    PageRequest.of(pageNo, Constants.PAGE_SIZE, Sort.by(Sort.Direction.DESC, "id"));
             Page<Fine> fines = fineRepo.findAll(pageable);
-            PageResponse pageResponse = PageMapper.mapFinePageToPageResponse(fines);
-            return  ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
+            List<FinesDto> finesDtos = fineMapper.mapToFinesDto(fines.getContent());
+            PageResponse pageResponse =
+                    pageMapper.mapFinePageToPageResponse(fines, finesDtos, pageNo);
+            return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
                     "Fines page received", pageResponse, HttpStatus.OK);
         } catch (Exception e) {
-            log.error("FineServiceImpl :: getAllFinesList",e);
-            return  ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+            log.error("FineServiceImpl :: getAllFinesList", e);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
                     "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
@@ -117,12 +119,14 @@ public class FineServiceImpl implements FineService {
         try {
             Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("id").descending());
             Page<Fine> fines = fineRepo.getAllUnpaidFinesTransaction(pageable);
-            PageResponse pageResponse = PageMapper.mapFinePageToPageResponse(fines);
-            return  ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
+            List<FinesDto> finesDtos = fineMapper.mapToFinesDto(fines.getContent());
+            PageResponse pageResponse =
+                    pageMapper.mapFinePageToPageResponse(fines, finesDtos, pageNo);
+            return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
                     "Fines page received", pageResponse, HttpStatus.OK);
         } catch (Exception e) {
-            log.error("FineServiceImpl :: getAllUnpaidFines",e);
-            return  ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+            log.error("FineServiceImpl :: getAllUnpaidFines", e);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
                     "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -133,10 +137,9 @@ public class FineServiceImpl implements FineService {
         try {
             return getUserFineResponse(username);
         } catch (Exception e) {
-            log.error("FineServiceImpl :: getFinesOwedByUser",e);
-            return  ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+            log.error("FineServiceImpl :: getFinesOwedByUser", e);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
                     "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
-
         }
 
     }
@@ -145,11 +148,10 @@ public class FineServiceImpl implements FineService {
         User user = userRepo.findUserByUsername(username);
         List<Fine> fines = fineRepo.getAllUnpaidFinesByUser(user);
         if (fines.isEmpty()) {
-            return  ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT,
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.NO_CONTENT,
                     "No fines owed by user", HttpStatus.NOT_FOUND);
-
         }
-        return  ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
-                "Fines owed by user retrieved", FineMapper.mapToFinesDto(fines), HttpStatus.OK);
+        return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
+                "Fines owed by user retrieved", fineMapper.mapToFinesDto(fines), HttpStatus.OK);
     }
 }

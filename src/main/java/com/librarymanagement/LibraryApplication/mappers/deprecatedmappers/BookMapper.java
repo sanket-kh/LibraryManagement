@@ -1,4 +1,4 @@
-package com.librarymanagement.LibraryApplication.mappers;
+package com.librarymanagement.LibraryApplication.mappers.deprecatedmappers;
 
 
 import com.librarymanagement.LibraryApplication.entities.Book;
@@ -11,6 +11,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * @deprecated since 2/26/2024. Replaced by the mapper interfaces and MapStruct library
+ */
+@Deprecated(since = "2/26/2024")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BookMapper {
 

@@ -1,11 +1,5 @@
 package com.librarymanagement.LibraryApplication.models.responses;
 
-import lombok.Getter;
-import lombok.Setter;
+public record AuthResponse(String role, String accessToken)  {
 
-@Getter
-@Setter
-public class AuthResponse  {
-    private String role;
-    private String accessToken;
 }

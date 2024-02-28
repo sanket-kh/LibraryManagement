@@ -1,7 +1,7 @@
 package com.librarymanagement.LibraryApplication.services.serviceImpls;
 
 import com.librarymanagement.LibraryApplication.entities.Book;
-import com.librarymanagement.LibraryApplication.mappers.BookMapper;
+import com.librarymanagement.LibraryApplication.mappers.BookMapperInterface;
 import com.librarymanagement.LibraryApplication.models.dtos.BookDto;
 import com.librarymanagement.LibraryApplication.models.dtos.UserBookDto;
 import com.librarymanagement.LibraryApplication.models.requests.BookSearchFilterRequest;
@@ -28,7 +28,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.librarymanagement.LibraryApplication.mappers.BookMapper.mapBookToUserBookDto;
 
 
 @Log4j2
@@ -37,6 +36,7 @@ import static com.librarymanagement.LibraryApplication.mappers.BookMapper.mapBoo
 public class BookServiceImpl implements BookService {
     private final BookRepo bookRepo;
     private final ReserveAndBurrowRepo reserveAndBurrowRepo;
+    private final BookMapperInterface bookMapper;
 
     @Override
     public ResponseEntity<Object> saveBook(SaveBookRequest saveBookRequest) {
@@ -49,7 +49,7 @@ public class BookServiceImpl implements BookService {
                         HttpStatus.CONFLICT);
             }
 
-            Book book = BookMapper.mapSaveBookRequestToBook(saveBookRequest);
+            Book book = bookMapper.mapSaveBookRequestToBook(saveBookRequest);
             bookRepo.save(book);
             return ResponseUtility.successResponseWithMessage(ResponseConstants.CREATED,
                     "Book saved", HttpStatus.OK);
@@ -70,7 +70,7 @@ public class BookServiceImpl implements BookService {
                 return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
                         "Book not found", HttpStatus.CONFLICT);
             }
-            UserBookDto userBookDto = mapBookToUserBookDto(book);
+            UserBookDto userBookDto = bookMapper.mapBookToUserBookDto(book);
             return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
                     "Book found", userBookDto, HttpStatus.OK);
         } catch (Exception e) {
@@ -90,7 +90,7 @@ public class BookServiceImpl implements BookService {
                 return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
                         "No books in the library", HttpStatus.NOT_FOUND);
             }
-            List<UserBookDto> userBookDtos = BookMapper.mapBookListToUserBookDtoList(bookList);
+            List<UserBookDto> userBookDtos = bookMapper.mapBookListToUserBookDtoList(bookList);
             return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
                     "Books found", userBookDtos, HttpStatus.OK);
 
@@ -111,7 +111,7 @@ public class BookServiceImpl implements BookService {
                 return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
                         "No books in the library", HttpStatus.NOT_FOUND);
             }
-            List<BookDto> bookDtos = BookMapper.mapBookListToBaseBookDtoList(bookList);
+            List<BookDto> bookDtos = bookMapper.mapBookListToBaseBookDtoList(bookList);
             return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
                     "Books found", bookDtos, HttpStatus.OK);
 
@@ -131,7 +131,7 @@ public class BookServiceImpl implements BookService {
                         "Book doesnt exist with isbn:" + saveBookRequest.getIsbn(),
                         HttpStatus.NOT_FOUND);
             }
-            book = BookMapper.mapUpdateBookRequestToBook(saveBookRequest, book);
+            book = bookMapper.mapUpdateBookRequestToBook(saveBookRequest, book);
             bookRepo.save(book);
             return ResponseUtility.successResponseWithMessage(ResponseConstants.UPDATED,
                     "Book updated", HttpStatus.OK);
@@ -176,7 +176,7 @@ public class BookServiceImpl implements BookService {
                         "Book(s) not found, try again", HttpStatus.NOT_FOUND);
 
             }
-            List<UserBookDto> bookDtoList = BookMapper.mapBookListToUserBookDtoList(bookList);
+            List<UserBookDto> bookDtoList = bookMapper.mapBookListToUserBookDtoList(bookList);
             return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
                     "Book(s) found", bookDtoList, HttpStatus.OK);
 
@@ -201,7 +201,7 @@ public class BookServiceImpl implements BookService {
                 return ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
                         "Book(s) not found, try again", HttpStatus.NOT_FOUND);
             }
-            List<BookDto> bookDtoList = BookMapper.mapBookListToBaseBookDtoList(bookList);
+            List<BookDto> bookDtoList = bookMapper.mapBookListToBaseBookDtoList(bookList);
             return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
                     "Book(s) found", bookDtoList, HttpStatus.OK);
         } catch (Exception e) {

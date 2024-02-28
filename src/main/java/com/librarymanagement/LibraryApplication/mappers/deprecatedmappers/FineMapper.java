@@ -1,19 +1,24 @@
-package com.librarymanagement.LibraryApplication.mappers;
+package com.librarymanagement.LibraryApplication.mappers.deprecatedmappers;
 
 
 import com.library.fine.Dtos.FineCalculationRequest;
 import com.library.fine.Dtos.FineDto;
+import com.library.fine.Dtos.FinePaymentRequest;
 import com.librarymanagement.LibraryApplication.entities.Fine;
 import com.librarymanagement.LibraryApplication.models.dtos.FinesDto;
 import com.librarymanagement.LibraryApplication.models.dtos.ReserveAndBorrowDto;
+import com.librarymanagement.LibraryApplication.models.requests.PaymentRequest;
 import com.librarymanagement.LibraryApplication.utils.Constants;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+/**
+ * @deprecated since 2/26/2024. Replaced by the mapper interfaces and MapStruct library
+ */
+@Deprecated(since = "2/26/2024")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FineMapper {
-
 
     public static Fine mapToFine(FineDto fineDto) {
         Fine fine = new Fine();
@@ -48,5 +53,13 @@ public class FineMapper {
     }
     public static List<FinesDto> mapToFinesDto(List<Fine> fines){
         return fines.stream().map(FineMapper::mapToFinesDto).toList();
+    }
+    public static FinePaymentRequest mapToFinPaymentRequest(Integer owedAmount, PaymentRequest paymentRequest){
+        FinePaymentRequest finePaymentRequest = new FinePaymentRequest();
+        finePaymentRequest.setAmount(owedAmount);
+        finePaymentRequest.setIsPaid(Boolean.FALSE);
+        finePaymentRequest.setPaidAmount(paymentRequest.getAmount());
+        finePaymentRequest.setOverDue(owedAmount / Constants.FINE_PER_DAY);
+        return finePaymentRequest;
     }
 }

@@ -4,7 +4,7 @@ import com.librarymanagement.LibraryApplication.entities.AccountAssociatedOrgani
 import com.librarymanagement.LibraryApplication.entities.AccountType;
 import com.librarymanagement.LibraryApplication.entities.LibrarianAccount;
 import com.librarymanagement.LibraryApplication.entities.User;
-import com.librarymanagement.LibraryApplication.mappers.LibrarianAccountMapper;
+import com.librarymanagement.LibraryApplication.mappers.LibrarianAccountMapperInterface;
 import com.librarymanagement.LibraryApplication.models.dtos.LibrarianAccountDto;
 import com.librarymanagement.LibraryApplication.models.requests.LibrarianAccountRequest;
 import com.librarymanagement.LibraryApplication.repositories.AccountAssociatedOrganizationRepo;
@@ -39,6 +39,7 @@ public class LibrarianAccountServiceImpl implements LibrarianAccountService {
     private final AccountTypeRepo accountTypeRepo;
     private final LibrarianAccountRepo librarianAccountRepo;
     private final AccountAssociatedOrganizationRepo accountAssociatedOrganizationRepo;
+    private final LibrarianAccountMapperInterface librarianAccountMapper;
 
     private ResponseEntity<Object> checkLibrarianAccountReqValidity(List<LibrarianAccountRequest> librarianAccountRequest) {
         AtomicBoolean verifiedFlag = new AtomicBoolean(true);
@@ -76,7 +77,7 @@ public class LibrarianAccountServiceImpl implements LibrarianAccountService {
                             "Invalid account associated organization name", HttpStatus.BAD_REQUEST);
                 }
                  Result result = checkAccountAssociatedOrganizationValidity(request);
-                librarianAccount = LibrarianAccountMapper.mapToAddLibrarianAccount(request,
+                librarianAccount = librarianAccountMapper.mapToAddLibrarianAccount(request,
                         result.accountType, result.accountAssociatedOrganization, user);
                 librarianAccounts.add(librarianAccount);
             }
@@ -111,7 +112,7 @@ public class LibrarianAccountServiceImpl implements LibrarianAccountService {
                         "No account details added", HttpStatus.NOT_FOUND);
             }
             List<LibrarianAccountDto> librarianAccountDtos =
-                    LibrarianAccountMapper.mapToLibrarianAccountDto(librarianAccountDetails);
+                    librarianAccountMapper.mapToLibrarianAccountDto(librarianAccountDetails);
             return ResponseUtility.failureResponseWithMessageAndBody(ResponseConstants.OK,
                     "Account details found", librarianAccountDtos, HttpStatus.OK);
         } catch (Exception e) {
@@ -155,11 +156,11 @@ public class LibrarianAccountServiceImpl implements LibrarianAccountService {
                 LibrarianAccount librarianAccount =
                         this.librarianAccountRepo.getLibrarianAccountByAccountTypeAndLibrarian(result.accountType, user);
                 if (librarianAccount == null) {
-                    librarianAccount = LibrarianAccountMapper.mapToAddLibrarianAccount(request,
+                    librarianAccount = librarianAccountMapper.mapToAddLibrarianAccount(request,
                             result.accountType, result.accountAssociatedOrganization, user);
                     librarianAccount.setModifiedDate(LocalDateTime.now());
                 } else {
-                   librarianAccount= LibrarianAccountMapper.mapToModifyLibrarianAccount(request,
+                   librarianAccount= librarianAccountMapper.mapToModifyLibrarianAccount(request,
                             result.accountType,
                             result.accountAssociatedOrganization,
                             user, librarianAccount);
@@ -209,7 +210,7 @@ public class LibrarianAccountServiceImpl implements LibrarianAccountService {
                 return ResponseUtility.successResponseWithMessage(ResponseConstants.NO_CONTENT,
                         "Details not found", HttpStatus.NOT_FOUND);
             }
-            LibrarianAccountDto librarianAccountDto = LibrarianAccountMapper.mapToLibrarianAccountDto(account);
+            LibrarianAccountDto librarianAccountDto = librarianAccountMapper.mapToLibrarianAccountDto(account);
             return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
                     "Details retrieved", librarianAccountDto, HttpStatus.OK);
         } catch (Exception e) {

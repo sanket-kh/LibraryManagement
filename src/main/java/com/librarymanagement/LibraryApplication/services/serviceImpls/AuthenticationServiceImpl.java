@@ -3,7 +3,7 @@ package com.librarymanagement.LibraryApplication.services.serviceImpls;
 import com.librarymanagement.LibraryApplication.entities.User;
 import com.librarymanagement.LibraryApplication.enums.Role;
 import com.librarymanagement.LibraryApplication.jwtconfigs.JwtService;
-import com.librarymanagement.LibraryApplication.mappers.UserMapper;
+import com.librarymanagement.LibraryApplication.mappers.UserMapperInterface;
 import com.librarymanagement.LibraryApplication.models.requests.AuthenticationRequest;
 import com.librarymanagement.LibraryApplication.models.requests.UserRegisterRequest;
 import com.librarymanagement.LibraryApplication.models.responses.AuthResponse;
@@ -25,20 +25,26 @@ import org.springframework.stereotype.Service;
 @Log4j2
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
-    public AuthenticationServiceImpl(UserRepo userRepo, UserService userServiceImpl, JwtService jwtService, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder) {
-        this.userRepo = userRepo;
-        this.userServiceImpl = userServiceImpl;
-        this.jwtService = jwtService;
-        this.authenticationManager = authenticationManager;
-        this.passwordEncoder = passwordEncoder;
-    }
-
     private final UserRepo userRepo;
     @Qualifier("UserServiceImpl")
     private final UserService userServiceImpl;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapperInterface userMapper;
+
+    public AuthenticationServiceImpl(UserRepo userRepo, UserService userServiceImpl,
+                                     JwtService jwtService,
+                                     AuthenticationManager authenticationManager,
+                                     PasswordEncoder passwordEncoder,
+                                     UserMapperInterface userMapperInterface) {
+        this.userRepo = userRepo;
+        this.userServiceImpl = userServiceImpl;
+        this.jwtService = jwtService;
+        this.authenticationManager = authenticationManager;
+        this.passwordEncoder = passwordEncoder;
+        this.userMapper = userMapperInterface;
+    }
 
     @Override
     public ResponseEntity<Object> registerUser(UserRegisterRequest userRegisterRequest) {
@@ -49,30 +55,31 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                         "Username already taken", HttpStatus.CONFLICT);
             }
             String encodedPassword = passwordEncoder.encode(userRegisterRequest.getPassword());
-            user = UserMapper.mapToUser(userRegisterRequest, encodedPassword);
+            user = userMapper.mapToUser(userRegisterRequest, encodedPassword);
             user.setRole(Role.USER);
             userRepo.save(user);
-            return  ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
+            return ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
                     "User registered successfully", HttpStatus.OK);
         } catch (Exception e) {
-            log.error("AuthenticationService :: registerUser",e);
-            return  ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+            log.error("AuthenticationService :: registerUser", e);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
                     "Some exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }
+
     @Override
     public ResponseEntity<Object> registerLibrarian(UserRegisterRequest userRegisterRequest) {
         User user = userRepo.findUserByUsername(userRegisterRequest.getUsername());
         if (user != null) {
-            return  ResponseUtility.failureResponseWithMessage(ResponseConstants.ALREADY_EXISTS,
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.ALREADY_EXISTS,
                     "Username already taken", HttpStatus.CONFLICT);
         }
         String encodedPassword = passwordEncoder.encode(userRegisterRequest.getPassword());
-        user = UserMapper.mapToUser(userRegisterRequest, encodedPassword);
+        user = userMapper.mapToUser(userRegisterRequest, encodedPassword);
         user.setRole(Role.LIBRARIAN);
         userRepo.save(user);
-        return  ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
+        return ResponseUtility.successResponseWithMessage(ResponseConstants.OK,
                 "Admin registered successfully", HttpStatus.OK);
     }
 
@@ -81,45 +88,41 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
-                            authenticationRequest.getPassword())
-            );
+                            authenticationRequest.getPassword()));
         } catch (BadCredentialsException e) {
             log.error("AuthenticationService :: authenticate", e);
             return userServiceImpl.failedLoginAttempt(authenticationRequest.getUsername());
         } catch (AccessDeniedException e) {
             log.error("AuthenticationService :: authenticate", e);
-            return  ResponseUtility.failureResponseWithMessage(ResponseConstants.FORBIDDEN,
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.FORBIDDEN,
                     "User doesnt have required authority", HttpStatus.UNAUTHORIZED);
         } catch (DisabledException e) {
             log.error("AuthenticationService :: authenticate", e);
-            return  ResponseUtility.failureResponseWithMessage(ResponseConstants.DISABLED_USER,
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.DISABLED_USER,
                     "User is disabled", HttpStatus.UNAUTHORIZED);
         } catch (UsernameNotFoundException | InternalAuthenticationServiceException e) {
             log.error("AuthenticationService :: authenticate", e);
-            return  ResponseUtility.failureResponseWithMessage(ResponseConstants.BAD_CREDENTIALS,
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.BAD_CREDENTIALS,
                     "Username or password is incorrect ", HttpStatus.UNAUTHORIZED);
         } catch (LockedException e) {
             log.error(" AuthenticationService :: authenticate", e);
-            return  ResponseUtility.failureResponseWithMessage(ResponseConstants.LOCKED_USER,
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.LOCKED_USER,
                     "User account is locked", HttpStatus.UNAUTHORIZED);
-        }catch (Exception e) {
-            log.error(" AuthenticationService :: authenticate", e);
-            return  ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+        } catch (Exception e) {
+            log.error("AuthenticationService :: authenticate", e);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
                     "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
         try {
             User user = userRepo.findUserByUsername(authenticationRequest.getUsername());
-            AuthResponse authResponse = new AuthResponse();
-
             userRepo.refreshLoginAttempts(user.getUsername());
             String jwtToken = jwtService.generateToken(user);
-            authResponse.setRole(user.getRole().name());
-            authResponse.setAccessToken(jwtToken);
-            return  ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
-                    "User authenticated successfully", authResponse, HttpStatus.OK);
+            return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
+                    "User authenticated successfully",
+                    new AuthResponse(user.getRole().name(), jwtToken), HttpStatus.OK);
         } catch (Exception e) {
-            log.error("AuthenticationService :: authenticate",e);
-            return  ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
+            log.error("AuthenticationService :: authenticate", e);
+            return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
                     "Some exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
 
         }

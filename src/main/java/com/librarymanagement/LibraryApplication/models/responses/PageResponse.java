@@ -10,5 +10,4 @@ public class PageResponse {
     private Integer pageNo;
     private Integer pageSize;
     private Object content;
-
 }

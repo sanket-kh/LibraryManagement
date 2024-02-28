@@ -10,6 +10,7 @@ public interface FineService {
     LibraryResponse calculateFine(FineCalculationRequest fineCalculationRequest);
 
     ResponseEntity<Object> payFine(PaymentRequest paymentRequest);
+
     ResponseEntity<Object> getUserFinesList();
 
     ResponseEntity<Object> getAllFinesList(Integer pageSize, Integer pageNo);

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AccountTypeMapper {
-    public static String mapToAccountTypeName(AccountType accountType){
+    private static String mapToAccountTypeName(AccountType accountType){
        return  accountType.getAccountTypeName();
 
     }

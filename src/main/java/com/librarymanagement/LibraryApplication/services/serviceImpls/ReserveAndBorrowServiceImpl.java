@@ -7,8 +7,8 @@ import com.librarymanagement.LibraryApplication.entities.Book;
 import com.librarymanagement.LibraryApplication.entities.Fine;
 import com.librarymanagement.LibraryApplication.entities.ReserveAndBorrow;
 import com.librarymanagement.LibraryApplication.entities.User;
-import com.librarymanagement.LibraryApplication.mappers.FineMapper;
-import com.librarymanagement.LibraryApplication.mappers.ReserveAndBorrowMapper;
+import com.librarymanagement.LibraryApplication.mappers.FineMapperInterface;
+import com.librarymanagement.LibraryApplication.mappers.ReserveAndBorrowMapperInterface;
 import com.librarymanagement.LibraryApplication.models.dtos.BookTransactionsDto;
 import com.librarymanagement.LibraryApplication.models.dtos.BorrowedBookDto;
 import com.librarymanagement.LibraryApplication.models.dtos.UserBookTransaction;
@@ -49,6 +49,8 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
     private final UserRepo userRepo;
     private final ReserveAndBurrowRepo reserveAndBurrowRepo;
     private final FineService fineService;
+    private final ReserveAndBorrowMapperInterface reserveAndBorrowMapper;
+    private final FineMapperInterface fineMapper;
 
     @Override
     public ResponseEntity<Object> burrowBook(BorrowRequest borrowRequest) {
@@ -113,8 +115,8 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
             existingTransaction.setIsIssued(Boolean.FALSE);
             book.setCopies(book.getCopies() + 1);
             bookRepo.save(book);
-            FineCalculationRequest fineCalculationRequest = FineMapper.mapToFineCalculationRequest(
-                    ReserveAndBorrowMapper.mapToReserveAndBorrowDto(existingTransaction));
+            FineCalculationRequest fineCalculationRequest = fineMapper.mapToFineCalculationRequest(
+                    reserveAndBorrowMapper.mapToReserveAndBorrowDto(existingTransaction));
 
             LibraryResponse libraryResponse = fineService.calculateFine(fineCalculationRequest);
 
@@ -122,7 +124,7 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
             FineDto fineDto = (FineDto) libraryResponse.getResponseBody();
 
             if (fineDto != null) {
-                Fine fine = FineMapper.mapToFine(fineDto);
+                Fine fine = fineMapper.mapToFine(fineDto);
                 existingTransaction.setFine(fine);
                 fine.setReserveAndBorrow(existingTransaction);
             }
@@ -215,9 +217,7 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
             log.error("ReserveAndBorrowServiceImpl :: getAllTransactions", e);
             return ResponseUtility.failureResponseWithMessage(ResponseConstants.INTERNAL_ERROR,
                     "Some error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
-
         }
-
     }
 
     @Override
@@ -233,10 +233,9 @@ public class ReserveAndBorrowServiceImpl implements ReserveAndBorrowService {
                 return ResponseUtility.failureResponseWithMessage(ResponseConstants.NOT_FOUND,
                         "No transactions found", HttpStatus.NOT_FOUND);
             }
-
             return ResponseUtility.successResponseWithMessageAndBody(ResponseConstants.OK,
                     "transactions found",
-                    ReserveAndBorrowMapper.mapToBookTransactionDto(reserveAndBorrowList),
+                    reserveAndBorrowMapper.mapToBookTransactionDto(reserveAndBorrowList),
                     HttpStatus.OK);
         } catch (Exception e) {
             log.error("ReserveAndBorrowServiceImpl :: searchTransactions", e);
