@@ -19,6 +19,4 @@ public class LoggingAspect {
         final String methodName = signature.getName();
         log.info("Entered --> " + className + " :: " + methodName);
     }
-
-
 }
